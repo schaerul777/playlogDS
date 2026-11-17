@@ -17,6 +17,7 @@ All brand values live in `docs/brand/`. Read them before changing any styling.
 - `docs/brand/BRAND.md`: brand rules, shadcn token mapping, component scope. Read this first.
 - `docs/brand/tokens.css`: the tokens as CSS variables (light and dark), mapped to shadcn variable names. Merge into the library's global stylesheet.
 - `docs/brand/tokens.json`: the same values as data. Use it when creating Figma variables.
+- `docs/brand/COMPONENT-SPECS.md`: sizes, colors and states for each in-scope component. Check it before asking a brand question. For parts it doesn’t cover (extra sizes, popups), extrapolate on the 4px grid with tokens and note the choice.
 
 Do not invent brand values. If a value is missing, ask.
 
