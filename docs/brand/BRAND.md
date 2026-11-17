@@ -28,7 +28,7 @@ Playlog token names differ from shadcn's. Use this table. Tokens with no shadcn 
 | `border` | `--border` | Hairlines, card outlines. |
 | `border-strong` | `--input` | Input, select and checkbox borders. |
 | `focus-ring` | `--ring` | 2px solid, 2px offset. |
-| `accent` (Playlog Green) | `--pl-brand-accent` | Active tab bar, progress, supergraphic offset. Decorative only. |
+| `accent` (Playlog Green) | `--pl-brand-accent` | Progress, supergraphic offset. Decorative only. |
 | `ink-heading` | `--pl-ink-heading` | Also available by its own name for titles and KPI values. |
 
 Assumptions to confirm: `--secondary` uses `surface-hover` with `ink-heading` text, because the guide defines no separate secondary button. Sidebar tokens map from `surface-sunken`, `surface-selected` and `primary`.
@@ -65,7 +65,7 @@ Assumptions to confirm: `--secondary` uses `surface-hover` with `ink-heading` te
 
 - Motion is functional only: 120 to 200ms ease-out for hover, focus and menus. No bouncing or parallax.
 - Hover: `primary-hover` on primary buttons, `surface-hover` on rows, nav items and quiet buttons.
-- Selected: `surface-selected` plus `ink-heading`. Active tabs get a 2px underline. The selected sidebar item gets a 3px accent marker.
+- Selected: `surface-selected` plus `ink-heading`. Active tabs get a 2px `ink-heading` underline (not Green, which fails contrast on light grounds). The selected sidebar item gets a 3px accent marker.
 - Focus: 2px solid `focus-ring` with a 2px offset on every interactive element (`--pl-focus-ring-width`, `--pl-focus-ring-offset`). Never remove it.
 - Disabled: 40% opacity (`--pl-opacity-disabled`), no pointer events.
 

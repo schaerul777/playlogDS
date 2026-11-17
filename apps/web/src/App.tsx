@@ -2,8 +2,10 @@ import * as React from "react"
 import {
   RiAddLine,
   RiArrowRightLine,
+  RiBarChartLine,
   RiDeleteBinLine,
   RiDownloadLine,
+  RiMapPinLine,
   RiMoreLine,
   RiSearchLine,
 } from "@remixicon/react"
@@ -19,7 +21,20 @@ import {
   CardHeader,
   CardTitle,
 } from "@workspace/ui/components/card"
+import { Checkbox } from "@workspace/ui/components/checkbox"
 import { Input } from "@workspace/ui/components/input"
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectSeparator,
+  SelectTrigger,
+  SelectValue,
+} from "@workspace/ui/components/select"
+import { Switch } from "@workspace/ui/components/switch"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@workspace/ui/components/tabs"
 import { cn } from "@workspace/ui/lib/utils"
 
 import { useTheme } from "@/components/theme-provider"
@@ -120,6 +135,10 @@ function Showcase({
       <ButtonSection />
       <InputSection />
       <BadgeSection />
+      <CheckboxSection />
+      <SwitchSection />
+      <SelectSection />
+      <TabsSection />
       <CardSection />
     </main>
   )
@@ -350,6 +369,183 @@ function CardSection() {
             </Button>
           </CardFooter>
         </Card>
+      </div>
+    </Section>
+  )
+}
+
+function ChoiceLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <label className="flex items-center gap-2 text-body-sm">{children}</label>
+  )
+}
+
+function CheckboxSection() {
+  return (
+    <Section title="Checkbox">
+      <div className="flex flex-wrap items-center gap-6">
+        <ChoiceLabel>
+          <Checkbox /> Unchecked
+        </ChoiceLabel>
+        <ChoiceLabel>
+          <Checkbox defaultChecked /> Checked
+        </ChoiceLabel>
+        <ChoiceLabel>
+          <Checkbox disabled /> Disabled
+        </ChoiceLabel>
+        <ChoiceLabel>
+          <Checkbox disabled defaultChecked /> Disabled checked
+        </ChoiceLabel>
+        <ChoiceLabel>
+          <Checkbox aria-invalid /> Invalid
+        </ChoiceLabel>
+        <ChoiceLabel>
+          <Checkbox aria-invalid defaultChecked /> Invalid checked
+        </ChoiceLabel>
+      </div>
+    </Section>
+  )
+}
+
+function SwitchSection() {
+  return (
+    <Section title="Switch">
+      {(["default", "sm"] as const).map((size) => (
+        <div key={size} className="flex flex-wrap items-center gap-6">
+          <RowLabel>size={size}</RowLabel>
+          <ChoiceLabel>
+            <Switch size={size} /> Off
+          </ChoiceLabel>
+          <ChoiceLabel>
+            <Switch size={size} defaultChecked /> On
+          </ChoiceLabel>
+          <ChoiceLabel>
+            <Switch size={size} disabled /> Disabled
+          </ChoiceLabel>
+          <ChoiceLabel>
+            <Switch size={size} disabled defaultChecked /> Disabled on
+          </ChoiceLabel>
+          <ChoiceLabel>
+            <Switch size={size} aria-invalid /> Invalid
+          </ChoiceLabel>
+        </div>
+      ))}
+    </Section>
+  )
+}
+
+const CITIES = {
+  jakarta: "Jakarta",
+  bandung: "Bandung",
+  surabaya: "Surabaya",
+  medan: "Medan",
+  makassar: "Makassar",
+}
+
+function CitySelect({
+  size,
+  defaultValue,
+  disabled,
+  invalid,
+  label,
+}: {
+  size?: "default" | "sm"
+  defaultValue?: keyof typeof CITIES
+  disabled?: boolean
+  invalid?: boolean
+  label: string
+}) {
+  return (
+    <Select items={CITIES} defaultValue={defaultValue} disabled={disabled}>
+      <SelectTrigger
+        size={size}
+        aria-label={label}
+        aria-invalid={invalid || undefined}
+        className="w-48"
+      >
+        <SelectValue placeholder="Choose a city" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectGroup>
+          <SelectLabel>Java</SelectLabel>
+          <SelectItem value="jakarta">Jakarta</SelectItem>
+          <SelectItem value="bandung">Bandung</SelectItem>
+          <SelectItem value="surabaya">Surabaya</SelectItem>
+        </SelectGroup>
+        <SelectSeparator />
+        <SelectGroup>
+          <SelectLabel>Outside Java</SelectLabel>
+          <SelectItem value="medan">Medan</SelectItem>
+          <SelectItem value="makassar" disabled>
+            Makassar
+          </SelectItem>
+        </SelectGroup>
+      </SelectContent>
+    </Select>
+  )
+}
+
+function SelectSection() {
+  return (
+    <Section title="Select">
+      <div className="flex flex-wrap items-start gap-4">
+        <CitySelect label="Placeholder" />
+        <CitySelect label="Selected" defaultValue="jakarta" />
+        <CitySelect label="Small" size="sm" defaultValue="bandung" />
+        <CitySelect label="Disabled" disabled defaultValue="surabaya" />
+        <CitySelect label="Invalid" invalid />
+      </div>
+      <p className="text-caption font-medium text-muted-foreground">
+        Open a select to see highlighted, selected and disabled items.
+      </p>
+    </Section>
+  )
+}
+
+function TabsDemo({
+  variant,
+  orientation,
+}: {
+  variant: "default" | "line"
+  orientation: "horizontal" | "vertical"
+}) {
+  return (
+    <Tabs defaultValue="overview" orientation={orientation}>
+      <TabsList variant={variant}>
+        <TabsTrigger value="overview">Overview</TabsTrigger>
+        <TabsTrigger value="audience">
+          <RiBarChartLine data-icon="inline-start" />
+          Audience
+        </TabsTrigger>
+        <TabsTrigger value="locations">
+          <RiMapPinLine data-icon="inline-start" />
+          Locations
+        </TabsTrigger>
+        <TabsTrigger value="export" disabled>
+          Export
+        </TabsTrigger>
+      </TabsList>
+      <TabsContent value="overview">Impressions across 25 cities.</TabsContent>
+      <TabsContent value="audience">Audience by age and gender.</TabsContent>
+      <TabsContent value="locations">Screens by city.</TabsContent>
+    </Tabs>
+  )
+}
+
+function TabsSection() {
+  return (
+    <Section title="Tabs">
+      <div className="grid gap-6 md:grid-cols-2">
+        {(["default", "line"] as const).flatMap((variant) =>
+          (["horizontal", "vertical"] as const).map((orientation) => (
+            <div key={variant + orientation} className="flex flex-col gap-2">
+              <span className="text-caption font-medium text-muted-foreground">
+                variant={variant}, {orientation}
+              </span>
+              <TabsDemo variant={variant} orientation={orientation} />
+            </div>
+          ))
+        )}
       </div>
     </Section>
   )
