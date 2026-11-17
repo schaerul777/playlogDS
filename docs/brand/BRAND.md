@@ -58,7 +58,7 @@ Assumptions to confirm: `--secondary` uses `surface-hover` with `ink-heading` te
 - Product controls: radius 4px for buttons, inputs, selects and menus. Radius 8px for app cards and dialogs. Radius 2px for badges and checkboxes. Full radius only for toggle tracks and avatars.
 - Spacing is a 4px base. Cards pad 24px (16px in dense app panels).
 - Control height: 40px default, 32px small.
-- Cards are flat: `surface` plus a 1px `border`. Only floating layers (menus, dialogs) take the overlay shadow.
+- Cards are flat: `surface` plus a 1px `border` (`--pl-border-width`). Only floating layers (menus, dialogs) take the overlay shadow.
 - The hard Green offset shadow (`--pl-shadow-offset`) is for marketing feature cards only.
 
 ## States and motion
@@ -66,8 +66,17 @@ Assumptions to confirm: `--secondary` uses `surface-hover` with `ink-heading` te
 - Motion is functional only: 120 to 200ms ease-out for hover, focus and menus. No bouncing or parallax.
 - Hover: `primary-hover` on primary buttons, `surface-hover` on rows, nav items and quiet buttons.
 - Selected: `surface-selected` plus `ink-heading`. Active tabs get a 2px underline. The selected sidebar item gets a 3px accent marker.
-- Focus: 2px solid `focus-ring` with a 2px offset on every interactive element. Never remove it.
-- Disabled: 40% opacity, no pointer events.
+- Focus: 2px solid `focus-ring` with a 2px offset on every interactive element (`--pl-focus-ring-width`, `--pl-focus-ring-offset`). Never remove it.
+- Disabled: 40% opacity (`--pl-opacity-disabled`), no pointer events.
+
+## Figma-only variables
+
+The Figma library has a few variables that are not Playlog tokens. They cover values the components take from Tailwind, so CSS needs no `--pl-` variable for them. Their Figma code syntax is the CSS they resolve to. Values are listed under `figmaOnly` in `tokens.json`.
+
+- `spacing-0-5`, `spacing-1-5`, `spacing-3`, `spacing-4`, `spacing-5`, `spacing-6`, `spacing-12`: Tailwind spacing steps (2, 6, 12, 16, 20, 24, 48px) used for small paddings, icon sizes and the `xs` / `lg` button heights. Code syntax `calc(var(--spacing) * n)`.
+- `destructive-90`: destructive button hover, `bg-destructive/90`. Code syntax `color-mix(in oklab, var(--destructive) 90%, transparent)`.
+
+If one of these becomes a brand decision, promote it to a `--pl-` token here and in `tokens.css`.
 
 ## Icons
 

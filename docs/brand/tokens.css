@@ -67,6 +67,12 @@
   --pl-content-max: 1200px;
   --pl-sidebar-width: 248px;
 
+  /* Borders, focus and disabled state */
+  --pl-border-width: 1px;
+  --pl-focus-ring-width: 2px;
+  --pl-focus-ring-offset: 2px;
+  --pl-opacity-disabled: 0.4;
+
   /* Light theme */
   --background: #faf9f6;
   --card: #ffffff;
