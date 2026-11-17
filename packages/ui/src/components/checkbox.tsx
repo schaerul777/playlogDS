@@ -7,8 +7,8 @@ function Checkbox({ className, ...props }: CheckboxPrimitive.Root.Props) {
     <CheckboxPrimitive.Root
       data-slot="checkbox"
       className={cn(
-        // Playlog: 2px radius, surface fill, border-strong (--input) edge, flat (no shadow), 150ms ease-out.
-        "peer relative flex size-4 shrink-0 items-center justify-center rounded-sm border-(length:--pl-border-width) border-input bg-card transition-colors duration-150 ease-out after:absolute after:-inset-x-3 after:-inset-y-2",
+        // Playlog: 18px box, 2px radius, 1.5px border-strong (--input) edge, surface fill, flat, 150ms ease-out (COMPONENT-SPECS).
+        "peer relative flex size-4.5 shrink-0 items-center justify-center rounded-sm border-(length:--pl-checkbox-border-width) border-input bg-card transition-colors duration-150 ease-out after:absolute after:-inset-x-3 after:-inset-y-2",
         "hover:border-foreground",
         // Playlog: checked uses primary; hover uses primary-hover.
         "data-checked:border-primary data-checked:bg-primary data-checked:text-primary-foreground data-checked:hover:border-primary-hover data-checked:hover:bg-primary-hover",
@@ -16,8 +16,8 @@ function Checkbox({ className, ...props }: CheckboxPrimitive.Root.Props) {
         "outline-none focus-visible:outline-(length:--pl-focus-ring-width) focus-visible:outline-offset-(--pl-focus-ring-offset) focus-visible:outline-solid focus-visible:outline-ring",
         // Playlog: disabled uses --pl-opacity-disabled.
         "data-disabled:pointer-events-none data-disabled:opacity-(--pl-opacity-disabled)",
-        // Playlog: invalid keeps the destructive edge, also when checked.
-        "aria-invalid:border-destructive aria-invalid:data-checked:border-destructive aria-invalid:focus-visible:outline-destructive data-invalid:border-destructive data-invalid:focus-visible:outline-destructive",
+        // Playlog: error edge is pl-danger-text, also when checked; the focus ring stays --ring.
+        "aria-invalid:border-danger-text aria-invalid:data-checked:border-danger-text data-invalid:border-danger-text data-invalid:data-checked:border-danger-text",
         className
       )}
       {...props}

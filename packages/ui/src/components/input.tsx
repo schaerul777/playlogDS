@@ -18,7 +18,8 @@ function Input({ className, type, ...props }: React.ComponentProps<"input">) {
         "outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-solid focus-visible:outline-ring",
         // Playlog: disabled is 40% opacity with no pointer events.
         "disabled:pointer-events-none disabled:opacity-40 data-disabled:pointer-events-none data-disabled:opacity-40",
-        "aria-invalid:border-destructive aria-invalid:focus-visible:outline-destructive",
+        // Playlog: error edge is pl-danger-text; the fill stays card and the focus ring stays --ring (COMPONENT-SPECS).
+        "aria-invalid:border-danger-text",
         className
       )}
       {...props}

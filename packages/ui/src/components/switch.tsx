@@ -24,7 +24,8 @@ function Switch({
         "outline-none focus-visible:outline-(length:--pl-focus-ring-width) focus-visible:outline-offset-(--pl-focus-ring-offset) focus-visible:outline-solid focus-visible:outline-ring",
         // Playlog: disabled uses --pl-opacity-disabled.
         "data-disabled:pointer-events-none data-disabled:opacity-(--pl-opacity-disabled)",
-        "aria-invalid:border-destructive aria-invalid:focus-visible:outline-destructive data-invalid:border-destructive data-invalid:focus-visible:outline-destructive",
+        // Playlog: error edge is pl-danger-text; the focus ring stays --ring (COMPONENT-SPECS).
+        "aria-invalid:border-danger-text data-invalid:border-danger-text",
         className
       )}
       {...props}

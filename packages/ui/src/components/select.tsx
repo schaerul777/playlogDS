@@ -39,11 +39,13 @@ function SelectTrigger({
       data-size={size}
       className={cn(
         // Playlog: like Input. 40px (32px sm), 4px radius, surface fill, border-strong (--input) edge, body-sm, flat.
-        "flex w-fit items-center justify-between gap-1.5 rounded-md border-(length:--pl-border-width) border-input bg-card px-3 text-body-sm whitespace-nowrap text-foreground transition-colors duration-150 ease-out hover:border-foreground data-placeholder:text-muted-foreground data-[size=default]:h-10 data-[size=sm]:h-8 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-1.5 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        // Playlog: gap 8, padding 12 left / 36 right, chevron 10px from the right edge (COMPONENT-SPECS).
+        "relative flex w-fit items-center justify-between gap-2 rounded-md border-(length:--pl-border-width) border-input bg-card pr-9 pl-3 text-body-sm whitespace-nowrap text-foreground transition-colors duration-150 ease-out hover:border-foreground data-placeholder:text-muted-foreground data-[size=default]:h-10 data-[size=sm]:h-8 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         // Playlog: focus ring, disabled opacity and invalid edge from tokens.
         "outline-none focus-visible:outline-(length:--pl-focus-ring-width) focus-visible:outline-offset-(--pl-focus-ring-offset) focus-visible:outline-solid focus-visible:outline-ring",
         "disabled:pointer-events-none disabled:opacity-(--pl-opacity-disabled) data-disabled:pointer-events-none data-disabled:opacity-(--pl-opacity-disabled)",
-        "aria-invalid:border-destructive aria-invalid:focus-visible:outline-destructive data-invalid:border-destructive data-invalid:focus-visible:outline-destructive",
+        // Playlog: error edge is pl-danger-text; the focus ring stays --ring (COMPONENT-SPECS).
+        "aria-invalid:border-danger-text data-invalid:border-danger-text",
         className
       )}
       {...props}
@@ -51,7 +53,7 @@ function SelectTrigger({
       {children}
       <SelectPrimitive.Icon
         render={
-          <RiArrowDownSLine className="pointer-events-none size-4 text-muted-foreground" />
+          <RiArrowDownSLine className="pointer-events-none absolute right-2.5 size-4 text-muted-foreground" />
         }
       />
     </SelectPrimitive.Trigger>
@@ -86,9 +88,9 @@ function SelectContent({
           data-slot="select-content"
           data-align-trigger={alignItemWithTrigger}
           className={cn(
-            // Playlog: menu is surface-raised (--popover) with a 1px border and the overlay shadow, 4px radius.
+            // Playlog: menu is surface-raised (--popover) with the overlay shadow, 4px radius, no border (COMPONENT-SPECS).
             // Playlog: functional motion only: 150ms ease-out fade, no zoom or slide.
-            "relative isolate z-50 max-h-(--available-height) w-(--anchor-width) min-w-36 origin-(--transform-origin) overflow-x-hidden overflow-y-auto rounded-md border-(length:--pl-border-width) border-border bg-popover text-popover-foreground shadow-(--pl-shadow-overlay) duration-150 ease-out data-[align-trigger=true]:animate-none data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0",
+            "relative isolate z-50 max-h-(--available-height) w-(--anchor-width) min-w-36 origin-(--transform-origin) overflow-x-hidden overflow-y-auto rounded-md bg-popover text-popover-foreground shadow-(--pl-shadow-overlay) duration-150 ease-out data-[align-trigger=true]:animate-none data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0",
             className
           )}
           {...props}

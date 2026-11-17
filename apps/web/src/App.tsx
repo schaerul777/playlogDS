@@ -376,7 +376,10 @@ function CardSection() {
 
 function ChoiceLabel({ children }: { children: React.ReactNode }) {
   return (
-    <label className="flex items-center gap-2 text-body-sm">{children}</label>
+    // Spec: 10px gap to the label; the checkbox box sits 1px below the label's first line.
+    <label className="flex items-start gap-2.5 text-body-sm text-foreground [&>[data-slot=checkbox]]:mt-px">
+      {children}
+    </label>
   )
 }
 

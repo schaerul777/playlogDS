@@ -76,6 +76,7 @@
 
   /* Borders, focus and disabled state */
   --pl-border-width: 1px;
+  --pl-checkbox-border-width: 1.5px;
   --pl-focus-ring-width: 2px;
   --pl-focus-ring-offset: 2px;
   --pl-opacity-disabled: 0.4;

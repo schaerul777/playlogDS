@@ -56,6 +56,7 @@ Assumptions to confirm: `--secondary` uses `surface-hover` with `ink-heading` te
 
 - Playlog shapes are square-cut. Brand blocks, hero bands and covers use radius 0.
 - Product controls: radius 4px for buttons, inputs, selects and menus. Radius 8px for app cards and dialogs. Radius 2px for badges and checkboxes. Full radius only for toggle tracks and avatars.
+- Checkboxes use a 1.5px border (`--pl-checkbox-border-width`); other controls use 1px (`--pl-border-width`).
 - Spacing is a 4px base. Cards pad 24px (16px in dense app panels).
 - Control height: 40px default, 32px small.
 - Cards are flat: `surface` plus a 1px `border` (`--pl-border-width`). Only floating layers (menus, dialogs) take the overlay shadow.
