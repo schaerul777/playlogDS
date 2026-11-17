@@ -214,10 +214,10 @@
   --radius-md: 4px;
   --radius-lg: 8px;
   --radius-xl: 8px;
-  /* shadcn defaults, kept from the original stylesheet (not Playlog values) */
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
+  /* Playlog caps radius at 8px: larger shadcn steps resolve to the card/dialog radius. */
+  --radius-2xl: 8px;
+  --radius-3xl: 8px;
+  --radius-4xl: 8px;
 
   /* Colors: expose every variable to Tailwind */
   --color-background: var(--background);
@@ -348,6 +348,7 @@
   body {
     @apply bg-background text-foreground font-sans;
   }
+  /* Playlog: buttons use the pointer cursor (team decision). */
   button:not(:disabled), [role="button"]:not(:disabled) {
     cursor: pointer;
   }

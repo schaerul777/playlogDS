@@ -34,7 +34,7 @@ Do not invent brand values. If a value is missing, ask.
 - Font: Reddit Sans for all UI. Funnel Display only inside logos. No other fonts.
 - Square-cut look: radius 4px for buttons, inputs, selects and menus; 8px for cards and dialogs; 2px for badges and checkboxes.
 - Never put Green, Blue or the secondary colors as text on white or light grey. Status is always color plus a word or icon.
-- Button cursor: decide with the team (the brand guide does not specify it).
+- Button cursor: pointer (team decision; set globally in `globals.css`).
 
 ## Token rules
 
