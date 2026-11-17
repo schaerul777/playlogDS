@@ -20,26 +20,27 @@ const buttonVariants = cva(
       variant: {
         // Playlog: primary hover uses the primary-hover token.
         default: "bg-primary text-primary-foreground hover:bg-primary-hover",
-        // Playlog: quiet buttons hover on surface-hover (--accent); selected is surface-selected + ink-heading.
+        // Playlog: COMPONENT-SPECS "secondary": card fill, ink-heading text, 1px --input border, surface-hover on hover.
+        // Playlog: selected is surface-selected + ink-heading.
         outline:
-          "border-input bg-transparent text-foreground hover:bg-accent hover:text-accent-foreground aria-expanded:bg-surface-selected aria-expanded:text-ink-heading aria-pressed:bg-surface-selected aria-pressed:text-ink-heading",
+          "border-input bg-card text-ink-heading hover:bg-accent hover:text-accent-foreground aria-expanded:bg-surface-selected aria-expanded:text-ink-heading aria-pressed:bg-surface-selected aria-pressed:text-ink-heading",
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-surface-selected aria-expanded:bg-surface-selected aria-expanded:text-ink-heading aria-pressed:bg-surface-selected aria-pressed:text-ink-heading",
+        // Playlog: COMPONENT-SPECS "quiet": transparent, ink-heading text, surface-hover on hover.
         ghost:
-          "text-foreground hover:bg-accent hover:text-accent-foreground aria-expanded:bg-surface-selected aria-expanded:text-ink-heading aria-pressed:bg-surface-selected aria-pressed:text-ink-heading",
+          "text-ink-heading hover:bg-accent hover:text-accent-foreground aria-expanded:bg-surface-selected aria-expanded:text-ink-heading aria-pressed:bg-surface-selected aria-pressed:text-ink-heading",
         // Playlog: destructive is a solid danger-strong fill.
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         link: "text-link underline-offset-4 hover:underline",
       },
       size: {
-        // Playlog: control height 40px default, 32px sm.
-        default:
-          "h-10 gap-2 px-4 has-data-[icon=inline-end]:pr-3 has-data-[icon=inline-start]:pl-3",
-        xs: "h-6 gap-1 px-2 text-caption has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3",
-        sm: "h-8 gap-1.5 px-3 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2 [&_svg:not([class*='size-'])]:size-4",
-        // Playlog: lg = 48px (space-7). Not defined in the brand guide; confirm with design.
-        lg: "h-12 gap-2 px-5 has-data-[icon=inline-end]:pr-4 has-data-[icon=inline-start]:pl-4",
+        // Playlog: COMPONENT-SPECS. Height 40 / sm 32 / lg 48, side padding 16 / 12 / 24 (no narrower icon side),
+        // Playlog: gap 8 / 6 / 8, text 14 / 13 / 16 semibold. xs is not in the spec (24px, 8px padding, caption text).
+        default: "h-10 gap-2 px-4",
+        xs: "h-6 gap-1 px-2 text-caption [&_svg:not([class*='size-'])]:size-3",
+        sm: "h-8 gap-1.5 px-3 text-label-sm [&_svg:not([class*='size-'])]:size-4",
+        lg: "h-12 gap-2 px-6 text-body",
         icon: "size-10",
         "icon-xs": "size-6 [&_svg:not([class*='size-'])]:size-3",
         "icon-sm": "size-8 [&_svg:not([class*='size-'])]:size-4",

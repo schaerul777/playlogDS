@@ -19,6 +19,7 @@ export const cn = createCn({
         "body",
         "body-sm",
         "label",
+        "label-sm",
         "caption",
         "eyebrow",
         "kpi",

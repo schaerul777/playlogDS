@@ -54,9 +54,13 @@ const ICON_SIZES = ["icon-xs", "icon-sm", "icon", "icon-lg"] as const
 const BADGE_VARIANTS = [
   "default",
   "secondary",
+  "destructive",
+  "info",
+  "success",
+  "warning",
+  "accent",
   "outline",
   "ghost",
-  "destructive",
   "link",
 ] as const
 

@@ -47,7 +47,7 @@ Assumptions to confirm: `--secondary` uses `surface-hover` with `ink-heading` te
 
 - **Reddit Sans** is the only UI and editorial face.
 - **Funnel Display** is the logotype face. Use it only inside the logo and product-line lockups. Never for UI or body text.
-- App: `h1` page title (32/40, 800), `h2` section (24/32, 700), `h3` card title (16/24, 700), `body-sm` for tables, menus and fields (14/20), `label` for form labels and buttons (14/20, 600), `caption` for meta (12/16, 500).
+- App: `h1` page title (32/40, 800), `h2` section (24/32, 700), `h3` card title (16/24, 700), `body-sm` for tables, menus and fields (14/20), `label` for form labels and buttons (14/20, 600), `label-sm` for small buttons (13/16, 600), `caption` for meta (12/16, 500).
 - Website: `display`, `headline`, `subheadline`, `body-lg`, `body`, `keyword`, `eyebrow`.
 - Stat values use `kpi` / `kpi-sm` with tabular numerals (`font-variant-numeric: tabular-nums`).
 - Casing: headlines of 1 to 3 words use Title Case. Longer headlines use Sentence case. Buttons, tabs, menu items and labels use Sentence case.
