@@ -11,8 +11,10 @@ function Card({
       data-slot="card"
       data-size={size}
       className={cn(
-        // Playlog: flat card. Surface + 1px border, 8px radius, no shadow. Padding 24px (16px for sm).
-        "group/card flex flex-col gap-(--card-spacing) overflow-hidden rounded-lg border border-border bg-card py-(--card-spacing) text-body-sm text-card-foreground [--card-spacing:--spacing(6)] has-[>img:first-child]:pt-0 data-[size=sm]:[--card-spacing:--spacing(4)] *:[img:first-child]:rounded-t-lg *:[img:last-child]:rounded-b-lg",
+        // Playlog: flat card. Surface + 1px border, 8px radius, no shadow (COMPONENT-SPECS).
+        // Playlog: one vertical rhythm: 16 top and between sections (--card-gap), 24 sides and bottom (--card-spacing).
+        // Playlog: header 16 24 0 and content 16 24 24 as in the spec; sm is 16 everywhere (dense panels).
+        "group/card flex flex-col gap-(--card-gap) overflow-hidden rounded-lg border border-border bg-card pt-(--card-gap) pb-(--card-spacing) text-body-sm text-card-foreground [--card-gap:--spacing(4)] [--card-spacing:--spacing(6)] has-[>img:first-child]:pt-0 data-[size=sm]:[--card-spacing:--spacing(4)] *:[img:first-child]:rounded-t-lg *:[img:last-child]:rounded-b-lg",
         className
       )}
       {...props}
@@ -25,7 +27,8 @@ function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="card-header"
       className={cn(
-        "group/card-header @container/card-header grid auto-rows-min items-start gap-1 rounded-t-lg px-(--card-spacing) has-data-[slot=card-action]:grid-cols-[1fr_auto] has-data-[slot=card-description]:grid-rows-[auto_auto] [.border-b]:pb-(--card-spacing)",
+        // Playlog: title and action 16 apart; description 2px below the title.
+        "group/card-header @container/card-header grid auto-rows-min items-start gap-x-4 gap-y-0.5 rounded-t-lg px-(--card-spacing) has-data-[slot=card-action]:grid-cols-[1fr_auto] has-data-[slot=card-description]:grid-rows-[auto_auto] [.border-b]:pb-(--card-spacing)",
         className
       )}
       {...props}
@@ -51,7 +54,8 @@ function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="card-description"
-      className={cn("text-body-sm text-muted-foreground", className)}
+      // Playlog: description is caption (12/16 medium) in ink-muted.
+      className={cn("text-caption font-medium text-muted-foreground", className)}
       {...props}
     />
   )
@@ -62,7 +66,8 @@ function CardAction({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="card-action"
       className={cn(
-        "col-start-2 row-span-2 row-start-1 self-start justify-self-end",
+        // Playlog: header actions sit in a row, 8px apart.
+        "col-start-2 row-span-2 row-start-1 flex items-center gap-2 self-start justify-self-end",
         className
       )}
       {...props}
