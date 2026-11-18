@@ -139,7 +139,7 @@ function ItemTitle({ className, ...props }: React.ComponentProps<"div">) {
       data-slot="item-title"
       className={cn(
         // Playlog: 14/20 semibold; inherits foreground (ink-heading when selected).
-        "line-clamp-1 flex w-fit items-center gap-2 text-label font-semibold underline-offset-4",
+        "line-clamp-1 flex w-fit items-center gap-2 text-label underline-offset-4",
         className
       )}
       {...props}
@@ -153,7 +153,7 @@ function ItemDescription({ className, ...props }: React.ComponentProps<"p">) {
       data-slot="item-description"
       className={cn(
         // Playlog: 12/16 muted-foreground, at most two lines; links underlined, never Blue or Green text.
-        "line-clamp-2 text-left text-caption font-medium text-muted-foreground [&>a]:underline [&>a]:underline-offset-4 [&>a:hover]:text-foreground",
+        "line-clamp-2 text-left text-caption text-muted-foreground [&>a]:underline [&>a]:underline-offset-4 [&>a:hover]:text-foreground",
         className
       )}
       {...props}
