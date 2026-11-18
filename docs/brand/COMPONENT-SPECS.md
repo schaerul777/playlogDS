@@ -263,3 +263,60 @@ Applies to Label, Field, Textarea, Input Group, Combobox, Native Select, Radio G
 
 - `loader` stroke glyph (three-quarter arc, approved extra glyph), 20 (`--pl-icon-size`), current text color, Tailwind `animate-spin`. Keeps spinning under reduced motion: it is the only loading signal (agreed).
 - `role="status"` with `aria-label="Loading"`.
+
+## Navigation: shared rules
+
+Applies to Breadcrumb, Pagination, Accordion, Collapsible, Command, Context Menu, Menubar and Navigation Menu. Values marked "agreed" were proposed for this library and approved.
+
+- Never Green, Blue or secondary colors as text on light grounds. Links use `muted-foreground` and `foreground`; current or active items use `foreground` or `pl-ink-heading`.
+- Popups (Context Menu, Menubar, Navigation Menu panel, Command list) follow the Dropdown Menu spec: `popover` fill, radius 4 when anchored, overlay shadow, no border, fade at `--pl-duration-fast`.
+- Focus: 2px solid `--ring`, 2px offset. Disabled: `--pl-opacity-disabled`.
+- Chevrons: `chevron-right` turned 180° for left, `chevron-down` turned 180° for up (as the Select scroll button). No new glyphs (agreed).
+- Current page: `aria-current="page"` on the current breadcrumb and pagination link. Nav regions are labelled `nav` landmarks.
+
+## Breadcrumb
+
+- 14/20, items 8 apart (agreed).
+- Link: `muted-foreground`; hover `foreground` with an underline (agreed). Current page: 14/20 semibold `foreground` (agreed).
+- Separator: `chevron-right` 16 `muted-foreground` (agreed).
+- Collapsed middle: a 24 square `more` button that opens a Dropdown Menu with the hidden items (agreed).
+
+## Pagination
+
+- Page links: Button `ghost` at icon size, 40 (`size="sm"`: 32), 4 apart (agreed).
+- Current page: Button `outline` (`card` fill, `input` border, `pl-ink-heading` text) with `aria-current="page"` (agreed).
+- Previous and Next: chevron plus "Previous" / "Next"; below `sm` the labels hide and the buttons keep an accessible name (agreed).
+- Ellipsis: `more` glyph in `muted-foreground`, hidden from screen readers, with "More pages" for screen readers.
+- Compact: below `sm`, "Page 3 of 12" (14/20 `muted-foreground`, tabular numbers) between Previous and Next replaces the page list (agreed).
+
+## Accordion
+
+- Dividers: 1px `border` between items, none above the first or below the last (agreed).
+- Trigger: full width, padding 16 0, 14/20 semibold `foreground`; hover `pl-ink-heading`, no underline (agreed). `chevron-down` 16 `muted-foreground` turns 180° when open, at `--pl-duration-fast`. Focus ring with radius 4. Disabled 40%.
+- Panel: padding 0 0 16, 14/20 `muted-foreground`. Height animates at `--pl-duration-fast`.
+- One item open at a time by default; `multiple` allows more (agreed).
+
+## Collapsible
+
+- Unstyled wrapper: Root, Trigger and Content (Base UI panel). Only the height animation (`--pl-duration-fast`) is styled; use Button or text as the trigger (agreed).
+
+## Command
+
+- Built on the Base UI Combobox in inline mode (no `cmdk`, no Radix), keeping the shadcn names (agreed).
+- Surface: `popover`, radius 8 inside CommandDialog and 4 inline, overlay shadow.
+- Search row: 48 high, `search` 16 `muted-foreground`, no field border, 1px `border` below, padding 0 12, gap 8.
+- List: padding 4, max height 288. Group label 12/16 medium `muted-foreground`, padding 6 8. Items as Dropdown Menu items (32 high, radius 2, `accent` highlight, `check` 8 from the right). Shortcut 12/16 `muted-foreground`. Separator 1px `border`. Empty: "No results" 14/20 `muted-foreground`, centred, padding 24 12.
+- CommandDialog: our Dialog, max width 512, top edge at a third of the viewport height, padding 0. Cmd/Ctrl+K opens it in the playground (agreed).
+
+## Context Menu and Menubar
+
+- Popups and items: exactly the Dropdown Menu spec (agreed).
+- Menubar bar: height 40, `card` fill, 1px `border`, radius 4, padding 4, gap 4. Triggers: height 32, padding 0 12, radius 2, 14/20 semibold `foreground`; hover `accent`; open `pl-surface-selected` with `pl-ink-heading` (agreed).
+
+## Navigation Menu
+
+- Triggers and links: height 40, padding 0 12, radius 4, 14/20 medium `foreground` (the Sidebar nav item, horizontal); hover `accent`. Trigger `chevron-down` 16 turns 180° when open.
+- Current page: `pl-ink-heading` text with a 2px `pl-ink-heading` underline at the bottom edge (the Tabs line style) (agreed).
+- Panel: `popover`, radius 4, overlay shadow, padding 8. Fade at `--pl-duration-fast`; size changes between panels at `--pl-duration-slow`; no slide.
+- Panel links: padding 8 12, radius 2; title 14/20 semibold `pl-ink-heading`, description 12/16 `muted-foreground`; hover `accent`.
+- Hidden below `md`; use the Sidebar (Sheet) on small screens (agreed).
