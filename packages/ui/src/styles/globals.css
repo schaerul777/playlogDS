@@ -79,6 +79,7 @@
   --pl-checkbox-border-width: 1.5px;
   --pl-focus-ring-width: 2px;
   --pl-focus-ring-offset: 2px;
+  --pl-ring-separator-width: 2px; /* ring in the page colour that separates overlapping avatars and the avatar status dot */
   --pl-opacity-disabled: 0.4;
 
   /* Motion: fast for hover, focus and colour changes; slow for panels (Sheet, Sidebar collapse) */
