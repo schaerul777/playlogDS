@@ -66,6 +66,71 @@ import {
   TabsList,
   TabsTrigger,
 } from "@workspace/ui/components/tabs"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogMedia,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@workspace/ui/components/alert-dialog"
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@workspace/ui/components/dialog"
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from "@workspace/ui/components/dropdown-menu"
+import {
+  Popover,
+  PopoverContent,
+  PopoverDescription,
+  PopoverHeader,
+  PopoverTitle,
+  PopoverTrigger,
+} from "@workspace/ui/components/popover"
+import { Separator } from "@workspace/ui/components/separator"
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@workspace/ui/components/sheet"
+import { Skeleton } from "@workspace/ui/components/skeleton"
+import { Toaster, toast } from "@workspace/ui/components/sonner"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@workspace/ui/components/tooltip"
 import { cn } from "@workspace/ui/lib/utils"
 
 import { useTheme } from "@/components/theme-provider"
@@ -109,13 +174,14 @@ export function App() {
   }
 
   return (
+    <TooltipProvider>
     <div className="min-h-svh bg-background text-foreground">
       <header className="flex flex-wrap items-center justify-between gap-4 border-b border-border px-6 py-4">
         <div>
           <h1 className="text-h2 font-bold text-ink-heading">Playground</h1>
           <p className="text-body-sm text-muted-foreground">
-            Button, Input, Card and Badge. Hover and press Tab to check hover
-            and focus.
+            Every component, variant and state. Hover and press Tab to check
+            hover and focus.
           </p>
         </div>
         <div
@@ -146,7 +212,9 @@ export function App() {
         <Showcase label={view === "dark" ? "Dark" : "Light"} />
         {view === "both" && <Showcase label="Dark" className="dark" />}
       </div>
+      <Toaster />
     </div>
+    </TooltipProvider>
   )
 }
 
@@ -174,6 +242,16 @@ function Showcase({ label, className }: { label: string; className?: string }) {
       <BarChartSection />
       <SidebarSection />
       <CardSection />
+      <OverlaysNote />
+      <DialogSection />
+      <AlertDialogSection />
+      <SheetSection />
+      <DropdownMenuSection />
+      <PopoverSection />
+      <TooltipSection />
+      <ToastSection />
+      <SeparatorSection />
+      <SkeletonSection />
     </main>
   )
 }
@@ -1039,6 +1117,480 @@ function SidebarSection() {
           collapsible="icon"
           defaultOpen={false}
         />
+      </div>
+    </Section>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Overlays (Batch A)
+// ---------------------------------------------------------------------------
+
+function OverlaysNote() {
+  return (
+    <p className="text-caption font-medium text-muted-foreground">
+      Overlays open in a portal on the page, so they follow the page theme. Use
+      the Light or Dark view to check them in each theme.
+    </p>
+  )
+}
+
+function DialogSection() {
+  const id = React.useId()
+  return (
+    <Section title="Dialog">
+      <div className="flex flex-wrap gap-3">
+        <Dialog>
+          <DialogTrigger render={<Button variant="outline" />}>
+            Edit report
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Edit report</DialogTitle>
+              <DialogDescription>
+                Rename the report and choose who can see it.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex flex-col gap-4">
+              <Field id={`${id}-name`} label="Report name">
+                <Input id={`${id}-name`} defaultValue="Q3 roadside reach" />
+              </Field>
+              <Field id={`${id}-owner`} label="Owner" hint="Owners can edit and share.">
+                <Input id={`${id}-owner`} defaultValue="Media planning" />
+              </Field>
+            </div>
+            <DialogFooter>
+              <DialogClose render={<Button variant="outline" />}>Cancel</DialogClose>
+              <DialogClose render={<Button />}>Save changes</DialogClose>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog>
+          <DialogTrigger render={<Button variant="outline" />}>
+            Without close button
+          </DialogTrigger>
+          <DialogContent showCloseButton={false}>
+            <DialogHeader>
+              <DialogTitle>Methodology</DialogTitle>
+              <DialogDescription>
+                Reach is modelled from mobility panels across 25 cities, Q1 to Q3 2025.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter showCloseButton />
+          </DialogContent>
+        </Dialog>
+      </div>
+    </Section>
+  )
+}
+
+function AlertDialogSection() {
+  return (
+    <Section title="Alert Dialog">
+      <div className="flex flex-wrap gap-3">
+        <AlertDialog>
+          <AlertDialogTrigger render={<Button variant="outline" />}>
+            Default
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Publish this report?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Everyone in the workspace will see it in their library.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction>Publish</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
+        <AlertDialog>
+          <AlertDialogTrigger render={<Button variant="destructive" />}>
+            Destructive
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete this report?</AlertDialogTitle>
+              <AlertDialogDescription>
+                The report and its 12 charts will be removed. This can't be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction variant="destructive">Delete report</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
+        <AlertDialog>
+          <AlertDialogTrigger render={<Button variant="outline" />}>
+            With media
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogMedia>
+                <Icon name="users" />
+              </AlertDialogMedia>
+              <AlertDialogTitle>Share with the planning team?</AlertDialogTitle>
+              <AlertDialogDescription>
+                14 people will get edit access.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction>Share</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
+        <AlertDialog>
+          <AlertDialogTrigger render={<Button variant="outline" />}>
+            Size sm
+          </AlertDialogTrigger>
+          <AlertDialogContent size="sm">
+            <AlertDialogHeader>
+              <AlertDialogTitle>Discard changes?</AlertDialogTitle>
+              <AlertDialogDescription>Your edits will be lost.</AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Keep editing</AlertDialogCancel>
+              <AlertDialogAction variant="destructive">Discard</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </div>
+    </Section>
+  )
+}
+
+const SHEET_SIDES = ["right", "left", "top", "bottom"] as const
+
+function SheetSection() {
+  return (
+    <Section title="Sheet">
+      <div className="flex flex-wrap gap-3">
+        {SHEET_SIDES.map((side) => (
+          <Sheet key={side}>
+            <SheetTrigger render={<Button variant="outline" />}>
+              {side[0].toUpperCase() + side.slice(1)}
+            </SheetTrigger>
+            <SheetContent side={side}>
+              <SheetHeader>
+                <SheetTitle>Filters</SheetTitle>
+                <SheetDescription>Narrow the report by city and period.</SheetDescription>
+              </SheetHeader>
+              <div className="flex flex-col gap-3 px-6">
+                <ChoiceLabel>
+                  <Checkbox defaultChecked /> Jakarta
+                </ChoiceLabel>
+                <ChoiceLabel>
+                  <Checkbox /> Surabaya
+                </ChoiceLabel>
+              </div>
+              <SheetFooter>
+                <SheetClose render={<Button variant="outline" />}>Reset</SheetClose>
+                <SheetClose render={<Button />}>Apply filters</SheetClose>
+              </SheetFooter>
+            </SheetContent>
+          </Sheet>
+        ))}
+      </div>
+    </Section>
+  )
+}
+
+function DropdownMenuSection() {
+  const [showGrid, setShowGrid] = React.useState(true)
+  const [showLegend, setShowLegend] = React.useState(false)
+  const [period, setPeriod] = React.useState("quarter")
+  return (
+    <Section title="Dropdown Menu">
+      <div className="flex flex-wrap gap-3">
+        <DropdownMenu>
+          <DropdownMenuTrigger render={<Button variant="outline" />}>
+            Report actions
+            <Icon name="chevron-down" />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuGroup>
+              <DropdownMenuLabel>Report</DropdownMenuLabel>
+              <DropdownMenuItem>
+                <Icon name="edit" />
+                Rename
+                <DropdownMenuShortcut>⌘R</DropdownMenuShortcut>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Icon name="download" />
+                Export CSV
+                <DropdownMenuShortcut>⌘E</DropdownMenuShortcut>
+              </DropdownMenuItem>
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>
+                  <Icon name="users" />
+                  Share
+                </DropdownMenuSubTrigger>
+                <DropdownMenuSubContent>
+                  <DropdownMenuItem>Planning team</DropdownMenuItem>
+                  <DropdownMenuItem>Sales team</DropdownMenuItem>
+                  <DropdownMenuItem>Copy link</DropdownMenuItem>
+                </DropdownMenuSubContent>
+              </DropdownMenuSub>
+              <DropdownMenuItem disabled>
+                <Icon name="settings" />
+                Schedule (disabled)
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem variant="destructive">
+              <Icon name="trash" />
+              Delete report
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger render={<Button variant="outline" />}>
+            Chart options
+            <Icon name="chevron-down" />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuGroup>
+              <DropdownMenuLabel>Show</DropdownMenuLabel>
+              <DropdownMenuCheckboxItem checked={showGrid} onCheckedChange={setShowGrid}>
+                Gridlines
+              </DropdownMenuCheckboxItem>
+              <DropdownMenuCheckboxItem checked={showLegend} onCheckedChange={setShowLegend}>
+                Legend
+              </DropdownMenuCheckboxItem>
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              <DropdownMenuLabel>Period</DropdownMenuLabel>
+              <DropdownMenuRadioGroup value={period} onValueChange={setPeriod}>
+                <DropdownMenuRadioItem value="month">Month</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="quarter">Quarter</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="year">Year</DropdownMenuRadioItem>
+              </DropdownMenuRadioGroup>
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem inset>Reset view</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            render={<Button variant="ghost" size="icon" aria-label="More actions" />}
+          >
+            <Icon name="more" />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem>Duplicate</DropdownMenuItem>
+            <DropdownMenuItem>Move to folder</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    </Section>
+  )
+}
+
+function PopoverSection() {
+  const id = React.useId()
+  return (
+    <Section title="Popover">
+      <div className="flex flex-wrap gap-3">
+        <Popover>
+          <PopoverTrigger render={<Button variant="outline" />}>Set target</PopoverTrigger>
+          <PopoverContent>
+            <PopoverHeader>
+              <PopoverTitle>Reach target</PopoverTitle>
+              <PopoverDescription>Shown as a line on the chart.</PopoverDescription>
+            </PopoverHeader>
+            <Field id={`${id}-target`} label="Target (impressions)">
+              <Input id={`${id}-target`} defaultValue="1.200.000" />
+            </Field>
+            <Button size="sm" className="self-end">
+              Save target
+            </Button>
+          </PopoverContent>
+        </Popover>
+        <Popover>
+          <PopoverTrigger render={<Button variant="outline" />}>Text only</PopoverTrigger>
+          <PopoverContent side="right">
+            <PopoverHeader>
+              <PopoverTitle>Source</PopoverTitle>
+              <PopoverDescription>
+                Mobility panel, Q1 to Q3 2025, 25 cities.
+              </PopoverDescription>
+            </PopoverHeader>
+          </PopoverContent>
+        </Popover>
+      </div>
+    </Section>
+  )
+}
+
+const TOOLTIP_SIDES = ["top", "right", "bottom", "left"] as const
+
+function TooltipSection() {
+  return (
+    <Section title="Tooltip">
+      <div className="flex flex-wrap items-center gap-3">
+        {TOOLTIP_SIDES.map((side) => (
+          <Tooltip key={side}>
+            <TooltipTrigger render={<Button variant="outline" />}>
+              {side[0].toUpperCase() + side.slice(1)}
+            </TooltipTrigger>
+            <TooltipContent side={side}>Impressions per 1,000 people</TooltipContent>
+          </Tooltip>
+        ))}
+        <Tooltip>
+          <TooltipTrigger
+            render={<Button variant="ghost" size="icon" aria-label="Download" />}
+          >
+            <Icon name="download" />
+          </TooltipTrigger>
+          <TooltipContent>Download CSV</TooltipContent>
+        </Tooltip>
+        <Tooltip>
+          <TooltipTrigger render={<Button variant="outline" />}>Long text</TooltipTrigger>
+          <TooltipContent>
+            Reach is the share of the city's adult population that saw the campaign
+            at least once in the period.
+          </TooltipContent>
+        </Tooltip>
+      </div>
+    </Section>
+  )
+}
+
+function ToastSection() {
+  return (
+    <Section title="Toast">
+      <div className="flex flex-wrap gap-3">
+        <Button variant="outline" onClick={() => toast("Report saved")}>
+          Default
+        </Button>
+        <Button
+          variant="outline"
+          onClick={() =>
+            toast.success("Export ready", {
+              description: "Q3 roadside reach.csv, 2,4 MB",
+            })
+          }
+        >
+          Success
+        </Button>
+        <Button
+          variant="outline"
+          onClick={() =>
+            toast.info("New data available", {
+              description: "September figures for 25 cities.",
+            })
+          }
+        >
+          Info
+        </Button>
+        <Button
+          variant="outline"
+          onClick={() =>
+            toast.warning("Partial data", {
+              description: "Medan has no figures for August.",
+            })
+          }
+        >
+          Warning
+        </Button>
+        <Button
+          variant="outline"
+          onClick={() =>
+            toast.error("Export failed", {
+              description: "The file is too large. Narrow the period and try again.",
+            })
+          }
+        >
+          Error
+        </Button>
+        <Button
+          variant="outline"
+          onClick={() =>
+            toast.promise(new Promise((resolve) => setTimeout(resolve, 2000)), {
+              loading: "Exporting report",
+              success: "Export ready",
+              error: "Export failed",
+            })
+          }
+        >
+          Loading
+        </Button>
+        <Button
+          variant="outline"
+          onClick={() =>
+            toast("Report deleted", {
+              description: "Q3 roadside reach",
+              action: { label: "Undo", onClick: () => toast("Report restored") },
+            })
+          }
+        >
+          With action
+        </Button>
+        <Button
+          variant="outline"
+          onClick={() =>
+            toast("Filters applied", {
+              description: "Jakarta, Surabaya · Q3 2025",
+              closeButton: true,
+            })
+          }
+        >
+          With close button
+        </Button>
+      </div>
+    </Section>
+  )
+}
+
+function SeparatorSection() {
+  return (
+    <Section title="Separator">
+      <div className="flex flex-col gap-3">
+        <p className="text-body-sm">Above the line</p>
+        <Separator />
+        <div className="flex h-5 items-center gap-3 text-body-sm">
+          <span>Reach</span>
+          <Separator orientation="vertical" />
+          <span>Frequency</span>
+          <Separator orientation="vertical" />
+          <span>Impressions</span>
+        </div>
+      </div>
+    </Section>
+  )
+}
+
+function SkeletonSection() {
+  return (
+    <Section title="Skeleton">
+      <div aria-busy="true" className="grid gap-4 sm:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-5 w-32" />
+            <Skeleton className="h-4 w-48" />
+          </CardHeader>
+          <CardContent className="flex flex-col gap-2">
+            <Skeleton className="h-10 w-28" />
+            <Skeleton className="h-4 w-full" />
+          </CardContent>
+        </Card>
+        <div className="flex items-center gap-3">
+          <Skeleton className="size-10 rounded-(--pl-radius-full)" />
+          <div className="flex flex-1 flex-col gap-2">
+            <Skeleton className="h-4 w-3/4" />
+            <Skeleton className="h-4 w-1/2" />
+          </div>
+        </div>
       </div>
     </Section>
   )
