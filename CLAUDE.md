@@ -36,6 +36,7 @@ Do not invent brand values. If a value is missing, ask.
 - Square-cut look: radius 4px for buttons, inputs, selects and menus; 8px for cards and dialogs; 2px for badges and checkboxes.
 - Never put Green, Blue or the secondary colors as text on white or light grey. Status is always color plus a word or icon.
 - Icons come from the `Icon` component only (`@workspace/ui/icons/icon`). No other icon library. The shadcn CLI still adds Remix imports (`iconLibrary` in `components.json` has no "none" option): after `shadcn add`, replace them with `Icon` and remove `@remixicon/react` if the CLI added it back.
+- Lint enforces the icon rule: `no-restricted-imports` in `packages/ui` and `apps/web` fails on `@remixicon/react` and `remixicon` imports.
 - Interactive controls use the pointer cursor via the base rule in globals.css.
 
 ## Token rules

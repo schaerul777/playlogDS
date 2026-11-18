@@ -20,6 +20,19 @@ export default defineConfig([
     },
     rules: {
       'react-refresh/only-export-components': 'off',
+      // Playlog: icons come from the Icon component only. Blocks Remix if the shadcn CLI adds it back.
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            { name: '@remixicon/react', message: 'Use Icon from packages/ui/src/icons.' },
+            { name: 'remixicon', message: 'Use Icon from packages/ui/src/icons.' },
+          ],
+          patterns: [
+            { group: ['@remixicon/react/*', 'remixicon/*'], message: 'Use Icon from packages/ui/src/icons.' },
+          ],
+        },
+      ],
     },
   },
 ])
