@@ -143,6 +143,7 @@
   --sidebar-ring: #004d9f;
   --pl-ink-heading: #004d9f;
   --pl-shadow-overlay: 0 8px 24px 0 rgba(0, 77, 159, 0.14);
+  --pl-scrim: rgba(0, 77, 159, 0.24);
   --pl-shadow-offset: 8px 8px 0 0 #36f1cd;
 }
 
@@ -208,6 +209,7 @@
   --sidebar-ring: #36f1cd;
   --pl-ink-heading: #ffffff;
   --pl-shadow-overlay: 0 8px 24px 0 rgba(0, 0, 0, 0.45);
+  --pl-scrim: rgba(0, 0, 0, 0.6);
 }
 
 @theme inline {
@@ -287,6 +289,7 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-ink-heading: var(--pl-ink-heading);
+  --color-scrim: var(--pl-scrim);
   --color-dark-blue: var(--pl-dark-blue);
   --color-dark-blue-80: var(--pl-dark-blue-80);
   --color-dark-blue-60: var(--pl-dark-blue-60);
@@ -309,13 +312,15 @@
   --color-purple: var(--pl-purple);
   --color-yellow: var(--pl-yellow);
 
-  /* Type scale: size + line-height. Weights and letter-spacing are in tokens.json. */
+  /* Type scale: size, line-height and letter-spacing. Weights are in tokens.json. */
   --text-display: 64px;
   --text-display--line-height: 64px;
+  --text-display--letter-spacing: -0.01em;
   --text-headline: 44px;
   --text-headline--line-height: 48px;
   --text-keyword: 96px;
   --text-keyword--line-height: 96px;
+  --text-keyword--letter-spacing: -0.01em;
   --text-h1: 32px;
   --text-h1--line-height: 40px;
   --text-h2: 24px;
@@ -340,6 +345,7 @@
   --text-caption--line-height: 16px;
   --text-eyebrow: 12px;
   --text-eyebrow--line-height: 16px;
+  --text-eyebrow--letter-spacing: 0.04em;
   --text-kpi: 36px;
   --text-kpi--line-height: 40px;
   --text-kpi--letter-spacing: -0.01em;

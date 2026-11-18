@@ -60,6 +60,7 @@ Assumptions to confirm: `--secondary` uses `surface-hover` with `ink-heading` te
 - Spacing is a 4px base. Cards pad 24px (16px in dense app panels).
 - Control height: 40px default, 32px small.
 - Cards are flat: `surface` plus a 1px `border` (`--pl-border-width`). Only floating layers (menus, dialogs) take the overlay shadow.
+- Modal sheets and dialogs dim the page with `--pl-scrim` (Dark Blue at 24% in light mode, black at 60% in dark mode), no blur.
 - The hard Green offset shadow (`--pl-shadow-offset`) is for marketing feature cards only.
 
 ## States and motion

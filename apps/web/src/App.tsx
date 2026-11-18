@@ -6,6 +6,13 @@ import {
   RiBarChartLine,
   RiCheckboxCircleLine,
   RiComputerLine,
+  RiDashboardLine,
+  RiFileChartLine,
+  RiGroupLine,
+  RiMegaphoneLine,
+  RiQuestionLine,
+  RiSettings3Line,
+  RiStackLine,
   RiErrorWarningLine,
   RiEyeLine,
   RiInformationLine,
@@ -24,6 +31,7 @@ import {
   AlertTitle,
 } from "@workspace/ui/components/alert"
 import { Badge } from "@workspace/ui/components/badge"
+import { BarChart } from "@workspace/ui/components/bar-chart"
 import { Button } from "@workspace/ui/components/button"
 import {
   Card,
@@ -46,6 +54,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@workspace/ui/components/select"
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuBadge,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@workspace/ui/components/sidebar"
 import { StatCard } from "@workspace/ui/components/stat-card"
 import { Switch } from "@workspace/ui/components/switch"
 import {
@@ -169,6 +193,8 @@ function Showcase({ label, className }: { label: string; className?: string }) {
       <AlertSection />
       <StatCardSection />
       <TableSection />
+      <BarChartSection />
+      <SidebarSection />
       <CardSection />
     </main>
   )
@@ -781,6 +807,260 @@ function TableSection() {
           dense
         </span>
         <CityTable dense />
+      </div>
+    </Section>
+  )
+}
+
+// Indonesian number formatting (1.284, 12,4) for the sample data.
+const idNumber = (v: number) =>
+  v.toLocaleString("id-ID", { maximumFractionDigits: 1 })
+
+const IMPRESSIONS_BY_CITY = [
+  { city: "Jakarta", impressions: 4.8 },
+  { city: "Surabaya", impressions: 2.3 },
+  { city: "Bandung", impressions: 1.9 },
+  { city: "Medan", impressions: 1.4 },
+  { city: "Makassar", impressions: 0.8 },
+]
+
+const IMPRESSIONS_BY_QUARTER = [
+  { quarter: "Q1", y2024: 13.9, y2025: 15.2 },
+  { quarter: "Q2", y2024: 15.1, y2025: 16.8 },
+  { quarter: "Q3", y2024: 16.4, y2025: 16.6 },
+]
+
+const LINES_BY_CITY = [
+  {
+    city: "Jakarta",
+    roadside: 2.6,
+    transit: 1.1,
+    placeBased: 0.7,
+    ambience: 0.4,
+  },
+  {
+    city: "Surabaya",
+    roadside: 0.9,
+    transit: 0.8,
+    placeBased: 0.4,
+    ambience: 0.2,
+  },
+  {
+    city: "Bandung",
+    roadside: 0.8,
+    transit: 0.4,
+    placeBased: 0.5,
+    ambience: 0.2,
+  },
+  {
+    city: "Medan",
+    roadside: 0.7,
+    transit: 0.3,
+    placeBased: 0.3,
+    ambience: 0.1,
+  },
+]
+
+function ChartCard({
+  title,
+  description,
+  children,
+}: {
+  title: string
+  description: string
+  children: React.ReactNode
+}) {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>{title}</CardTitle>
+        <CardDescription>{description}</CardDescription>
+      </CardHeader>
+      <CardContent>{children}</CardContent>
+    </Card>
+  )
+}
+
+function BarChartSection() {
+  return (
+    <Section title="BarChart">
+      <div className="grid gap-4 lg:grid-cols-2">
+        <ChartCard
+          title="Impressions by city"
+          description="Millions · Q1–Q3 2025 · Playlog panel"
+        >
+          <BarChart
+            className="aspect-auto h-64"
+            data={IMPRESSIONS_BY_CITY}
+            categoryKey="city"
+            config={{ impressions: { label: "Impressions (M)" } }}
+            valueFormatter={idNumber}
+          />
+        </ChartCard>
+        <ChartCard
+          title="Impressions by quarter"
+          description="Millions · 2024 vs 2025 · 25 cities"
+        >
+          <BarChart
+            className="aspect-auto h-64"
+            data={IMPRESSIONS_BY_QUARTER}
+            categoryKey="quarter"
+            config={{
+              y2024: { label: "2024" },
+              y2025: { label: "2025" },
+            }}
+            valueFormatter={idNumber}
+          />
+        </ChartCard>
+        <ChartCard
+          title="Product lines by city"
+          description="Millions of impressions · Q1–Q3 2025 · product-line colours"
+        >
+          <BarChart
+            className="aspect-auto h-64"
+            data={LINES_BY_CITY}
+            categoryKey="city"
+            layout="vertical"
+            stacked
+            config={{
+              roadside: { label: "Roadside", color: "var(--pl-line-roadside)" },
+              transit: { label: "Transit", color: "var(--pl-line-transit)" },
+              placeBased: {
+                label: "Place-based",
+                color: "var(--pl-line-place-based)",
+              },
+              ambience: { label: "Ambience", color: "var(--pl-line-ambience)" },
+            }}
+            valueFormatter={idNumber}
+          />
+        </ChartCard>
+      </div>
+    </Section>
+  )
+}
+
+const NAV = [
+  {
+    title: "Analytics",
+    items: [
+      { label: "Overview", icon: RiDashboardLine, active: true },
+      { label: "Audience", icon: RiGroupLine },
+      { label: "Locations", icon: RiMapPinLine, count: "25" },
+      { label: "Reports", icon: RiFileChartLine, count: "3" },
+    ],
+  },
+  {
+    title: "Inventory",
+    items: [
+      { label: "Screens", icon: RiComputerLine },
+      { label: "Campaigns", icon: RiMegaphoneLine, count: "12" },
+      { label: "Product lines", icon: RiStackLine },
+    ],
+  },
+]
+
+function DemoSidebar({ collapsible }: { collapsible: "offcanvas" | "icon" }) {
+  return (
+    <Sidebar collapsible={collapsible} className="h-full">
+      <SidebarHeader>
+        <span className="px-3 text-h3 font-bold text-ink-heading group-data-[collapsible=icon]:sr-only">
+          Playlog
+        </span>
+      </SidebarHeader>
+      <SidebarContent>
+        {NAV.map((group) => (
+          <SidebarGroup key={group.title}>
+            <SidebarGroupLabel>{group.title}</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {group.items.map((item) => (
+                  <SidebarMenuItem key={item.label}>
+                    <SidebarMenuButton
+                      isActive={item.active}
+                      tooltip={item.label}
+                    >
+                      <item.icon />
+                      <span>{item.label}</span>
+                    </SidebarMenuButton>
+                    {item.count && (
+                      <SidebarMenuBadge>{item.count}</SidebarMenuBadge>
+                    )}
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        ))}
+      </SidebarContent>
+      <SidebarFooter>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton tooltip="Settings">
+              <RiSettings3Line />
+              <span>Settings</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton tooltip="Help" disabled>
+              <RiQuestionLine />
+              <span>Help (disabled)</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
+    </Sidebar>
+  )
+}
+
+function SidebarDemo({
+  label,
+  collapsible,
+  defaultOpen,
+}: {
+  label: string
+  collapsible: "offcanvas" | "icon"
+  defaultOpen: boolean
+}) {
+  return (
+    <div className="flex flex-col gap-2">
+      <span className="text-caption font-medium text-muted-foreground">
+        {label}
+      </span>
+      {/* transform-gpu gives the fixed sidebar a containing block inside the playground frame. */}
+      <div className="h-140 transform-gpu overflow-hidden rounded-lg border border-border">
+        <SidebarProvider defaultOpen={defaultOpen} className="h-full min-h-0">
+          <DemoSidebar collapsible={collapsible} />
+          <SidebarInset>
+            <header className="flex items-center gap-2 border-b border-border px-4 py-3">
+              <SidebarTrigger />
+              <span className="text-label font-semibold text-ink-heading">
+                Overview
+              </span>
+            </header>
+            <div className="p-4 text-body-sm text-muted-foreground">
+              Use the button to collapse and expand the sidebar.
+            </div>
+          </SidebarInset>
+        </SidebarProvider>
+      </div>
+    </div>
+  )
+}
+
+function SidebarSection() {
+  return (
+    <Section title="Sidebar">
+      <div className="grid gap-4 lg:grid-cols-2">
+        <SidebarDemo
+          label="Expanded (spec)"
+          collapsible="offcanvas"
+          defaultOpen
+        />
+        <SidebarDemo
+          label="Collapsed to icons (collapsible=icon)"
+          collapsible="icon"
+          defaultOpen={false}
+        />
       </div>
     </Section>
   )
