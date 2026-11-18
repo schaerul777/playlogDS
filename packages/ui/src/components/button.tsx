@@ -6,7 +6,7 @@ import { cn } from "@workspace/ui/lib/utils" // Playlog: brand-aware merger
 const buttonVariants = cva(
   [
     // Playlog: 4px radius, label type (14/20, 600), 150ms ease-out colour transitions, no press offset.
-    "group/button inline-flex shrink-0 items-center justify-center rounded-md border-(length:--pl-border-width) border-transparent bg-clip-padding text-label font-semibold whitespace-nowrap transition-colors duration-150 ease-out select-none",
+    "group/button inline-flex shrink-0 items-center justify-center rounded-md border-(length:--pl-border-width) border-transparent bg-clip-padding text-label font-semibold whitespace-nowrap transition-colors duration-(--pl-duration-fast) ease-out select-none",
     // Playlog: focus ring is 2px solid --ring with a 2px offset.
     "outline-none focus-visible:outline-(length:--pl-focus-ring-width) focus-visible:outline-offset-(--pl-focus-ring-offset) focus-visible:outline-solid focus-visible:outline-ring",
     // Playlog: disabled is 40% opacity with no pointer events (native disabled or Base UI focusableWhenDisabled).
@@ -31,7 +31,7 @@ const buttonVariants = cva(
           "text-ink-heading hover:bg-accent hover:text-accent-foreground aria-expanded:bg-surface-selected aria-expanded:text-ink-heading aria-pressed:bg-surface-selected aria-pressed:text-ink-heading",
         // Playlog: destructive is a solid danger-strong fill.
         destructive:
-          "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+          "bg-destructive text-destructive-foreground hover:bg-destructive-hover",
         link: "text-link underline-offset-4 hover:underline",
       },
       size: {

@@ -9,7 +9,7 @@ function Input({ className, type, ...props }: React.ComponentProps<"input">) {
       data-slot="input"
       className={cn(
         // Playlog: 40px control, 4px radius, surface fill, border-strong (--input) outline, body-sm text.
-        "h-10 w-full min-w-0 rounded-md border-(length:--pl-border-width) border-input bg-card px-3 py-2 text-body-sm text-foreground transition-colors duration-150 ease-out",
+        "h-10 w-full min-w-0 rounded-md border-(length:--pl-border-width) border-input bg-card px-3 py-2 text-body-sm text-foreground transition-colors duration-(--pl-duration-fast) ease-out",
         "placeholder:text-muted-foreground",
         "file:inline-flex file:h-6 file:border-0 file:bg-transparent file:text-label file:font-semibold file:text-foreground",
         // Playlog: hover darkens the border to ink.

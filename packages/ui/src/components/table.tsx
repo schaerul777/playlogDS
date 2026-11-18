@@ -70,7 +70,7 @@ function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
       data-slot="table-row"
       // Playlog: row hover is surface-hover (--accent); selected is surface-selected.
       className={cn(
-        "border-b-(length:--pl-border-width) border-border transition-colors duration-150 ease-out hover:bg-accent has-aria-expanded:bg-accent data-[state=selected]:bg-surface-selected",
+        "border-b-(length:--pl-border-width) border-border transition-colors duration-(--pl-duration-fast) ease-out hover:bg-accent has-aria-expanded:bg-accent data-[state=selected]:bg-surface-selected",
         className
       )}
       {...props}

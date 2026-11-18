@@ -74,6 +74,10 @@
   --pl-focus-ring-offset: 2px;
   --pl-opacity-disabled: 0.4;
 
+  /* Motion: fast for hover, focus and colour changes; slow for panels (Sheet, Sidebar collapse) */
+  --pl-duration-fast: 150ms;
+  --pl-duration-slow: 200ms;
+
   /* Light theme */
   --background: #faf9f6;
   --card: #ffffff;
@@ -95,6 +99,7 @@
   --ring: #004d9f;
   --primary: #004d9f;
   --pl-primary-hover: #3371b2;
+  --pl-destructive-hover: color-mix(in oklab, var(--destructive) 90%, transparent);
   --primary-foreground: #ffffff;
   --pl-brand-accent: #36f1cd;
   --pl-success: #009990;
@@ -161,6 +166,7 @@
   --ring: #36f1cd;
   --primary: #36f1cd;
   --pl-primary-hover: #5ef4d7;
+  --pl-destructive-hover: color-mix(in oklab, var(--destructive) 90%, transparent);
   --primary-foreground: #004d9f;
   --pl-brand-accent: #36f1cd;
   --pl-success: #36f1cd;
@@ -248,6 +254,7 @@
   --color-danger: var(--pl-danger);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+  --color-destructive-hover: var(--pl-destructive-hover);
   --color-danger-text: var(--pl-danger-text);
   --color-danger-surface: var(--pl-danger-surface);
   --color-info: var(--pl-info);

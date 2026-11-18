@@ -65,8 +65,8 @@ Assumptions to confirm: `--secondary` uses `surface-hover` with `ink-heading` te
 
 ## States and motion
 
-- Motion is functional only: 120 to 200ms ease-out for hover, focus and menus. No bouncing or parallax.
-- Hover: `primary-hover` on primary buttons, `surface-hover` on rows, nav items and quiet buttons.
+- Motion is functional only: 120 to 200ms ease-out for hover, focus and menus. No bouncing or parallax. Durations: `--pl-duration-fast` (150ms) for hover, focus and colour changes; `--pl-duration-slow` (200ms) for panels (Sheet, Sidebar collapse).
+- Hover: `primary-hover` on primary buttons, `destructive-hover` (`--pl-destructive-hover`, `destructive` at 90%) on destructive buttons, `surface-hover` on rows, nav items and quiet buttons.
 - Selected: `surface-selected` plus `ink-heading`. Active tabs get a 2px `ink-heading` underline (not Green, which fails contrast on light grounds). The selected sidebar item gets a 3px accent marker.
 - Focus: 2px solid `focus-ring` with a 2px offset on every interactive element (`--pl-focus-ring-width`, `--pl-focus-ring-offset`). Never remove it.
 - Disabled: 40% opacity (`--pl-opacity-disabled`), no pointer events.
@@ -86,7 +86,6 @@ These exist in the Figma library only. They are not in `tokens.css` and need no 
   - `spacing-36` (144px): Select popup and chart tooltip minimum width.
   - `spacing-56` (224px): Sidebar nav item width (248px sidebar minus 12px padding each side) and the StatCard drawing width.
   - `spacing-160` (640px): demo width of the Table, TableRow and BarChart drawings (full width in code).
-- `destructive-90`: destructive button hover, `bg-destructive/90`. Code syntax `color-mix(in oklab, var(--destructive) 90%, transparent)`.
 - `pl-shadow-overlay-color`: the colour of `--pl-shadow-overlay`, split out so the `pl-shadow-overlay` effect style can switch with the mode. Light `#004d9f` at 14%, Dark black at 45%.
 - Text styles for Tailwind class combinations:
   - `caption-semibold` (12/16, 600): `text-caption font-semibold` (Badge, Button `xs`, Table header).

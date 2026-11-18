@@ -11,7 +11,7 @@ How to use:
 
 - Focus: 2px solid `--ring`, 2px offset, on every interactive element. For controls with a wrapper (Input, Select) the ring goes on the wrapper when it has focus within.
 - Disabled: opacity 40%, no pointer events.
-- Transitions: 150ms ease-out for background, border and color.
+- Transitions: 150ms (`--pl-duration-fast`) ease-out for background, border and color.
 - Font: Reddit Sans. Label text 14/20 semibold unless noted.
 
 ## Button
@@ -21,7 +21,7 @@ How to use:
 | primary | `default` | `primary` | `primary-foreground` | none | `pl-primary-hover` |
 | secondary | `outline` | `card` (surface) | `pl-ink-heading` | 1px `input` | `accent` (surface-hover) |
 | quiet | `ghost` | transparent | `pl-ink-heading` | none | `accent` (surface-hover) |
-| danger | `destructive` | `destructive` | `destructive-foreground` | none | slightly darker (artifact: brightness 1.08) |
+| danger | `destructive` | `destructive` | `destructive-foreground` | none | `pl-destructive-hover` (`destructive` at 90%; artifact: brightness 1.08) |
 | accent | (Playlog-only, optional) | `pl-brand-accent` | `pl-ink-on-accent` | none | `--pl-green-80` |
 
 - Height 40 (sm 32, lg 48). Side padding 16 (sm 12, lg 24). Gap between icon and label 8 (sm 6).

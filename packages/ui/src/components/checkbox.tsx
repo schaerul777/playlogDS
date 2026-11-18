@@ -8,7 +8,7 @@ function Checkbox({ className, ...props }: CheckboxPrimitive.Root.Props) {
       data-slot="checkbox"
       className={cn(
         // Playlog: 18px box, 2px radius, 1.5px border-strong (--input) edge, surface fill, flat, 150ms ease-out (COMPONENT-SPECS).
-        "peer relative flex size-4.5 shrink-0 items-center justify-center rounded-sm border-(length:--pl-checkbox-border-width) border-input bg-card transition-colors duration-150 ease-out after:absolute after:-inset-x-3 after:-inset-y-2",
+        "peer relative flex size-4.5 shrink-0 items-center justify-center rounded-sm border-(length:--pl-checkbox-border-width) border-input bg-card transition-colors duration-(--pl-duration-fast) ease-out after:absolute after:-inset-x-3 after:-inset-y-2",
         "hover:border-foreground",
         // Playlog: checked uses primary; hover uses primary-hover.
         "data-checked:border-primary data-checked:bg-primary data-checked:text-primary-foreground data-checked:hover:border-primary-hover data-checked:hover:bg-primary-hover",
