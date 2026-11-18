@@ -150,7 +150,7 @@ Applies to Sheet, Dialog, Alert Dialog, Dropdown Menu, Popover, Tooltip and Toas
 - Checkbox and radio items: the `check` icon 8 from the right (right padding 32).
 - Label: 12/16 medium `muted-foreground`, padding 6 8. Separator: 1px `border`, 4 above and below, edge to edge.
 - Submenu trigger: `chevron-right` icon at the end; `accent` fill while its submenu is open.
-- Shortcut: 12/16 `muted-foreground`, no extra tracking. Inset items: left padding 32.
+- Shortcut: 12/16 medium (`caption`) `muted-foreground`, no extra tracking. Inset items: left padding 32.
 - Keyboard: arrows, typeahead, Enter and Space, Escape, ArrowRight and ArrowLeft for submenus (Base UI).
 
 ## Popover
@@ -205,7 +205,7 @@ Applies to Label, Field, Textarea, Input Group, Combobox, Native Select, Radio G
 - Description: 12/16 medium `muted-foreground`. Error (FieldError): 12/16 medium `pl-danger-text`, text only, shown instead of the description (agreed). `role="alert"`; the control points to it with `aria-describedby`.
 - Horizontal (checkbox, switch or radio next to its label): gap 10.
 - FieldGroup: 24 between fields. FieldSet: 16 between its children. FieldLegend: 16/24 bold `pl-ink-heading` (variant `label`: 14/20 semibold) (agreed).
-- FieldSeparator: 1px `border`, optional centred text 12/16 `muted-foreground` on the page background.
+- FieldSeparator: 1px `border`, optional centred text 12/16 medium `muted-foreground` on the page background.
 - Choice card (FieldLabel wrapping a Field): `card` fill, 1px `border`, radius 4, padding 12 16. Checked: `pl-surface-selected` fill, `primary` border.
 
 ## Textarea
@@ -305,7 +305,7 @@ Applies to Breadcrumb, Pagination, Accordion, Collapsible, Command, Context Menu
 - Built on the Base UI Combobox in inline mode (no `cmdk`, no Radix), keeping the shadcn names (agreed).
 - Surface: `popover`, radius 8 inside CommandDialog and 4 inline, overlay shadow.
 - Search row: 48 high, `search` 16 `muted-foreground`, no field border, 1px `border` below, padding 0 12, gap 8.
-- List: padding 4, max height 288. Group label 12/16 medium `muted-foreground`, padding 6 8. Items as Dropdown Menu items (32 high, radius 2, `accent` highlight, `check` 8 from the right). Shortcut 12/16 `muted-foreground`. Separator 1px `border`. Empty: "No results" 14/20 `muted-foreground`, centred, padding 24 12.
+- List: padding 4, max height 288. Group label 12/16 medium `muted-foreground`, padding 6 8. Items as Dropdown Menu items (32 high, radius 2, `accent` highlight, `check` 8 from the right). Shortcut 12/16 medium `muted-foreground`. Separator 1px `border`. Empty: "No results" 14/20 `muted-foreground`, centred, padding 24 12.
 - CommandDialog: our Dialog, max width 512, top edge at a third of the viewport height, padding 0. Cmd/Ctrl+K opens it in the playground (agreed).
 
 ## Context Menu and Menubar

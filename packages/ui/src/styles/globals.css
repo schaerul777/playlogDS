@@ -320,49 +320,68 @@
   --color-purple: var(--pl-purple);
   --color-yellow: var(--pl-yellow);
 
-  /* Type scale: size, line-height and letter-spacing. Weights are in tokens.json. */
+  /* Type scale: size, line-height, letter-spacing and weight (all from tokens.json). */
   --text-display: 64px;
   --text-display--line-height: 64px;
   --text-display--letter-spacing: -0.01em;
+  --text-display--font-weight: 800;
   --text-headline: 44px;
   --text-headline--line-height: 48px;
+  --text-headline--font-weight: 800;
   --text-keyword: 96px;
   --text-keyword--line-height: 96px;
   --text-keyword--letter-spacing: -0.01em;
+  --text-keyword--font-weight: 800;
   --text-h1: 32px;
   --text-h1--line-height: 40px;
+  --text-h1--font-weight: 800;
   --text-h2: 24px;
   --text-h2--line-height: 32px;
+  --text-h2--font-weight: 700;
   --text-subheadline: 20px;
   --text-subheadline--line-height: 28px;
+  --text-subheadline--font-weight: 700;
   --text-h3: 16px;
   --text-h3--line-height: 24px;
+  --text-h3--font-weight: 700;
   --text-section-number: 24px;
   --text-section-number--line-height: 28px;
+  --text-section-number--font-weight: 300;
   --text-body-lg: 18px;
   --text-body-lg--line-height: 28px;
+  --text-body-lg--font-weight: 400;
   --text-body: 16px;
   --text-body--line-height: 24px;
+  --text-body--font-weight: 400;
   --text-body-sm: 14px;
   --text-body-sm--line-height: 20px;
+  --text-body-sm--font-weight: 400;
   --text-label: 14px;
   --text-label--line-height: 20px;
+  --text-label--font-weight: 600;
   --text-label-sm: 13px;
   --text-label-sm--line-height: 16px;
+  --text-label-sm--font-weight: 600;
   --text-caption: 12px;
   --text-caption--line-height: 16px;
+  --text-caption--font-weight: 500;
   --text-eyebrow: 12px;
   --text-eyebrow--line-height: 16px;
   --text-eyebrow--letter-spacing: 0.04em;
+  --text-eyebrow--font-weight: 600;
   --text-kpi: 36px;
   --text-kpi--line-height: 40px;
   --text-kpi--letter-spacing: -0.01em;
+  --text-kpi--font-weight: 800;
   --text-kpi-sm: 24px;
   --text-kpi-sm--line-height: 28px;
+  --text-kpi-sm--font-weight: 700;
   --text-line-category: 13px;
   --text-line-category--line-height: 14px;
+  --text-line-category--font-weight: 500;
   --text-line-product: 20px;
   --text-line-product--line-height: 22px;
+  --text-line-product--font-weight: 400;
 }
 
 @layer base {
