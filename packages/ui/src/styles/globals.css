@@ -364,8 +364,13 @@
   body {
     @apply bg-background text-foreground font-sans;
   }
-  /* Playlog: buttons use the pointer cursor (team decision). */
-  button:not(:disabled), [role="button"]:not(:disabled) {
+  /* Playlog: interactive controls use the pointer cursor (team default; the brand guide is silent).
+     Disabled controls keep the default cursor (they also have pointer-events: none). */
+  button:not(:disabled),
+  [role="button"]:not(:disabled),
+  [role="tab"],
+  [role="switch"],
+  [role="checkbox"] {
     cursor: pointer;
   }
 }

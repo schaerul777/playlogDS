@@ -26,9 +26,6 @@ importers:
 
   apps/web:
     dependencies:
-      '@remixicon/react':
-        specifier: ^4.9.0
-        version: 4.9.0(react@19.3.1)
       '@workspace/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -87,9 +84,6 @@ importers:
       '@fontsource-variable/geist':
         specifier: ^5.3.0
         version: 5.3.0
-      '@remixicon/react':
-        specifier: ^4.9.0
-        version: 4.9.0(react@19.3.1)
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -818,11 +812,6 @@ packages:
         optional: true
       react-redux:
         optional: true
-
-  '@remixicon/react@4.9.0':
-    resolution: {integrity: sha512-5/jLDD4DtKxH2B4QVXTobvV1C2uL8ab9D5yAYNtFt+w80O0Ys1xFOrspqROL3fjrZi+7ElFUWE37hBfaAl6U+Q==}
-    peerDependencies:
-      react: '>=18.2.0'
 
   '@rolldown/binding-android-arm-eabi@1.2.18':
     resolution: {integrity: sha512-ubTG+4KlidvioxjOFdsdEa2F6JVGZb8m2ByJUqQ7fYzUeT1cEn194POcsQ10PKH4p//q0YQn4SB3YpSuzcA1Yg==}
@@ -3505,10 +3494,6 @@ snapshots:
       '@types/react': 19.3.0
       react: 19.3.1
       react-redux: 9.3.1(@types/react@19.3.0)(react@19.3.1)(redux@5.0.1)
-
-  '@remixicon/react@4.9.0(react@19.3.1)':
-    dependencies:
-      react: 19.3.1
 
   '@rolldown/binding-android-arm-eabi@1.2.18':
     optional: true

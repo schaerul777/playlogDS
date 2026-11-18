@@ -1,28 +1,6 @@
 import * as React from "react"
-import {
-  RiAddLine,
-  RiArrowRightLine,
-  RiAlarmWarningLine,
-  RiBarChartLine,
-  RiCheckboxCircleLine,
-  RiComputerLine,
-  RiDashboardLine,
-  RiFileChartLine,
-  RiGroupLine,
-  RiMegaphoneLine,
-  RiQuestionLine,
-  RiSettings3Line,
-  RiStackLine,
-  RiErrorWarningLine,
-  RiEyeLine,
-  RiInformationLine,
-  RiDeleteBinLine,
-  RiDownloadLine,
-  RiMapPinLine,
-  RiMoreLine,
-  RiWalletLine,
-  RiSearchLine,
-} from "@remixicon/react"
+
+import { Icon, type IconName } from "@workspace/ui/icons/icon"
 
 import {
   Alert,
@@ -236,7 +214,7 @@ function ButtonSection() {
               </Button>
             ))}
             <Button variant={variant}>
-              <RiDownloadLine data-icon="inline-start" />
+              <Icon name="download" data-icon="inline-start" />
               Export
             </Button>
             <Button variant={variant} aria-pressed>
@@ -251,28 +229,28 @@ function ButtonSection() {
           <RowLabel>icon sizes</RowLabel>
           {ICON_SIZES.map((size) => (
             <Button key={size} variant="outline" size={size} aria-label="More">
-              <RiMoreLine />
+              <Icon name="more" />
             </Button>
           ))}
           <Button size="icon" aria-label="Add">
-            <RiAddLine />
+            <Icon name="plus" />
           </Button>
           <Button size="icon" variant="destructive" aria-label="Delete">
-            <RiDeleteBinLine />
+            <Icon name="trash" />
           </Button>
           <Button size="icon" variant="ghost" aria-label="Search" disabled>
-            <RiSearchLine />
+            <Icon name="search" />
           </Button>
         </div>
         <div className="flex items-center gap-3">
           <RowLabel>trailing icon</RowLabel>
           <Button>
             View report
-            <RiArrowRightLine data-icon="inline-end" />
+            <Icon name="chevron-right" data-icon="inline-end" />
           </Button>
           <Button size="sm" variant="secondary">
             View report
-            <RiArrowRightLine data-icon="inline-end" />
+            <Icon name="chevron-right" data-icon="inline-end" />
           </Button>
         </div>
       </div>
@@ -368,11 +346,11 @@ function BadgeSection() {
       <div className="flex flex-wrap items-center gap-3">
         <RowLabel>with icon</RowLabel>
         <Badge variant="secondary">
-          <RiAddLine data-icon="inline-start" />
+          <Icon name="plus" data-icon="inline-start" />
           New
         </Badge>
         <Badge variant="destructive">
-          <RiDeleteBinLine data-icon="inline-start" />
+          <Icon name="trash" data-icon="inline-start" />
           Removed
         </Badge>
       </div>
@@ -569,11 +547,11 @@ function TabsDemo({
       <TabsList variant={variant}>
         <TabsTrigger value="overview">Overview</TabsTrigger>
         <TabsTrigger value="audience">
-          <RiBarChartLine data-icon="inline-start" />
+          <Icon name="bar-chart" data-icon="inline-start" />
           Audience
         </TabsTrigger>
         <TabsTrigger value="locations">
-          <RiMapPinLine data-icon="inline-start" />
+          <Icon name="location" data-icon="inline-start" />
           Locations
         </TabsTrigger>
         <TabsTrigger value="export" disabled>
@@ -617,28 +595,28 @@ function AlertSection() {
           </AlertDescription>
         </Alert>
         <Alert variant="info">
-          <RiInformationLine />
+          <Icon name="info" />
           <AlertTitle>New cities added</AlertTitle>
           <AlertDescription>
             Makassar and Medan now report impressions daily.
           </AlertDescription>
         </Alert>
         <Alert variant="success">
-          <RiCheckboxCircleLine />
+          <Icon name="check" />
           <AlertTitle>Campaign live</AlertTitle>
           <AlertDescription>
             128 roadside screens in Jakarta started on 1 October.
           </AlertDescription>
         </Alert>
         <Alert variant="warning">
-          <RiAlarmWarningLine />
+          <Icon name="warning" />
           <AlertTitle>Data is 2 days behind</AlertTitle>
           <AlertDescription>
             Transit impressions for Surabaya will update by Thursday.
           </AlertDescription>
         </Alert>
         <Alert variant="destructive">
-          <RiErrorWarningLine />
+          <Icon name="alert-circle" />
           <AlertTitle>Export failed</AlertTitle>
           <AlertDescription>
             The file was larger than 25 MB. Choose a shorter period.
@@ -663,7 +641,7 @@ function StatCardSection() {
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
           label="Media spend"
-          icon={<RiWalletLine />}
+          icon={<Icon name="calculator" />}
           value="Rp 12,4 M"
           delta="+8,2%"
           trend="good"
@@ -671,7 +649,7 @@ function StatCardSection() {
         />
         <StatCard
           label="Impressions"
-          icon={<RiEyeLine />}
+          icon={<Icon name="eye" />}
           value="48,6 M"
           delta="−3,1%"
           trend="bad"
@@ -679,7 +657,7 @@ function StatCardSection() {
         />
         <StatCard
           label="Live screens"
-          icon={<RiComputerLine />}
+          icon={<Icon name="tv" />}
           value="1.284"
           delta="0,0%"
           trend="neutral"
@@ -943,18 +921,18 @@ const NAV = [
   {
     title: "Analytics",
     items: [
-      { label: "Overview", icon: RiDashboardLine, active: true },
-      { label: "Audience", icon: RiGroupLine },
-      { label: "Locations", icon: RiMapPinLine, count: "25" },
-      { label: "Reports", icon: RiFileChartLine, count: "3" },
+      { label: "Overview", icon: "gauge" as IconName, active: true },
+      { label: "Audience", icon: "users" as IconName },
+      { label: "Locations", icon: "location" as IconName, count: "25" },
+      { label: "Reports", icon: "presentation" as IconName, count: "3" },
     ],
   },
   {
     title: "Inventory",
     items: [
-      { label: "Screens", icon: RiComputerLine },
-      { label: "Campaigns", icon: RiMegaphoneLine, count: "12" },
-      { label: "Product lines", icon: RiStackLine },
+      { label: "Screens", icon: "tv" as IconName },
+      { label: "Campaigns", icon: "rocket" as IconName, count: "12" },
+      { label: "Product lines", icon: "package" as IconName },
     ],
   },
 ]
@@ -979,7 +957,7 @@ function DemoSidebar({ collapsible }: { collapsible: "offcanvas" | "icon" }) {
                       isActive={item.active}
                       tooltip={item.label}
                     >
-                      <item.icon />
+                      <Icon name={item.icon} />
                       <span>{item.label}</span>
                     </SidebarMenuButton>
                     {item.count && (
@@ -996,13 +974,13 @@ function DemoSidebar({ collapsible }: { collapsible: "offcanvas" | "icon" }) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton tooltip="Settings">
-              <RiSettings3Line />
+              <Icon name="settings" />
               <span>Settings</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton tooltip="Help" disabled>
-              <RiQuestionLine />
+              <Icon name="book" />
               <span>Help (disabled)</span>
             </SidebarMenuButton>
           </SidebarMenuItem>

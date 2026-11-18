@@ -101,10 +101,13 @@ If one of these becomes a brand decision, promote it to a `--pl-` token in `toke
 
 ## Icons
 
-- Use the Playlog icon set (48 icons, 2pt stroke, rounded joins). Default size 20px in UI, 24px in navigation and empty states.
+- Icons come from the `Icon` component only (`@workspace/ui/icons/icon`, `<Icon name="…" />`). No other icon library.
+- The Playlog set is 48 icons on a 24px grid, drawn as filled outline shapes (`fill="currentColor"`, `fill-rule="evenodd"`). Path data lives in `packages/ui/src/icons/icon-data.ts`, generated from the design system; do not edit it by hand.
+- Five stroke glyphs fill gaps in the set (check, chevron-down, chevron-right, close, search): 2px stroke, round caps and joins. Approved extra stroke glyphs in the same style live in `packages/ui/src/icons/extra-icons.ts` (sidebar, plus, trash, more, warning, alert-circle, info, users).
+- Default size 20px in UI, 24px in navigation and empty states.
 - Color follows text: `ink-muted` beside labels, `ink-heading` for emphasis, `on-primary` inside primary buttons.
 - Pair icons with a text label, except universally known actions (close, search), which need an `aria-label`.
-- Missing a glyph? Draw it on the same 24px grid with a 2pt stroke. Do not mix in another icon library.
+- Missing a glyph? Ask first, then draw it on the same 24px grid as a 2px round stroke and add it to `extra-icons.ts`. Do not mix in another icon library.
 
 ## Content
 

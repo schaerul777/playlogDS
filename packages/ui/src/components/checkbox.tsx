@@ -1,5 +1,5 @@
 import { Checkbox as CheckboxPrimitive } from "@base-ui/react/checkbox"
-import { RiCheckLine } from "@remixicon/react"
+import { Icon } from "@workspace/ui/icons/icon" // Playlog: brand icon set
 import { cn } from "@workspace/ui/lib/utils" // Playlog: brand-aware merger
 
 function Checkbox({ className, ...props }: CheckboxPrimitive.Root.Props) {
@@ -26,7 +26,7 @@ function Checkbox({ className, ...props }: CheckboxPrimitive.Root.Props) {
         data-slot="checkbox-indicator"
         className="grid place-content-center text-current transition-none [&>svg]:size-3.5"
       >
-        <RiCheckLine />
+        <Icon name="check" />
       </CheckboxPrimitive.Indicator>
     </CheckboxPrimitive.Root>
   )

@@ -5,7 +5,7 @@ import { Dialog as SheetPrimitive } from "@base-ui/react/dialog"
 import { cn } from "@workspace/ui/lib/utils" // Playlog: brand-aware merger
 
 import { Button } from "@workspace/ui/components/button"
-import { RiCloseLine } from "@remixicon/react"
+import { Icon } from "@workspace/ui/icons/icon" // Playlog: brand icon set
 
 function Sheet({ ...props }: SheetPrimitive.Root.Props) {
   return <SheetPrimitive.Root data-slot="sheet" {...props} />
@@ -71,8 +71,7 @@ function SheetContent({
               />
             }
           >
-            <RiCloseLine
-            />
+            <Icon name="close" />
             <span className="sr-only">Close</span>
           </SheetPrimitive.Close>
         )}

@@ -1,7 +1,7 @@
 import * as React from "react"
 import { Select as SelectPrimitive } from "@base-ui/react/select"
 import { cn } from "@workspace/ui/lib/utils" // Playlog: brand-aware merger
-import { RiArrowDownSLine, RiCheckLine, RiArrowUpSLine } from "@remixicon/react"
+import { Icon } from "@workspace/ui/icons/icon" // Playlog: brand icon set
 
 const Select = SelectPrimitive.Root
 
@@ -53,7 +53,7 @@ function SelectTrigger({
       {children}
       <SelectPrimitive.Icon
         render={
-          <RiArrowDownSLine className="pointer-events-none absolute right-2.5 size-4 text-muted-foreground" />
+          <Icon name="chevron-down" className="pointer-events-none absolute right-2.5 size-4 text-muted-foreground" />
         }
       />
     </SelectPrimitive.Trigger>
@@ -140,7 +140,7 @@ function SelectItem({
           <span className="pointer-events-none absolute right-2 flex size-4 items-center justify-center" />
         }
       >
-        <RiCheckLine className="pointer-events-none" />
+        <Icon name="check" className="pointer-events-none" />
       </SelectPrimitive.ItemIndicator>
     </SelectPrimitive.Item>
   )
@@ -172,8 +172,8 @@ function SelectScrollUpButton({
       )}
       {...props}
     >
-      <RiArrowUpSLine
-      />
+      {/* Playlog: the set has no chevron-up; the chevron-down glyph turned 180°. */}
+      <Icon name="chevron-down" className="rotate-180" />
     </SelectPrimitive.ScrollUpArrow>
   )
 }
@@ -191,8 +191,7 @@ function SelectScrollDownButton({
       )}
       {...props}
     >
-      <RiArrowDownSLine
-      />
+      <Icon name="chevron-down" />
     </SelectPrimitive.ScrollDownArrow>
   )
 }

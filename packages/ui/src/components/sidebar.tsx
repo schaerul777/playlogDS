@@ -21,7 +21,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@workspace/ui/components/tooltip"
-import { RiSideBarLine } from "@remixicon/react"
+import { Icon } from "@workspace/ui/icons/icon" // Playlog: brand icon set
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state"
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
@@ -271,7 +271,7 @@ function SidebarTrigger({
       }}
       {...props}
     >
-      <RiSideBarLine />
+      <Icon name="sidebar" />
       <span className="sr-only">Toggle Sidebar</span>
     </Button>
   )
