@@ -320,7 +320,7 @@
   --color-purple: var(--pl-purple);
   --color-yellow: var(--pl-yellow);
 
-  /* Type scale: size, line-height, letter-spacing and weight (all from tokens.json). */
+  /* Type scale: size, line-height, letter-spacing and weight (all from tokens.json; `pnpm lint` fails if one is missing or differs). */
   --text-display: 64px;
   --text-display--line-height: 64px;
   --text-display--letter-spacing: -0.01em;

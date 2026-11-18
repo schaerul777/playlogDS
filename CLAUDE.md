@@ -87,7 +87,7 @@ When writing to Figma through the MCP:
 - Install: `pnpm install`
 - Dev (playground): `pnpm dev` (run from the repo root; Turborepo starts `apps/web`)
 - Build: `pnpm build`
-- Lint / typecheck: `pnpm lint` / `pnpm typecheck`
+- Lint / typecheck: `pnpm lint` / `pnpm typecheck` (`pnpm lint` also runs `pnpm check:type-tokens`: every type token in `tokens.json` needs size, line height, weight and, if set, letter spacing in `globals.css`)
 - Add a component: `pnpm dlx shadcn@latest add <name> -c apps/web` (run from the repo root; components are written into `packages/ui/src/components`)
 - Global stylesheet: `packages/ui/src/styles/globals.css`
 - Fonts: `apps/web/public/fonts/`

@@ -5,7 +5,8 @@
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
-    "lint": "turbo lint",
+    "lint": "node scripts/check-type-tokens.mjs && turbo lint",
+    "check:type-tokens": "node scripts/check-type-tokens.mjs",
     "format": "turbo format",
     "typecheck": "turbo typecheck"
   },
