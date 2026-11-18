@@ -11,6 +11,10 @@ const variant = instance.getEnum('variant', {
   outline: 'outline',
   ghost: 'ghost',
   link: 'link',
+  info: 'info',
+  success: 'success',
+  warning: 'warning',
+  accent: 'accent',
 })
 // `state` (default, hover, focus, disabled) is Figma-only and has no code prop.
 
