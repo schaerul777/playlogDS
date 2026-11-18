@@ -77,14 +77,25 @@ These exist in the Figma library only. They are not in `tokens.css` and need no 
 
 - Spacing steps from the Tailwind scale (code syntax `calc(var(--spacing) * n)`, or `1px`):
   - `spacing-px` (1px): Switch inset, vertical Tabs trigger.
-  - `spacing-0-5` (2px), `spacing-1-5` (6px), `spacing-2-5` (10px): small paddings and gaps, the tab underline, the line-tab top padding.
+  - `spacing-0-5` (2px), `spacing-1-5` (6px), `spacing-2-5` (10px): small paddings and gaps, the tab underline, the line-tab top padding, chart legend swatches.
+  - `spacing-0-75` (3px): the active Sidebar nav item marker.
   - `spacing-3` (12px), `spacing-3-5` (14px), `spacing-4` (16px): icon sizes, the checkbox check mark.
   - `spacing-4-5` (18px): Checkbox box. `spacing-5` (20px): Switch height. `spacing-5-5` (22px): Badge height.
-  - `spacing-6` (24px), `spacing-7` (28px), `spacing-9` (36px), `spacing-12` (48px): Button `xs` / `lg` heights, Switch widths, Select right padding.
-  - `spacing-36` (144px): Select popup minimum width.
+  - `spacing-6` (24px), `spacing-7` (28px), `spacing-9` (36px), `spacing-12` (48px): Button `xs` / `lg` heights, Switch widths, Select right padding, nav icons, chart tick labels.
+  - `spacing-8` (32px): StatCard icon tile.
+  - `spacing-36` (144px): Select popup and chart tooltip minimum width.
+  - `spacing-56` (224px): Sidebar nav item width (248px sidebar minus 12px padding each side) and the StatCard drawing width.
+  - `spacing-160` (640px): demo width of the Table, TableRow and BarChart drawings (full width in code).
 - `destructive-90`: destructive button hover, `bg-destructive/90`. Code syntax `color-mix(in oklab, var(--destructive) 90%, transparent)`.
 - `pl-shadow-overlay-color`: the colour of `--pl-shadow-overlay`, split out so the `pl-shadow-overlay` effect style can switch with the mode. Light `#004d9f` at 14%, Dark black at 45%.
-- Text styles `caption-semibold` (12/16, 600) and `body-semibold` (16/24, 600): the Tailwind combinations `text-caption font-semibold` (Badge, Button `xs`) and `text-body font-semibold` (Button `lg`).
+- Text styles for Tailwind class combinations:
+  - `caption-semibold` (12/16, 600): `text-caption font-semibold` (Badge, Button `xs`, Table header).
+  - `body-semibold` (16/24, 600): `text-body font-semibold` (Button `lg`).
+  - `caption-bold` (12/16, 700): `text-caption font-bold` (StatCard delta, Sidebar count badge).
+  - `body-sm-medium` (14/20, 500): `text-body-sm font-medium` (Sidebar nav item).
+  - `body-sm-bold` (14/20, 700): `text-body-sm font-bold` (Alert title, Table caption, active nav item).
+  - `eyebrow-uppercase` (12/16, 600, 4%, uppercase): `text-eyebrow uppercase` (Sidebar section title).
+- The `kpi` text style in Figma carries -1% letter spacing, the same as `--text-kpi--letter-spacing` in code and `kpi` in `tokens.json`. This is a token, not a Figma-only value.
 
 If one of these becomes a brand decision, promote it to a `--pl-` token in `tokens.css` and remove it from this list.
 
