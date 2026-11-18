@@ -55,7 +55,7 @@ Assumptions to confirm: `--secondary` uses `surface-hover` with `ink-heading` te
 ## Shape, spacing, elevation
 
 - Playlog shapes are square-cut. Brand blocks, hero bands and covers use radius 0.
-- Product controls: radius 4px for buttons, inputs, selects and menus. Radius 8px for app cards and dialogs. Radius 2px for badges and checkboxes. Full radius only for toggle tracks and avatars.
+- Product controls: radius 4px for buttons, inputs, selects and menus. Radius 8px for app cards and dialogs. Radius 2px for badges and checkboxes. Full radius only for toggle tracks, avatars and radio buttons (the circle is how a radio is recognised).
 - Checkboxes use a 1.5px border (`--pl-checkbox-border-width`); other controls use 1px (`--pl-border-width`).
 - Spacing is a 4px base. Cards pad 24px (16px in dense app panels).
 - Control height: 40px default, 32px small.
@@ -70,6 +70,8 @@ Assumptions to confirm: `--secondary` uses `surface-hover` with `ink-heading` te
 - Selected: `surface-selected` plus `ink-heading`. Active tabs get a 2px `ink-heading` underline (not Green, which fails contrast on light grounds). The selected sidebar item gets a 3px accent marker.
 - Focus: 2px solid `focus-ring` with a 2px offset on every interactive element (`--pl-focus-ring-width`, `--pl-focus-ring-offset`). Never remove it.
 - Disabled: 40% opacity (`--pl-opacity-disabled`), no pointer events.
+- Invalid: border and message in `danger-text` (not `destructive`, which is the destructive button fill).
+- Separation ring: overlapping avatars and the avatar status dot sit in a 2px ring of the page colour (`--pl-ring-separator-width`).
 
 ## Figma-only variables and styles
 

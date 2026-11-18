@@ -183,3 +183,83 @@ Applies to Sheet, Dialog, Alert Dialog, Dropdown Menu, Popover, Tooltip and Toas
 - Action: Button `sm` (32). Close button (optional): Button `ghost` `icon-sm`.
 - Motion: Sonner's transitions run at `--pl-duration-slow` (agreed).
 - Theme follows the `.dark` class. No `next-themes`.
+
+## Forms: shared rules
+
+Applies to Label, Field, Textarea, Input Group, Combobox, Native Select, Radio Group, Toggle and Toggle Group. Values marked "agreed" were proposed for this library and approved.
+
+- Controls look like Input: height 40 (sm 32), `card` fill, 1px `input` border, radius 4, 14/20 `foreground`, placeholder `muted-foreground`, hover border `foreground`. Flat (no shadow).
+- Focus: 2px solid `--ring`, 2px offset (`--pl-focus-ring-width`, `--pl-focus-ring-offset`); on the wrapper for wrapped controls (Input Group, Combobox).
+- Disabled: `--pl-opacity-disabled`, no pointer events. The label of a disabled control dims with it.
+- Invalid (`aria-invalid`): border `pl-danger-text`; the fill stays `card` and the focus ring stays `--ring`. Message in `pl-danger-text` (agreed).
+- Motion: color changes at `--pl-duration-fast` ease-out.
+
+## Label
+
+- 14/20 semibold `foreground`. Gap 8 to an inline icon or marker.
+- Required marker: `*` in `muted-foreground` after the label, hidden from screen readers; the control carries `required` (agreed).
+
+## Field
+
+- Vertical (default): label above the control, 6 between label, control and description or error.
+- Description: 12/16 medium `muted-foreground`. Error (FieldError): 12/16 medium `pl-danger-text`, text only, shown instead of the description (agreed). `role="alert"`; the control points to it with `aria-describedby`.
+- Horizontal (checkbox, switch or radio next to its label): gap 10.
+- FieldGroup: 24 between fields. FieldSet: 16 between its children. FieldLegend: 16/24 bold `pl-ink-heading` (variant `label`: 14/20 semibold) (agreed).
+- FieldSeparator: 1px `border`, optional centred text 12/16 `muted-foreground` on the page background.
+- Choice card (FieldLabel wrapping a Field): `card` fill, 1px `border`, radius 4, padding 12 16. Checked: `pl-surface-selected` fill, `primary` border.
+
+## Textarea
+
+- As Input, padding 8 12. Minimum height 80; grows with its content (`field-sizing: content`); no resize handle (agreed).
+
+## Input Group
+
+- Wrapper as Input (40, 1px `input`, radius 4, `card`). Focus ring and invalid border on the wrapper.
+- Addons sit inline inside the one border, no dividers (agreed): text and icons `muted-foreground`, 14/20, icons 16; 12 from the edge, gap 8.
+- Buttons inside: Button `ghost` `icon-xs` (24) or `xs`.
+- Block addons (above or below a Textarea): padding 8 12.
+
+## Combobox
+
+- Input: an Input Group with `chevron-down` at the end. Clear button (Button `ghost` `icon-xs`, `close`) only when there is a value (agreed).
+- Popup: as the Select popup (`popover`, radius 4, padding 4, overlay shadow, items 32 high, `check` 8 from the right, fade at `--pl-duration-fast`).
+- Single and multiple selection (agreed). Multiple shows chips: height 22, radius 2, `muted` fill, 1px `border`, 12/16 semibold `foreground`, gap 4, with a 12px `close` remove button (agreed).
+- Empty: "No results" 14/20 `muted-foreground`, centred, padding 8 12 (agreed).
+
+## Native Select
+
+- As the Select trigger: height 40 (sm 32), padding 0 36 0 12, `chevron-down` 16 `muted-foreground` 10 from the right edge (agreed). Options use the system colours.
+
+## Radio Group
+
+- Item: 18×18 circle (`--pl-radius-full`), 1.5px `input` border, `card` fill. Checked: `primary` fill and border with a 6px `primary-foreground` dot; hover `pl-primary-hover` (agreed, mirrors Checkbox).
+- Group: 12 between items; label 10 from the item. Invalid: border `pl-danger-text`.
+
+## Toggle
+
+- Variants `default` (transparent) and `outline` (`card` fill, 1px `input` border). Radius 4. 14/20 semibold, icons 20.
+- Sizes `sm` 32 / `default` 40 / `lg` 48, side padding 12 / 16 / 24, as Button (agreed).
+- Hover: `accent`. Pressed: `pl-surface-selected` fill with `pl-ink-heading` text (agreed; the Button `aria-pressed` style).
+
+## Toggle Group
+
+- Same variants and sizes as Toggle. `spacing` 0 (default): joined, one outer radius 4, 1px `input` dividers for `outline`. With `spacing`: separate items with that gap (agreed).
+- Arrow keys move focus between items (Base UI).
+
+## Avatar
+
+- Circle (`--pl-radius-full`). Sizes `sm` 24 / `default` 32 / `lg` 40 (agreed).
+- Fallback initials: `accent` fill, `pl-ink-heading` text, 12/16 semibold (`lg`: 14/20 semibold) (agreed).
+- AvatarBadge (status dot): 8 / 10 / 12 at the bottom right, in a status color, ringed in `background` at `--pl-ring-separator-width`. Always paired with screen-reader text (agreed).
+- AvatarGroup: avatars overlap by 8, each ringed in `background` at `--pl-ring-separator-width`. AvatarGroupCount as the fallback.
+
+## Progress
+
+- Track `muted`, fill `pl-brand-accent` (BRAND.md), height 8, radius 0 (agreed). The fill eases at `--pl-duration-fast`.
+- Label 14/20 semibold `foreground` on the left and value 12/16 medium `muted-foreground` with tabular numbers on the right, 8 above the track. The value is always shown.
+- Indeterminate is not styled; use Spinner when progress is unknown (agreed).
+
+## Spinner
+
+- `loader` stroke glyph (three-quarter arc, approved extra glyph), 20 (`--pl-icon-size`), current text color, Tailwind `animate-spin`. Keeps spinning under reduced motion: it is the only loading signal (agreed).
+- `role="status"` with `aria-label="Loading"`.
