@@ -342,6 +342,7 @@
   --text-eyebrow--line-height: 16px;
   --text-kpi: 36px;
   --text-kpi--line-height: 40px;
+  --text-kpi--letter-spacing: -0.01em;
   --text-kpi-sm: 24px;
   --text-kpi-sm--line-height: 28px;
   --text-line-category: 13px;

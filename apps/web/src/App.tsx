@@ -2,14 +2,27 @@ import * as React from "react"
 import {
   RiAddLine,
   RiArrowRightLine,
+  RiAlarmWarningLine,
   RiBarChartLine,
+  RiCheckboxCircleLine,
+  RiComputerLine,
+  RiErrorWarningLine,
+  RiEyeLine,
+  RiInformationLine,
   RiDeleteBinLine,
   RiDownloadLine,
   RiMapPinLine,
   RiMoreLine,
+  RiWalletLine,
   RiSearchLine,
 } from "@remixicon/react"
 
+import {
+  Alert,
+  AlertAction,
+  AlertDescription,
+  AlertTitle,
+} from "@workspace/ui/components/alert"
 import { Badge } from "@workspace/ui/components/badge"
 import { Button } from "@workspace/ui/components/button"
 import {
@@ -33,8 +46,24 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@workspace/ui/components/select"
+import { StatCard } from "@workspace/ui/components/stat-card"
 import { Switch } from "@workspace/ui/components/switch"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@workspace/ui/components/tabs"
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@workspace/ui/components/table"
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@workspace/ui/components/tabs"
 import { cn } from "@workspace/ui/lib/utils"
 
 import { useTheme } from "@/components/theme-provider"
@@ -119,13 +148,7 @@ export function App() {
   )
 }
 
-function Showcase({
-  label,
-  className,
-}: {
-  label: string
-  className?: string
-}) {
+function Showcase({ label, className }: { label: string; className?: string }) {
   return (
     <main
       className={cn(
@@ -143,6 +166,9 @@ function Showcase({
       <SwitchSection />
       <SelectSection />
       <TabsSection />
+      <AlertSection />
+      <StatCardSection />
+      <TableSection />
       <CardSection />
     </main>
   )
@@ -308,11 +334,7 @@ function BadgeSection() {
       <div className="flex flex-wrap items-center gap-3">
         <RowLabel>link (hover)</RowLabel>
         {BADGE_VARIANTS.map((variant) => (
-          <Badge
-            key={variant}
-            variant={variant}
-            render={<a href="#badge" />}
-          >
+          <Badge key={variant} variant={variant} render={<a href="#badge" />}>
             {variant}
           </Badge>
         ))}
@@ -553,6 +575,212 @@ function TabsSection() {
             </div>
           ))
         )}
+      </div>
+    </Section>
+  )
+}
+
+function AlertSection() {
+  return (
+    <Section title="Alert">
+      <div className="grid max-w-2xl gap-3">
+        <Alert>
+          <AlertTitle>Report scheduled</AlertTitle>
+          <AlertDescription>
+            The Q3 2025 audience report is sent every Monday at 08:00.
+          </AlertDescription>
+        </Alert>
+        <Alert variant="info">
+          <RiInformationLine />
+          <AlertTitle>New cities added</AlertTitle>
+          <AlertDescription>
+            Makassar and Medan now report impressions daily.
+          </AlertDescription>
+        </Alert>
+        <Alert variant="success">
+          <RiCheckboxCircleLine />
+          <AlertTitle>Campaign live</AlertTitle>
+          <AlertDescription>
+            128 roadside screens in Jakarta started on 1 October.
+          </AlertDescription>
+        </Alert>
+        <Alert variant="warning">
+          <RiAlarmWarningLine />
+          <AlertTitle>Data is 2 days behind</AlertTitle>
+          <AlertDescription>
+            Transit impressions for Surabaya will update by Thursday.
+          </AlertDescription>
+        </Alert>
+        <Alert variant="destructive">
+          <RiErrorWarningLine />
+          <AlertTitle>Export failed</AlertTitle>
+          <AlertDescription>
+            The file was larger than 25 MB. Choose a shorter period.
+          </AlertDescription>
+          <AlertAction>
+            <Button size="xs" variant="outline">
+              Retry
+            </Button>
+          </AlertAction>
+        </Alert>
+        <Alert variant="info">
+          <AlertTitle>Title only, no icon</AlertTitle>
+        </Alert>
+      </div>
+    </Section>
+  )
+}
+
+function StatCardSection() {
+  return (
+    <Section title="StatCard">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <StatCard
+          label="Media spend"
+          icon={<RiWalletLine />}
+          value="Rp 12,4 M"
+          delta="+8,2%"
+          trend="good"
+          footer="Q1–Q3 2025 · 25 cities"
+        />
+        <StatCard
+          label="Impressions"
+          icon={<RiEyeLine />}
+          value="48,6 M"
+          delta="−3,1%"
+          trend="bad"
+          footer="vs Q1–Q3 2024 · Playlog panel"
+        />
+        <StatCard
+          label="Live screens"
+          icon={<RiComputerLine />}
+          value="1.284"
+          delta="0,0%"
+          trend="neutral"
+          footer="25 cities · 30 Sep 2025"
+        />
+        <StatCard
+          label="Avg. frequency"
+          value="3,2×"
+          footer="Per reached person · Q3 2025"
+        />
+      </div>
+    </Section>
+  )
+}
+
+const CITY_ROWS = [
+  {
+    city: "Jakarta",
+    line: "Roadside",
+    screens: "1.284",
+    impressions: "4,8 M",
+    reach: "2,1 M",
+    share: "38,7%",
+  },
+  {
+    city: "Surabaya",
+    line: "Transit",
+    screens: "642",
+    impressions: "2,3 M",
+    reach: "1,0 M",
+    share: "18,5%",
+  },
+  {
+    city: "Bandung",
+    line: "Place-based",
+    screens: "518",
+    impressions: "1,9 M",
+    reach: "0,8 M",
+    share: "15,3%",
+  },
+  {
+    city: "Medan",
+    line: "Roadside",
+    screens: "377",
+    impressions: "1,4 M",
+    reach: "0,6 M",
+    share: "11,3%",
+  },
+  {
+    city: "Makassar",
+    line: "Ambience",
+    screens: "214",
+    impressions: "0,8 M",
+    reach: "0,4 M",
+    share: "6,5%",
+  },
+]
+
+function CityTable({
+  dense,
+  withExtras,
+}: {
+  dense?: boolean
+  withExtras?: boolean
+}) {
+  return (
+    <Table dense={dense}>
+      {withExtras && (
+        <TableCaption>
+          Impressions by city · Q1–Q3 2025 · top 5 of 25 cities
+        </TableCaption>
+      )}
+      <TableHeader>
+        <TableRow>
+          <TableHead>City</TableHead>
+          <TableHead>Product line</TableHead>
+          <TableHead numeric>Screens</TableHead>
+          <TableHead numeric>Impressions</TableHead>
+          <TableHead numeric>Reach</TableHead>
+          <TableHead numeric>Share</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {CITY_ROWS.map((r, i) => (
+          <TableRow
+            key={r.city}
+            data-state={withExtras && i === 1 ? "selected" : undefined}
+          >
+            <TableCell>{r.city}</TableCell>
+            <TableCell>{r.line}</TableCell>
+            <TableCell numeric>{r.screens}</TableCell>
+            <TableCell numeric>{r.impressions}</TableCell>
+            <TableCell numeric>{r.reach}</TableCell>
+            <TableCell numeric>{r.share}</TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+      {withExtras && (
+        <TableFooter>
+          <TableRow>
+            <TableCell colSpan={2}>Top 5 cities</TableCell>
+            <TableCell numeric>3.035</TableCell>
+            <TableCell numeric>11,2 M</TableCell>
+            <TableCell numeric>4,9 M</TableCell>
+            <TableCell numeric>90,3%</TableCell>
+          </TableRow>
+        </TableFooter>
+      )}
+    </Table>
+  )
+}
+
+function TableSection() {
+  return (
+    <Section title="DataTable">
+      <div className="flex flex-col gap-2">
+        <span className="text-caption font-medium text-muted-foreground">
+          Default, with caption, selected row (Surabaya) and totals. Hover a
+          row.
+        </span>
+        <CityTable withExtras />
+      </div>
+      <div className="flex flex-col gap-2">
+        <span className="text-caption font-medium text-muted-foreground">
+          dense
+        </span>
+        <CityTable dense />
       </div>
     </Section>
   )
