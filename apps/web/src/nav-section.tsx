@@ -17,6 +17,7 @@ import {
   BreadcrumbSeparator,
 } from "@workspace/ui/components/breadcrumb"
 import { Button } from "@workspace/ui/components/button"
+import { Kbd, KbdGroup } from "@workspace/ui/components/kbd"
 import {
   Collapsible,
   CollapsibleContent,
@@ -422,7 +423,10 @@ function CommandExample() {
         <Button variant="outline" onClick={() => setOpen(true)}>
           <Icon name="search" data-icon="inline-start" />
           Search commands
-          <kbd className="ml-2 rounded-sm border-(length:--pl-border-width) border-border bg-muted px-1.5 text-caption text-muted-foreground">⌘K</kbd>
+          <KbdGroup className="ml-2">
+            <Kbd>⌘</Kbd>
+            <Kbd>K</Kbd>
+          </KbdGroup>
         </Button>
       </div>
       <div className="max-w-md">
