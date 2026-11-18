@@ -12,7 +12,8 @@ const badgeVariants = cva(
     "outline-none focus-visible:outline-(length:--pl-focus-ring-width) focus-visible:outline-offset-(--pl-focus-ring-offset) focus-visible:outline-solid focus-visible:outline-ring",
     // Playlog: disabled is 40% opacity with no pointer events.
     "aria-disabled:pointer-events-none aria-disabled:opacity-(--pl-opacity-disabled) data-disabled:pointer-events-none data-disabled:opacity-(--pl-opacity-disabled)",
-    "aria-invalid:border-destructive [&>svg]:pointer-events-none [&>svg]:size-3!",
+    // Playlog: invalid edge is pl-danger-text (COMPONENT-SPECS).
+    "aria-invalid:border-danger-text [&>svg]:pointer-events-none [&>svg]:size-3!",
   ],
   {
     variants: {

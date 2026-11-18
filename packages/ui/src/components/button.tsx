@@ -11,7 +11,8 @@ const buttonVariants = cva(
     "outline-none focus-visible:outline-(length:--pl-focus-ring-width) focus-visible:outline-offset-(--pl-focus-ring-offset) focus-visible:outline-solid focus-visible:outline-ring",
     // Playlog: disabled is 40% opacity with no pointer events (native disabled or Base UI focusableWhenDisabled).
     "disabled:pointer-events-none disabled:opacity-(--pl-opacity-disabled) data-disabled:pointer-events-none data-disabled:opacity-(--pl-opacity-disabled)",
-    "aria-invalid:border-destructive aria-invalid:focus-visible:outline-destructive",
+    // Playlog: invalid edge is pl-danger-text (COMPONENT-SPECS); the focus ring stays --ring, as on Input.
+    "aria-invalid:border-danger-text",
     // Playlog: icons default to 20px.
     "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-5",
   ],
