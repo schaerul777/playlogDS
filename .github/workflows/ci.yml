@@ -1,0 +1,46 @@
+name: CI
+
+# Lint, typecheck and build on every pull request and on pushes to main.
+# No secrets, tokens or deploy steps. Figma Code Connect is never published from CI:
+# publish from your own terminal (`figma connect publish`).
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Lint, typecheck, build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      # pnpm version comes from the `packageManager` field in package.json.
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22 # satisfies engines.node (>=20.19.0)
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      # Also runs the type-token check (scripts/check-type-tokens.mjs) and the Remix import block (ESLint).
+      - name: Lint
+        run: pnpm lint
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Build
+        run: pnpm build
