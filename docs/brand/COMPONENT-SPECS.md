@@ -320,3 +320,48 @@ Applies to Breadcrumb, Pagination, Accordion, Collapsible, Command, Context Menu
 - Panel: `popover`, radius 4, overlay shadow, padding 8. Fade at `--pl-duration-fast`; size changes between panels at `--pl-duration-slow`; no slide.
 - Panel links: padding 8 12, radius 2; title 14/20 semibold `pl-ink-heading`, description 12/16 `muted-foreground`; hover `accent`.
 - Hidden below `md`; use the Sidebar (Sheet) on small screens (agreed).
+
+## Display: shared rules
+
+Applies to Empty, Kbd, Item, Hover Card, Scroll Area and Aspect Ratio. Values marked "agreed" were proposed for this library and approved.
+
+- Reuse before inventing: Empty uses the Card title style, the StatCard icon tile and Button; Hover Card uses the Popover surface; Item follows the Table row and Sidebar item.
+- Links never use Blue or Green text on light grounds; use `muted-foreground` / `foreground` with an underline, or the `link` token inside body copy.
+- Focus: 2px solid `--ring`, 2px offset. Disabled: `--pl-opacity-disabled`. Motion: `--pl-duration-fast`.
+
+## Empty
+
+- Centred column, padding 48 24, no border of its own; place it in a Card or a table body (agreed).
+- Media tile: 40×40, radius 4, `accent` fill, 24px `pl-ink-heading` icon (BRAND: 24px icons in empty states) (agreed). 16 from the media to the title (extrapolated on the 4px grid).
+- Title 16/24 bold `pl-ink-heading` (as the Card title). Description 14/20 `muted-foreground`, 4 below the title. Text block max width 384 (agreed).
+- Actions: centred, 16 below the text, 8 apart; primary Button `default`, secondary Button `outline` (agreed).
+
+## Kbd
+
+- Key: height 20, min width 20, padding 0 4, radius 2, `muted` fill, 1px `border`, Reddit Sans 12/16 medium `muted-foreground` (no monospace) (agreed).
+- KbdGroup: keys 4 apart.
+- Menus (Command, Dropdown Menu) keep their plain-text shortcuts; Kbd is for standalone hints (agreed).
+
+## Item
+
+- Variants: `default` transparent; `outline` 1px `border`; `muted` `muted` fill. Radius 4 for all (agreed).
+- Sizes: `default` padding 12 16, `sm` 8 12, `xs` 6 8 (agreed). Gap 12 between media, content and actions.
+- Media: `icon` 20px `muted-foreground`; `image` 40 square (`sm` 32, `xs` 24), radius 4.
+- Title 14/20 semibold `foreground` (agreed). Description 12/16 `muted-foreground`, at most two lines. Actions at the end, 8 apart.
+- ItemGroup: items 8 apart; ItemSeparator is a 1px `border`.
+- Static by default. Rendered as a link or button: hover `accent`, focus ring, `data-selected="true"` gives `pl-surface-selected` with `pl-ink-heading`; disabled (`aria-disabled` or `disabled`) 40% (agreed).
+
+## Hover Card
+
+- Popover surface: `popover`, radius 4, padding 16, overlay shadow, no border, 4 from the trigger. Width 256 by default (agreed).
+- Opens after 300ms (as Tooltip) on hover or keyboard focus of the trigger; closes after 150ms (agreed). Fades at `--pl-duration-fast`. Not opened on touch: a tap follows the link (Base UI). Defaults are set on `HoverCardTrigger` (`delay`, `closeDelay`); align offset 0.
+
+## Scroll Area
+
+- Viewport keeps the parent's radius and gets the focus ring, so the region is reachable and scrollable by keyboard.
+- Scrollbar: track 10 with 2 padding; thumb 6 wide, fully round, `border`, `input` on hover or drag (agreed).
+- The scrollbar shows on hover and while scrolling and fades at `--pl-duration-fast` (agreed). It also stays visible while the viewport has keyboard focus, so keyboard users see their position (extrapolated).
+
+## Aspect Ratio
+
+- A wrapper only: `aspect-ratio` from the `ratio` prop, no styling. No Figma component (agreed).
