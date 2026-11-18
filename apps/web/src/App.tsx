@@ -133,6 +133,7 @@ import {
 } from "@workspace/ui/components/tooltip"
 import { cn } from "@workspace/ui/lib/utils"
 import { FormsSection } from "@/forms-section"
+import { NavSection } from "@/nav-section"
 
 import { useTheme } from "@/components/theme-provider"
 
@@ -254,6 +255,7 @@ function Showcase({ label, className }: { label: string; className?: string }) {
       <SeparatorSection />
       <SkeletonSection />
       <FormsSection />
+      <NavSection />
     </main>
   )
 }
