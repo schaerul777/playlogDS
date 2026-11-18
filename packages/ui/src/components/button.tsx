@@ -6,11 +6,11 @@ import { cn } from "@workspace/ui/lib/utils" // Playlog: brand-aware merger
 const buttonVariants = cva(
   [
     // Playlog: 4px radius, label type (14/20, 600), 150ms ease-out colour transitions, no press offset.
-    "group/button inline-flex shrink-0 items-center justify-center rounded-md border border-transparent bg-clip-padding text-label font-semibold whitespace-nowrap transition-colors duration-150 ease-out select-none",
+    "group/button inline-flex shrink-0 items-center justify-center rounded-md border-(length:--pl-border-width) border-transparent bg-clip-padding text-label font-semibold whitespace-nowrap transition-colors duration-150 ease-out select-none",
     // Playlog: focus ring is 2px solid --ring with a 2px offset.
-    "outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-solid focus-visible:outline-ring",
+    "outline-none focus-visible:outline-(length:--pl-focus-ring-width) focus-visible:outline-offset-(--pl-focus-ring-offset) focus-visible:outline-solid focus-visible:outline-ring",
     // Playlog: disabled is 40% opacity with no pointer events (native disabled or Base UI focusableWhenDisabled).
-    "disabled:pointer-events-none disabled:opacity-40 data-disabled:pointer-events-none data-disabled:opacity-40",
+    "disabled:pointer-events-none disabled:opacity-(--pl-opacity-disabled) data-disabled:pointer-events-none data-disabled:opacity-(--pl-opacity-disabled)",
     "aria-invalid:border-destructive aria-invalid:focus-visible:outline-destructive",
     // Playlog: icons default to 20px.
     "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-5",

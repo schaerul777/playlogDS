@@ -14,7 +14,7 @@ function Card({
         // Playlog: flat card. Surface + 1px border, 8px radius, no shadow (COMPONENT-SPECS).
         // Playlog: one vertical rhythm: 16 top and between sections (--card-gap), 24 sides and bottom (--card-spacing).
         // Playlog: header 16 24 0 and content 16 24 24 as in the spec; sm is 16 everywhere (dense panels).
-        "group/card flex flex-col gap-(--card-gap) overflow-hidden rounded-lg border border-border bg-card pt-(--card-gap) pb-(--card-spacing) text-body-sm text-card-foreground [--card-gap:--spacing(4)] [--card-spacing:--spacing(6)] has-[>img:first-child]:pt-0 data-[size=sm]:[--card-spacing:--spacing(4)] *:[img:first-child]:rounded-t-lg *:[img:last-child]:rounded-b-lg",
+        "group/card flex flex-col gap-(--card-gap) overflow-hidden rounded-lg border-(length:--pl-border-width) border-border bg-card pt-(--card-gap) pb-(--card-spacing) text-body-sm text-card-foreground [--card-gap:--spacing(4)] [--card-spacing:--spacing(6)] has-[>img:first-child]:pt-0 data-[size=sm]:[--card-spacing:--spacing(4)] *:[img:first-child]:rounded-t-lg *:[img:last-child]:rounded-b-lg",
         className
       )}
       {...props}

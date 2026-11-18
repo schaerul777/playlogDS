@@ -7,11 +7,11 @@ import { cn } from "@workspace/ui/lib/utils" // Playlog: brand-aware merger
 const badgeVariants = cva(
   [
     // Playlog: COMPONENT-SPECS. Height 22, padding 0 8, gap 6, 2px radius, 12/16 semibold, no wrapping, 150ms ease-out.
-    "group/badge inline-flex h-5.5 w-fit shrink-0 items-center justify-center gap-1.5 overflow-hidden rounded-sm border border-transparent px-2 text-caption font-semibold whitespace-nowrap transition-colors duration-150 ease-out",
+    "group/badge inline-flex h-5.5 w-fit shrink-0 items-center justify-center gap-1.5 overflow-hidden rounded-sm border-(length:--pl-border-width) border-transparent px-2 text-caption font-semibold whitespace-nowrap transition-colors duration-150 ease-out",
     // Playlog: focus ring is 2px solid --ring with a 2px offset (badges rendered as links).
-    "outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-solid focus-visible:outline-ring",
+    "outline-none focus-visible:outline-(length:--pl-focus-ring-width) focus-visible:outline-offset-(--pl-focus-ring-offset) focus-visible:outline-solid focus-visible:outline-ring",
     // Playlog: disabled is 40% opacity with no pointer events.
-    "aria-disabled:pointer-events-none aria-disabled:opacity-40 data-disabled:pointer-events-none data-disabled:opacity-40",
+    "aria-disabled:pointer-events-none aria-disabled:opacity-(--pl-opacity-disabled) data-disabled:pointer-events-none data-disabled:opacity-(--pl-opacity-disabled)",
     "aria-invalid:border-destructive [&>svg]:pointer-events-none [&>svg]:size-3!",
   ],
   {
