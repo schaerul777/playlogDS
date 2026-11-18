@@ -51,7 +51,7 @@ function TooltipContent({
           className={cn(
             // Playlog: COMPONENT-SPECS Tooltip. Popover surface, radius 4, padding 6 12, overlay shadow, caption text,
             // max 320, no arrow. Fade only at --pl-duration-fast.
-            "z-50 inline-flex w-fit max-w-xs origin-(--transform-origin) items-center gap-1.5 rounded-md bg-popover px-3 py-1.5 text-caption font-medium text-popover-foreground shadow-(--pl-shadow-overlay) duration-(--pl-duration-fast) ease-out data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0",
+            "z-50 inline-flex w-fit max-w-xs origin-(--transform-origin) items-center gap-1.5 rounded-md bg-popover px-3 py-1.5 text-caption text-popover-foreground shadow-(--pl-shadow-overlay) duration-(--pl-duration-fast) ease-out data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0",
             className
           )}
           {...props}

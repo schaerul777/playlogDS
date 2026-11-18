@@ -74,7 +74,7 @@ function DropdownMenuLabel({
       data-inset={inset}
       // Playlog: as the Select group label. 12/16 medium muted-foreground, padding 6 8.
       className={cn(
-        "px-2 py-1.5 text-caption font-medium text-muted-foreground data-inset:pl-8",
+        "px-2 py-1.5 text-caption text-muted-foreground data-inset:pl-8",
         className
       )}
       {...props}

@@ -126,7 +126,7 @@ function DialogTitle({ className, ...props }: DialogPrimitive.Title.Props) {
     <DialogPrimitive.Title
       data-slot="dialog-title"
       // Playlog: 16/24 bold ink-heading, same as the Card title.
-      className={cn("font-heading text-h3 font-bold text-ink-heading", className)}
+      className={cn("font-heading text-h3 text-ink-heading", className)}
       {...props}
     />
   )

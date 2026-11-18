@@ -185,7 +185,7 @@ function CommandGroup({
         <ComboboxPrimitive.GroupLabel
           data-slot="command-group-heading"
           // Playlog: as the menu label. 12/16 medium muted-foreground, padding 6 8.
-          className="px-2 py-1.5 text-caption font-medium text-muted-foreground"
+          className="px-2 py-1.5 text-caption text-muted-foreground"
         >
           {heading}
         </ComboboxPrimitive.GroupLabel>

@@ -122,7 +122,7 @@ function FieldTitle({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="field-label"
       className={cn(
-        "flex w-fit items-center gap-2 text-label font-semibold text-foreground group-data-[disabled=true]/field:opacity-(--pl-opacity-disabled)",
+        "flex w-fit items-center gap-2 text-label text-foreground group-data-[disabled=true]/field:opacity-(--pl-opacity-disabled)",
         className
       )}
       {...props}
@@ -136,7 +136,7 @@ function FieldDescription({ className, ...props }: React.ComponentProps<"p">) {
       data-slot="field-description"
       // Playlog: 12/16 medium muted-foreground. Hidden while the field shows an error (the error replaces it).
       className={cn(
-        "text-left text-caption font-medium text-muted-foreground group-has-[[data-slot=field-error]]/field:hidden group-has-data-horizontal/field:text-balance",
+        "text-left text-caption text-muted-foreground group-has-[[data-slot=field-error]]/field:hidden group-has-data-horizontal/field:text-balance",
         "[&>a]:text-link [&>a]:underline",
         className
       )}
@@ -217,7 +217,7 @@ function FieldError({
       role="alert"
       data-slot="field-error"
       // Playlog: 12/16 medium pl-danger-text, text only (agreed).
-      className={cn("text-caption font-medium text-danger-text", className)}
+      className={cn("text-caption text-danger-text", className)}
       {...props}
     >
       {content}

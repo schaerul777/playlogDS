@@ -14,7 +14,7 @@ function Label({
     <label
       data-slot="label"
       className={cn(
-        "flex items-center gap-2 text-label font-semibold text-foreground select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-(--pl-opacity-disabled) peer-disabled:opacity-(--pl-opacity-disabled) peer-data-disabled:opacity-(--pl-opacity-disabled)",
+        "flex items-center gap-2 text-label text-foreground select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-(--pl-opacity-disabled) peer-disabled:opacity-(--pl-opacity-disabled) peer-data-disabled:opacity-(--pl-opacity-disabled)",
         className
       )}
       {...props}

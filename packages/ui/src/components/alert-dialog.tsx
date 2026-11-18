@@ -120,7 +120,7 @@ function AlertDialogTitle({
     <AlertDialogPrimitive.Title
       data-slot="alert-dialog-title"
       // Playlog: 16/24 bold ink-heading, same as Dialog.
-      className={cn("font-heading text-h3 font-bold text-ink-heading", className)}
+      className={cn("font-heading text-h3 text-ink-heading", className)}
       {...props}
     />
   )

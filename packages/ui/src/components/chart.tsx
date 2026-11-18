@@ -75,7 +75,7 @@ function ChartContainer({
         data-chart={chartId}
         className={cn(
           // Playlog: axis labels 12px medium ink-muted; gridlines 1px chart-grid; labels may sit outside the plot.
-          "flex aspect-video justify-center text-caption font-medium [&_.recharts-cartesian-axis-tick_text]:fill-muted-foreground [&_.recharts-cartesian-axis-tick-value]:fill-muted-foreground [&_.recharts-cartesian-grid_line]:stroke-chart-grid [&_.recharts-cartesian-grid_line]:stroke-(length:--pl-border-width) [&_.recharts-surface]:overflow-visible [&_.recharts-label-list_text]:fill-foreground [&_.recharts-curve.recharts-tooltip-cursor]:stroke-border [&_.recharts-dot[stroke='#fff']]:stroke-transparent [&_.recharts-layer]:outline-hidden [&_.recharts-polar-grid_[stroke='#ccc']]:stroke-border [&_.recharts-radial-bar-background-sector]:fill-muted [&_.recharts-rectangle.recharts-tooltip-cursor]:fill-muted [&_.recharts-reference-line_[stroke='#ccc']]:stroke-border [&_.recharts-sector]:outline-hidden [&_.recharts-sector[stroke='#fff']]:stroke-transparent [&_.recharts-surface]:outline-hidden",
+          "flex aspect-video justify-center text-caption [&_.recharts-cartesian-axis-tick_text]:fill-muted-foreground [&_.recharts-cartesian-axis-tick-value]:fill-muted-foreground [&_.recharts-cartesian-grid_line]:stroke-chart-grid [&_.recharts-cartesian-grid_line]:stroke-(length:--pl-border-width) [&_.recharts-surface]:overflow-visible [&_.recharts-label-list_text]:fill-foreground [&_.recharts-curve.recharts-tooltip-cursor]:stroke-border [&_.recharts-dot[stroke='#fff']]:stroke-transparent [&_.recharts-layer]:outline-hidden [&_.recharts-polar-grid_[stroke='#ccc']]:stroke-border [&_.recharts-radial-bar-background-sector]:fill-muted [&_.recharts-rectangle.recharts-tooltip-cursor]:fill-muted [&_.recharts-reference-line_[stroke='#ccc']]:stroke-border [&_.recharts-sector]:outline-hidden [&_.recharts-sector[stroke='#fff']]:stroke-transparent [&_.recharts-surface]:outline-hidden",
           className
         )}
         {...props}
@@ -205,7 +205,7 @@ function ChartTooltipContent({
     <div
       className={cn(
         // Playlog: popover surface, 4px radius, overlay shadow, caption text.
-        "grid min-w-32 items-start gap-1.5 rounded-md bg-popover px-2.5 py-1.5 text-caption font-medium text-popover-foreground shadow-(--pl-shadow-overlay)",
+        "grid min-w-32 items-start gap-1.5 rounded-md bg-popover px-2.5 py-1.5 text-caption text-popover-foreground shadow-(--pl-shadow-overlay)",
         className
       )}
     >
@@ -307,7 +307,7 @@ function ChartLegendContent({
     <div
       className={cn(
         // Playlog: legend 12/16 medium ink-muted, 16px between items, 12px from the plot.
-        "flex flex-wrap items-center justify-start gap-4 text-caption font-medium text-muted-foreground",
+        "flex flex-wrap items-center justify-start gap-4 text-caption text-muted-foreground",
         verticalAlign === "top" ? "pb-3" : "pt-3",
         className
       )}

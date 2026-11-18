@@ -61,7 +61,7 @@ function MenubarTrigger({
       data-slot="menubar-trigger"
       className={cn(
         // Playlog: triggers 32 high, padding 0 12, radius 2, 14/20 semibold; hover accent; open surface-selected + ink-heading.
-        "flex h-8 items-center rounded-sm px-3 text-label font-semibold text-foreground transition-colors duration-(--pl-duration-fast) ease-out select-none hover:bg-accent hover:text-accent-foreground data-popup-open:bg-surface-selected data-popup-open:text-ink-heading outline-none focus-visible:outline-(length:--pl-focus-ring-width) focus-visible:outline-offset-(--pl-focus-ring-offset) focus-visible:outline-solid focus-visible:outline-ring data-disabled:pointer-events-none data-disabled:opacity-(--pl-opacity-disabled)",
+        "flex h-8 items-center rounded-sm px-3 text-label text-foreground transition-colors duration-(--pl-duration-fast) ease-out select-none hover:bg-accent hover:text-accent-foreground data-popup-open:bg-surface-selected data-popup-open:text-ink-heading outline-none focus-visible:outline-(length:--pl-focus-ring-width) focus-visible:outline-offset-(--pl-focus-ring-offset) focus-visible:outline-solid focus-visible:outline-ring data-disabled:pointer-events-none data-disabled:opacity-(--pl-opacity-disabled)",
         className
       )}
       {...props}

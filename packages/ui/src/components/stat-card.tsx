@@ -56,7 +56,7 @@ function StatCard({
       >
         <span
           data-slot="stat-card-label"
-          className="text-label font-semibold text-muted-foreground"
+          className="text-label text-muted-foreground"
         >
           {label}
         </span>
@@ -74,14 +74,14 @@ function StatCard({
       <div
         data-slot="stat-card-value"
         // Playlog: kpi 36/40 extra-bold with -1% tracking (from the kpi token), tabular numbers.
-        className="text-kpi font-extrabold text-ink-heading tabular-nums"
+        className="text-kpi text-ink-heading tabular-nums"
       >
         {value}
       </div>
       {delta != null || footer != null ? (
         <div
           data-slot="stat-card-footer"
-          className="flex flex-wrap items-baseline gap-x-2 text-caption font-medium text-muted-foreground"
+          className="flex flex-wrap items-baseline gap-x-2 text-caption text-muted-foreground"
         >
           {delta != null ? (
             <span
