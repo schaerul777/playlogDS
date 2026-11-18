@@ -70,14 +70,22 @@ Assumptions to confirm: `--secondary` uses `surface-hover` with `ink-heading` te
 - Focus: 2px solid `focus-ring` with a 2px offset on every interactive element (`--pl-focus-ring-width`, `--pl-focus-ring-offset`). Never remove it.
 - Disabled: 40% opacity (`--pl-opacity-disabled`), no pointer events.
 
-## Figma-only variables
+## Figma-only variables and styles
 
-The Figma library has a few variables that are not Playlog tokens. They cover values the components take from Tailwind, so CSS needs no `--pl-` variable for them. Their Figma code syntax is the CSS they resolve to. Values are listed under `figmaOnly` in `tokens.json`.
+These exist in the Figma library only. They are not in `tokens.css` and need no `--pl-` variable, because CSS gets the same values from Tailwind or from an existing token. Each Figma variable's code syntax is the CSS it resolves to. Values are listed under `figmaOnly` in `tokens.json`.
 
-- `spacing-0-5`, `spacing-1-5`, `spacing-3`, `spacing-4`, `spacing-5`, `spacing-6`, `spacing-12`: Tailwind spacing steps (2, 6, 12, 16, 20, 24, 48px) used for small paddings, icon sizes and the `xs` / `lg` button heights. Code syntax `calc(var(--spacing) * n)`.
+- Spacing steps from the Tailwind scale (code syntax `calc(var(--spacing) * n)`, or `1px`):
+  - `spacing-px` (1px): Switch inset, vertical Tabs trigger.
+  - `spacing-0-5` (2px), `spacing-1-5` (6px), `spacing-2-5` (10px): small paddings and gaps, the tab underline, the line-tab top padding.
+  - `spacing-3` (12px), `spacing-3-5` (14px), `spacing-4` (16px): icon sizes, the checkbox check mark.
+  - `spacing-4-5` (18px): Checkbox box. `spacing-5` (20px): Switch height. `spacing-5-5` (22px): Badge height.
+  - `spacing-6` (24px), `spacing-7` (28px), `spacing-9` (36px), `spacing-12` (48px): Button `xs` / `lg` heights, Switch widths, Select right padding.
+  - `spacing-36` (144px): Select popup minimum width.
 - `destructive-90`: destructive button hover, `bg-destructive/90`. Code syntax `color-mix(in oklab, var(--destructive) 90%, transparent)`.
+- `pl-shadow-overlay-color`: the colour of `--pl-shadow-overlay`, split out so the `pl-shadow-overlay` effect style can switch with the mode. Light `#004d9f` at 14%, Dark black at 45%.
+- Text styles `caption-semibold` (12/16, 600) and `body-semibold` (16/24, 600): the Tailwind combinations `text-caption font-semibold` (Badge, Button `xs`) and `text-body font-semibold` (Button `lg`).
 
-If one of these becomes a brand decision, promote it to a `--pl-` token here and in `tokens.css`.
+If one of these becomes a brand decision, promote it to a `--pl-` token in `tokens.css` and remove it from this list.
 
 ## Icons
 
