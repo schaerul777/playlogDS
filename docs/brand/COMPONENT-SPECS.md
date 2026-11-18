@@ -108,6 +108,78 @@ How to use:
 - Active item: `pl-surface-selected` fill, `pl-ink-heading` text, bold, icon `pl-ink-heading`, plus a 3px `pl-brand-accent` marker on the sidebar's left edge (8px in from the item's top and bottom).
 - Count badge: pushed to the right, 12/16 bold, padding 0 6, radius 2, `primary` fill, `primary-foreground` text.
 
-## Menus, popovers and dialogs (when added)
+## Overlays: shared rules
 
-- Fill `popover`, radius 4 for menus and 8 for dialogs, the overlay shadow (`--pl-shadow-overlay`).
+Applies to Sheet, Dialog, Alert Dialog, Dropdown Menu, Popover, Tooltip and Toast. Values marked "agreed" were proposed for this library and approved; they are not in the Playlog artifact.
+
+- Fill `popover` (surface-raised), text `popover-foreground`, the overlay shadow (`--pl-shadow-overlay`). No border on floating layers (agreed).
+- Radius: 4 for anything anchored to a trigger (menus, popovers, tooltips, toasts); 8 for centred dialogs; 0 for edge-attached sheets.
+- Layers that dim the page use `--pl-scrim`, no blur.
+- Motion: ease-out. Fades use `--pl-duration-fast` (150ms). Panels that slide from an edge use `--pl-duration-slow` (200ms). No zoom.
+- Focus: the ring goes on controls inside the overlay, not on the panel. Base UI behavior is kept: focus trap in modal layers, Escape to close, focus returns to the trigger.
+- Close buttons: Button `ghost` `icon-sm` (32) with the `close` icon, 16 from the top and right.
+
+## Sheet
+
+- Edge-attached panel, radius 0. Width 75% on small screens, max 384 (`max-w-sm`) from `sm` up (agreed). Top and bottom sheets are full width, height auto.
+- Header: padding 24 24 0. Title 16/24 bold `pl-ink-heading`. Description 14/20 `muted-foreground`, 4 below the title (agreed).
+- Body: padding 0 24. Footer: padding 0 24 24, buttons in a row aligned right, gap 8; stacked full width below `sm`. Gap 16 between header, body and footer (agreed).
+- Motion: scrim fades (fast). The panel slides in from its edge by its full size (slow).
+- Escape and a click on the scrim close it.
+
+## Dialog
+
+- Centred. Width: full width minus a 16 gutter on each side, max 512 (`max-w-lg`) (agreed). Radius 8. Padding 24, gap 16 between header, body and footer (agreed).
+- Header and footer: as Sheet (title 16/24 bold `pl-ink-heading`, description 14/20 `muted-foreground` 4 below; footer row aligned right with gap 8, stacked below `sm`).
+- Motion: scrim and panel fade (fast). No zoom.
+- Escape and an outside click close it. Focus is trapped; the first focusable element gets focus.
+
+## Alert Dialog
+
+- Same panel as Dialog. Widths: `sm` 320, `default` 448 (agreed). No close button.
+- Text left-aligned at every width (agreed).
+- Footer: Cancel is Button `outline`. The action is Button `default`, or `destructive` when it destroys data; everything else stays neutral (agreed). `sm`: the two buttons share the row in equal columns.
+- Optional media tile: 32×32, radius 4, `accent` fill, 20px `pl-ink-heading` icon (as the StatCard icon tile).
+- An outside click does not close it. Escape cancels.
+
+## Dropdown Menu
+
+- Popup: as the Select popup. Radius 4, padding 4, min width 144, height limited to the available space, 4 from the trigger. Fade (fast), no zoom or slide.
+- Item: height 32 (padding 6 8), radius 2, gap 8, 14/20 `foreground`, icons 16 `muted-foreground`. Highlight `accent` with `accent-foreground` (icons too). Disabled 40%.
+- Destructive item: `pl-danger-text`, highlight `pl-danger-surface`.
+- Checkbox and radio items: the `check` icon 8 from the right (right padding 32).
+- Label: 12/16 medium `muted-foreground`, padding 6 8. Separator: 1px `border`, 4 above and below, edge to edge.
+- Submenu trigger: `chevron-right` icon at the end; `accent` fill while its submenu is open.
+- Shortcut: 12/16 `muted-foreground`, no extra tracking. Inset items: left padding 32.
+- Keyboard: arrows, typeahead, Enter and Space, Escape, ArrowRight and ArrowLeft for submenus (Base UI).
+
+## Popover
+
+- Radius 4 (anchored). Padding 16, gap 12, default width 288 (`w-72`), 4 from the trigger (agreed). Fade (fast).
+- Title 14/20 bold `pl-ink-heading`. Description 14/20 `muted-foreground` (agreed).
+- Escape and an outside click close it; focus returns to the trigger.
+
+## Tooltip
+
+- `popover` fill with the overlay shadow, radius 4, padding 6 12, 12/16 medium, max width 320 (`max-w-xs`), 4 from the trigger, no arrow (agreed).
+- Opens after 300ms on hover and on keyboard focus (agreed); closes at once. Fade (fast).
+- Text only. No interactive content.
+
+## Separator
+
+- 1px (`--pl-border-width`) in `border`. Horizontal: full width. Vertical: stretches to the parent. Decorative by default. No built-in margin.
+
+## Skeleton
+
+- `muted` fill, radius 4 (override per shape). Pulse animation, switched off for reduced motion (agreed).
+- Decorative: mark the loading region with `aria-busy` instead.
+
+## Toast (Sonner)
+
+- Position bottom-right, 24 from the viewport edges, 8 between stacked toasts. Shown for 6 seconds (agreed).
+- Toast: `popover` fill, overlay shadow, radius 4, padding 12 16, gap 12, width 360 (agreed).
+- Title 14/20 bold `foreground`. Description 14/20 `muted-foreground`.
+- Status shows as an icon in the matching `pl-*-text` color plus the words of the title (agreed): success `check`, info `info`, warning `warning`, error `alert-circle`, loading uses Sonner's built-in spinner. No new glyphs.
+- Action: Button `sm` (32). Close button (optional): Button `ghost` `icon-sm`.
+- Motion: Sonner's transitions run at `--pl-duration-slow` (agreed).
+- Theme follows the `.dark` class. No `next-themes`.
