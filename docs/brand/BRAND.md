@@ -41,11 +41,13 @@ Assumptions to confirm: `--secondary` uses `surface-hover` with `ink-heading` te
 - Status is always a word or an icon plus color, never color alone.
 - Brand bands (hero, footer, report covers) use `surface-brand` with `ink-on-brand`. Emphasize one word with `ink-on-brand-accent`.
 - Statement blocks use `surface-accent` with `ink-on-accent`. One per page at most.
+- Code syntax colours: `syntax-keyword`, `syntax-string`, `syntax-number`, `syntax-comment` (`--pl-syntax-*`), aliased to `info-text`, `success-text`, `warning-text` and `muted-foreground` in light and dark; everything else in code is `foreground`. They are for code only, never for status or text elsewhere.
 - Charts: `chart-1` to `chart-8` in order. Most charts need two or three series. Label series directly. Product-line breakdowns use `line-*` colors so a channel keeps one color everywhere.
 
 ## Typography
 
 - **Reddit Sans** is the only UI and editorial face.
+- **Reddit Mono** is for code only (Code Block, inline code): the one stated exception to "Reddit Sans only" (`--font-mono`; the system mono stack is the fallback).
 - **Funnel Display** is the logotype face. Use it only inside the logo and product-line lockups. Never for UI or body text.
 - App: `h1` page title (32/40, 800), `h2` section (24/32, 700), `h3` card title (16/24, 700), `body-sm` for tables, menus and fields (14/20), `label` for form labels and buttons (14/20, 600), `label-sm` for small buttons (13/16, 600), `caption` for meta (12/16, 500).
 - Website: `display`, `headline`, `subheadline`, `body-lg`, `body`, `keyword`, `eyebrow`.
@@ -88,7 +90,7 @@ These exist in the Figma library only. They are not in `tokens.css` and need no 
   - `spacing-36` (144px): Select popup and chart tooltip minimum width.
   - `spacing-56` (224px): Sidebar nav item width (248px sidebar minus 12px padding each side) and the StatCard drawing width.
   - `spacing-160` (640px): demo width of the Table, TableRow and BarChart drawings (full width in code).
-  - `spacing-72` (288px): Popover default width (`w-72`). `spacing-90` (360px): Toast width.
+  - `spacing-64` (256px): Hover Card default width (`w-64`). `spacing-72` (288px): Popover default width (`w-72`). `spacing-90` (360px): Toast width.
   - `spacing-10` (40px): Avatar `lg`. `spacing-20` (80px): Textarea minimum height.
 - Container widths from the Tailwind scale (code syntax `var(--container-*)`): `container-xs` (320px, Tooltip max width and Alert Dialog `sm`), `container-sm` (384px, Sheet left/right), `container-md` (448px, Alert Dialog default), `container-lg` (512px, Dialog max width).
 - `pl-shadow-overlay-color`: the colour of `--pl-shadow-overlay`, split out so the `pl-shadow-overlay` effect style can switch with the mode. Light `#004d9f` at 14%, Dark black at 45%.
@@ -99,6 +101,7 @@ These exist in the Figma library only. They are not in `tokens.css` and need no 
   - `body-sm-medium` (14/20, 500): `text-body-sm font-medium` (Sidebar nav item).
   - `body-sm-bold` (14/20, 700): `text-body-sm font-bold` (Alert title, Table caption, active nav item).
   - `eyebrow-uppercase` (12/16, 600, 4%, uppercase): `text-eyebrow uppercase` (Sidebar section title).
+  - `code` (Reddit Mono 14/20, 400): `text-body-sm font-mono` (Code Block). `code-sm` (Reddit Mono 12/16, 400): `text-caption font-normal font-mono` (Code Block `sm`, tool output). Code only.
 - The `kpi` text style in Figma carries -1% letter spacing, the same as `--text-kpi--letter-spacing` in code and `kpi` in `tokens.json`. This is a token, not a Figma-only value.
 
 If one of these becomes a brand decision, promote it to a `--pl-` token in `tokens.css` and remove it from this list.
@@ -107,7 +110,7 @@ If one of these becomes a brand decision, promote it to a `--pl-` token in `toke
 
 - Icons come from the `Icon` component only (`@workspace/ui/icons/icon`, `<Icon name="…" />`). No other icon library.
 - The Playlog set is 48 icons on a 24px grid, drawn as filled outline shapes (`fill="currentColor"`, `fill-rule="evenodd"`). Path data lives in `packages/ui/src/icons/icon-data.ts`, generated from the design system; do not edit it by hand.
-- Five stroke glyphs fill gaps in the set (check, chevron-down, chevron-right, close, search): 2px stroke, round caps and joins. Approved extra stroke glyphs in the same style live in `packages/ui/src/icons/extra-icons.ts` (sidebar, plus, trash, more, warning, alert-circle, info, users).
+- Five stroke glyphs fill gaps in the set (check, chevron-down, chevron-right, close, search): 2px stroke, round caps and joins. Approved extra stroke glyphs in the same style live in `packages/ui/src/icons/extra-icons.ts` (sidebar, plus, trash, more, warning, alert-circle, info, users, loader, and for AI Elements stop, thumbs-down, terminal, arrow-up-right).
 - Default size 20px in UI, 24px in navigation and empty states.
 - Color follows text: `ink-muted` beside labels, `ink-heading` for emphasis, `on-primary` inside primary buttons.
 - Pair icons with a text label, except universally known actions (close, search), which need an `aria-label`.
@@ -134,3 +137,4 @@ Out of scope for now (marketing, brand and document pieces): TopNav, Hero, Featu
 - `RedditSans-Variable-Italic.woff2`
 - `FunnelDisplay-Regular.woff2`
 - `FunnelDisplay-Medium.woff2`
+- `RedditMono-Variable.woff2` (code only)

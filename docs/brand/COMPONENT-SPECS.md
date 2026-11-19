@@ -365,3 +365,111 @@ Applies to Empty, Kbd, Item, Hover Card, Scroll Area and Aspect Ratio. Values ma
 ## Aspect Ratio
 
 - A wrapper only: `aspect-ratio` from the `ratio` prop, no styling. No Figma component (agreed).
+
+# AI Elements (Phase 1)
+
+Source: shadcn/ui AI Elements, Base UI variant (`ui.shadcn.com/docs/ai-elements/base/*` and the `base-vega` registry items). Patterns are compositions, so most of the look comes from components we already own. Values the brand or an earlier spec does not define were proposed and approved on review; those marked "(agreed)" were answered individually. Nothing here adds a font, a gradient or a new radius.
+
+## AI Elements: shared rules
+
+- Reuse before inventing: Message Scroller buttons, Attachment actions and Suggestion are our Button; Prompt Input is our Input Group and Textarea; Trace is our Collapsible; Inline Citation is our Hover Card; Confirmation is our Item; the empty thread is our Empty; row menus are our Dropdown Menu; tooltips are our Tooltip.
+- Type: message text 14/20 (`body-sm`); meta (headers, footers, markers, descriptions) 12/16 medium (`caption`) `muted-foreground`; step lines 14/20 `muted-foreground`. Reddit Sans only (code: see Code Block).
+- Radius: bubbles and cards 8, attachment chips, buttons, inputs and code blocks as the existing rules (4 for controls, 8 for panels). No `rounded-full` except Avatar. (shadcn uses 12 and full on bubbles, send buttons and chips; the brand has neither).
+- Focus: 2px solid `--ring`, 2px offset, on triggers, links, the scroll viewport and the code viewport. Disabled: `--pl-opacity-disabled`. Motion: `--pl-duration-fast`; nothing animates under reduced motion except Spinner.
+- Status is a word or an icon plus colour: icon `loader` (running), `check` (done), `alert-circle` (error), `time` (pending); the title says it too ("Running pnpm build", "Failed to run pnpm lint") (agreed).
+- Streaming: Spinner (16) beside the text, steady text, `aria-busy` on the thread; no shimmer, no gradient, no dots (agreed).
+- New glyphs, drawn as 2px round strokes in `extra-icons.ts`: `stop`, `thumbs-down`, `terminal`, `arrow-up-right` (agreed). Everything else reuses the Playlog set; the file chip media uses `sticky-note`, the empty thread `lightbulb`, the scroll button `chevron-down`.
+
+## Message Scroller
+
+- Unstyled scroll behaviour from `@shadcn/react`: the person's message is the scroll anchor, the reply streams in below it, and auto-scroll follows the live edge until the person scrolls up.
+- Viewport: `role="region"`, `aria-label="Messages"`, focusable, focus ring as Scroll Area. Content: `role="log"`, `aria-relevant="additions"`, `aria-busy` while streaming.
+- Content padding 0 24, gap 24 between turns. Scrollbar as Scroll Area (thumb `border`, 6 wide); no edge fade.
+- Scroll-to-end button: Button `outline` `icon-sm` (32), `card` fill, `chevron-down` 16, overlay shadow, centred 16 above the input; fades and slides 8 at `--pl-duration-fast`; hidden and `inert` at the live edge (agreed). No edge fade (agreed).
+
+## Message
+
+- Row: `align="start"` (assistant) or `align="end"` (person). Optional MessageAvatar uses our Avatar (`sm`); none by default.
+- MessageHeader and MessageFooter: 12/16 medium `muted-foreground`; footer actions are Button `ghost` `icon-sm`, gap 4, each with `aria-label` and a Tooltip. Actions: copy (`clipboard`, then `check`), good and bad response (`thumbs-up`, `thumbs-down`, `aria-pressed`), retry (`refresh`), edit (`edit`).
+- Gap 8 between a bubble and its header or footer; gap 10 between parts of one turn (reasoning, tool lines, text, sources).
+
+## Bubble
+
+- Variants keep shadcn's names. Padding 8 12, radius 8, text 14/20, max width 80%, long words wrap.
+  - `default`: `primary` fill, `primary-foreground` text. `secondary`: `secondary` fill, `foreground` text. `muted`: `muted` fill. `tinted`: `pl-surface-selected` fill, `pl-ink-heading` text (replaces shadcn's colour maths). `outline`: `card` fill, 1px `border`. `ghost`: no fill, no padding, full width. `destructive`: `pl-danger-surface` fill, `pl-danger-text` text.
+- Person: `secondary` bubble, right-aligned. Assistant: `ghost`, no bubble, full-width text (agreed).
+- Interactive bubbles (link or button): hover one step darker (`accent`), focus ring. BubbleReactions: radius 2 pill, `muted` fill, ringed in `background` at `--pl-ring-separator-width`.
+
+## Marker
+
+- A one-line note inside the thread. 12/16 medium `muted-foreground`, icon 16, gap 8, min height 16 (agreed).
+- Variants: `default`; `separator` (text between two 1px `border` lines, for dates); `border` (1px `border` below, padding 0 0 8).
+- Status marker: `role="status"`, Spinner 16 plus the text ("Checking the logs…") (agreed).
+
+## Trace
+
+- One line per step: icon 16 + title 14/20, gap 8, `muted-foreground`, links and triggers go `foreground` on hover. Steps 8 apart.
+- Status (set on TraceLine): none (done, `check`), `running` (Spinner, present-tense title), `error` (`pl-danger-text`, `alert-circle`, "Failed to…"), `pending` (`time`, `muted-foreground`) (agreed).
+- Collapsible trigger: the line plus `chevron-right` 16 that turns 90° at `--pl-duration-fast`; focus ring radius 4.
+- Content: left border 1px `border`, padding 0 4 0 16, 8 above and 4 below, `muted-foreground`, height animates at `--pl-duration-fast`.
+
+## Reasoning
+
+- A Trace line "Thinking" (running) then "Thought for 5s", icon `brain`, with the thinking text in a TraceCollapsible. Open while the model thinks and closes when it finishes; the person can reopen it, and that choice is kept for the turn (agreed).
+
+## Sources
+
+- A Trace line "Used 3 sources" (icon `globe`) opening into one Trace link per source: title, or hostname, with a trailing `arrow-up-right` glyph (new, proposed) and "(opens in a new tab)" for screen readers. Links are underlined on hover.
+
+## Inline Citation
+
+- Button `secondary` `xs` (24) showing the hostname, inside the sentence it supports, on a Hover Card (surface as Hover Card; width 256): title 14/20 semibold, description 14/20 `muted-foreground`, link 12/16 underlined.
+- Opens after 150ms on hover or focus and closes after 150ms (agreed; the Hover Card default is 300ms, citations are quick references).
+
+## Tool
+
+- A Trace line per tool call, icon `terminal` (new, proposed): "Running pnpm test" / "Ran pnpm test" / "Failed to run pnpm test" / "Denied rm -rf dist". Finished and failed calls open to their output in a Code Block (`size="sm"`, max height 256, wrap). A failed call is open by default.
+- A pending approval is not a step the agent took: it sits outside Trace as a Confirmation.
+
+## Confirmation
+
+- Our Item, `outline`, `sm`: `terminal` icon media, title "Run pnpm build?", description, actions Button `outline` `sm` "Deny" and Button `default` `sm` "Approve", 8 apart. After the answer it becomes a Tool line.
+
+## Code Block
+
+- Container: radius 8, 1px `border`, `muted` fill (surface-sunken, an inset area), text `foreground`; `destructive` variant uses `pl-danger-text` border and text.
+- Header: padding 16 16 0 (`sm`: 12), title 14/20 medium, actions right. Copy button: Button `ghost` `icon-xs` (24), `clipboard` then `check` for 2s, labelled "Copy"/"Copied" with a polite live region. Floating actions show on hover and on focus-within, always on touch.
+- Content: `pre` with `tabIndex=0` and the viewport focus ring, padding 16 (`sm`: 12), `dir="ltr"`. Size: 14/20 (`sm`: 12/16), weight 400. Line numbers `muted-foreground`, hidden from screen readers.
+- Font: Reddit Mono (agreed). `--font-mono` becomes `"Reddit Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace`; `tokens.css` gets the `@font-face` and the file goes in `apps/web/public/fonts/`. Code is the one stated exception to "Reddit Sans only" and is noted in `BRAND.md`.
+- Syntax colours: four new tokens aliased to existing values (agreed), highlighted by shiki with a CSS-variable theme (no hex themes), contrast measured on `muted`:
+
+| Token | Light | Dark | Contrast light / dark |
+|---|---|---|---|
+| `--pl-syntax-keyword` | `#004d9f` (= `pl-info-text`) | `#92d1f8` | 7.3 / 10.0 |
+| `--pl-syntax-string` | `#00726b` (= `pl-success-text`) | `#5ef4d7` | 5.2 / 12.1 |
+| `--pl-syntax-number` | `#a8451d` (= `pl-warning-text`) | `#ffa27c` | 5.3 / 8.4 |
+| `--pl-syntax-comment` | `#606060` (= `muted-foreground`) | `#99b8d9` | 5.6 / 8.0 |
+
+  Everything else is `foreground`. Diff: added lines `pl-success-surface` fill, removed lines `pl-danger-surface` fill, each with a `+` or `−` marker in `pl-success-text` or `pl-danger-text`, so colour is never the only cue; syntax colours keep 5.2:1 or more on both fills in both modes. Highlighted lines `pl-surface-selected`.
+
+## Attachment
+
+- Chip: `card` fill, 1px `border`, radius 4, padding 8 (`sm` 6, `xs` 4), gap 8; media tile 40 (`sm` 32, `xs` 24), radius 4, `muted` fill, icon 16; title 14/20 medium (`sm`, `xs`: 12/16 semibold), description 12/16 `muted-foreground`; remove action Button `ghost` `icon-xs` with `aria-label`.
+- States (`state` is Figma-only for hover): `done`; `idle` (1px dashed `border`); `uploading` and `processing` (Spinner in the media tile, description names the step); `error` (`pl-danger-text` border, `pl-danger-surface` tile, `pl-danger-text` description that says why).
+- AttachmentGroup scrolls sideways with focusable items; vertical orientation (width 96) is kept for image previews.
+
+## Prompt Input
+
+- Our Input Group around a Textarea (agreed layout): `card` fill, 1px `input`, radius 4, focus ring and invalid state on the wrapper (as Input Group). Textarea 14/20, grows to 8 lines (160) then scrolls; placeholder `muted-foreground`.
+- Attachment chips (`sm`) in a block-start addon above the text; toolbar in a block-end addon, padding 8: attach Button `outline` `icon-sm` (32, square, `attachment`), the Model Selector slot (Phase 2, empty for now), send Button `default` `icon-sm` (`send`) at the end.
+- Keys: Enter sends, Shift+Enter adds a line, Escape stops a running reply. While streaming the send button becomes Stop (`stop`), still a real button with `aria-label` (agreed).
+- States: empty (send disabled), filled, streaming (Stop shown, text kept), disabled (whole group 40%).
+
+## Suggestion
+
+- Button `outline` `sm`, label only, gap 8, in a row that wraps (no hidden suggestions, no edge fade). Click sends the label as the message.
+
+## Chat
+
+- Column: optional header (title 16/24 bold `pl-ink-heading`, description 12/16 `muted-foreground`, reset Button `outline` `icon`), the Message Scroller, then suggestions and the Prompt Input pinned at the bottom with 16 around them; content column centred, max width 768.
+- Empty thread: our Empty (`lightbulb` tile, "What should we ask?"), suggestions below.
