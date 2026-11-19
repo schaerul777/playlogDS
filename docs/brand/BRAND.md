@@ -41,11 +41,13 @@ Assumptions to confirm: `--secondary` uses `surface-hover` with `ink-heading` te
 - Status is always a word or an icon plus color, never color alone.
 - Brand bands (hero, footer, report covers) use `surface-brand` with `ink-on-brand`. Emphasize one word with `ink-on-brand-accent`.
 - Statement blocks use `surface-accent` with `ink-on-accent`. One per page at most.
+- Code syntax colours: `syntax-keyword`, `syntax-string`, `syntax-number`, `syntax-comment` (`--pl-syntax-*`), aliased to `info-text`, `success-text`, `warning-text` and `muted-foreground` in light and dark; everything else in code is `foreground`. They are for code only, never for status or text elsewhere.
 - Charts: `chart-1` to `chart-8` in order. Most charts need two or three series. Label series directly. Product-line breakdowns use `line-*` colors so a channel keeps one color everywhere.
 
 ## Typography
 
 - **Reddit Sans** is the only UI and editorial face.
+- **Reddit Mono** is for code only (Code Block, inline code): the one stated exception to "Reddit Sans only" (`--font-mono`; the system mono stack is the fallback).
 - **Funnel Display** is the logotype face. Use it only inside the logo and product-line lockups. Never for UI or body text.
 - App: `h1` page title (32/40, 800), `h2` section (24/32, 700), `h3` card title (16/24, 700), `body-sm` for tables, menus and fields (14/20), `label` for form labels and buttons (14/20, 600), `label-sm` for small buttons (13/16, 600), `caption` for meta (12/16, 500).
 - Website: `display`, `headline`, `subheadline`, `body-lg`, `body`, `keyword`, `eyebrow`.
@@ -107,7 +109,7 @@ If one of these becomes a brand decision, promote it to a `--pl-` token in `toke
 
 - Icons come from the `Icon` component only (`@workspace/ui/icons/icon`, `<Icon name="…" />`). No other icon library.
 - The Playlog set is 48 icons on a 24px grid, drawn as filled outline shapes (`fill="currentColor"`, `fill-rule="evenodd"`). Path data lives in `packages/ui/src/icons/icon-data.ts`, generated from the design system; do not edit it by hand.
-- Five stroke glyphs fill gaps in the set (check, chevron-down, chevron-right, close, search): 2px stroke, round caps and joins. Approved extra stroke glyphs in the same style live in `packages/ui/src/icons/extra-icons.ts` (sidebar, plus, trash, more, warning, alert-circle, info, users).
+- Five stroke glyphs fill gaps in the set (check, chevron-down, chevron-right, close, search): 2px stroke, round caps and joins. Approved extra stroke glyphs in the same style live in `packages/ui/src/icons/extra-icons.ts` (sidebar, plus, trash, more, warning, alert-circle, info, users, loader, and for AI Elements stop, thumbs-down, terminal, arrow-up-right).
 - Default size 20px in UI, 24px in navigation and empty states.
 - Color follows text: `ink-muted` beside labels, `ink-heading` for emphasis, `on-primary` inside primary buttons.
 - Pair icons with a text label, except universally known actions (close, search), which need an `aria-label`.
@@ -134,3 +136,4 @@ Out of scope for now (marketing, brand and document pieces): TopNav, Hero, Featu
 - `RedditSans-Variable-Italic.woff2`
 - `FunnelDisplay-Regular.woff2`
 - `FunnelDisplay-Medium.woff2`
+- `RedditMono-Variable.woff2` (code only)

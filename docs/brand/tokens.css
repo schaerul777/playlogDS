@@ -13,6 +13,7 @@
 @font-face { font-family: "Reddit Sans"; src: url("/fonts/RedditSans-Variable-Italic.woff2") format("woff2"); font-weight: 200 900; font-style: italic; font-display: swap; }
 @font-face { font-family: "Funnel Display"; src: url("/fonts/FunnelDisplay-Regular.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
 @font-face { font-family: "Funnel Display"; src: url("/fonts/FunnelDisplay-Medium.woff2") format("woff2"); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: "Reddit Mono"; src: url("/fonts/RedditMono-Variable.woff2") format("woff2"); font-weight: 200 900; font-style: normal; font-display: swap; }
 
 :root {
   /* Palette (theme-invariant) */
@@ -126,6 +127,10 @@
   --pl-chart-7: #dc4648;
   --pl-chart-8: #99b8d9;
   --pl-chart-grid: #e5e3dd;
+  --pl-syntax-keyword: #004d9f;
+  --pl-syntax-string: #00726b;
+  --pl-syntax-number: #a8451d;
+  --pl-syntax-comment: #606060;
   --pl-line-label: #3551a4;
   --pl-line-divider: #aaaaaa;
   --card-foreground: #282828;
@@ -193,6 +198,10 @@
   --pl-chart-7: #ff7a7c;
   --pl-chart-8: #6694c5;
   --pl-chart-grid: #1f3d68;
+  --pl-syntax-keyword: #92d1f8;
+  --pl-syntax-string: #5ef4d7;
+  --pl-syntax-number: #ffa27c;
+  --pl-syntax-comment: #99b8d9;
   --pl-line-label: #ffffff;
   --pl-line-divider: #aaaaaa;
   --card-foreground: #faf9f6;
@@ -215,7 +224,7 @@
 @theme inline {
   --font-sans: "Reddit Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-logo: "Funnel Display", "Reddit Sans", system-ui, sans-serif;
-  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --font-mono: "Reddit Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 
   /* Radius per size: Playlog uses 2 / 4 / 8px. Verify against the component classes after `shadcn add`. */
   --radius-sm: 2px;
@@ -270,6 +279,10 @@
   --color-chart-7: var(--pl-chart-7);
   --color-chart-8: var(--pl-chart-8);
   --color-chart-grid: var(--pl-chart-grid);
+  --color-syntax-keyword: var(--pl-syntax-keyword);
+  --color-syntax-string: var(--pl-syntax-string);
+  --color-syntax-number: var(--pl-syntax-number);
+  --color-syntax-comment: var(--pl-syntax-comment);
   --color-line-label: var(--pl-line-label);
   --color-line-divider: var(--pl-line-divider);
   --color-card-foreground: var(--card-foreground);

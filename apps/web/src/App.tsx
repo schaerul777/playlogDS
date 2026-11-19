@@ -135,6 +135,7 @@ import { cn } from "@workspace/ui/lib/utils"
 import { FormsSection } from "@/forms-section"
 import { NavSection } from "@/nav-section"
 import { DisplaySection } from "@/display-section"
+import { ChatSection } from "@/chat-section"
 
 import { useTheme } from "@/components/theme-provider"
 
@@ -258,6 +259,7 @@ function Showcase({ label, className }: { label: string; className?: string }) {
       <FormsSection />
       <NavSection />
       <DisplaySection />
+      <ChatSection />
     </main>
   )
 }
