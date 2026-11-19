@@ -136,6 +136,7 @@ import { FormsSection } from "@/forms-section"
 import { NavSection } from "@/nav-section"
 import { DisplaySection } from "@/display-section"
 import { ChatSection } from "@/chat-section"
+import { ControlsSection } from "@/controls-section"
 
 import { useTheme } from "@/components/theme-provider"
 
@@ -260,6 +261,7 @@ function Showcase({ label, className }: { label: string; className?: string }) {
       <NavSection />
       <DisplaySection />
       <ChatSection />
+      <ControlsSection />
     </main>
   )
 }

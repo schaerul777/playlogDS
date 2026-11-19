@@ -496,16 +496,16 @@ Button Group, Slider, Input OTP and Drawer, on Base UI. Values the brand or an e
 
 ## Slider
 
-- Track: `muted` fill, height 8, radius 0 (as Progress). Range: `primary` fill (Dark Blue; Green in dark mode), eased at `--pl-duration-fast` (agreed). Progress uses Green because its fill is decoration with the value written beside it; a control's fill has to read against `muted`.
-- Thumb: 20×20, radius 4, `card` fill, 2px `primary` border (agreed). Hit area 40×40 (an `after` layer). Hover: `accent` fill. Focus: 2px ring, 2px offset. The thumb stays inside the track (`thumbAlignment="edge"`).
-- Single value, or range with two thumbs (Base UI keeps them from crossing; `minStepsBetweenValues` is available). Each range thumb is named ("Minimum price", "Maximum price") through `getAriaLabel` (agreed).
+- Track: `muted` fill, height 8, radius 0 (as Progress). Range: `primary` fill (Dark Blue; Green in dark mode), eased at `--pl-duration-fast` except while dragging, when it follows the thumb with no easing (agreed). Progress uses Green because its fill is decoration with the value written beside it; a control's fill has to read against `muted`.
+- Thumb: 20×20, radius 4, `card` fill, 2px `primary` border (agreed). Hit area 40×40 (an `after` layer, 12 past the thumb because the 2px border is outside the layer). Hover: `accent` fill. Focus: 2px ring, 2px offset. The thumb stays inside the track (`thumbAlignment="edge"`).
+- Single value, or range with two thumbs (Base UI keeps them from crossing; `minStepsBetweenValues` is available). Each range thumb is named ("Minimum price", "Maximum price") through `thumbLabels` (`getAriaLabel`) (agreed). A single slider with no label row is named by its `aria-label`, which the thumb also takes.
 - Optional row above, as Progress: SliderLabel 14/20 semibold `foreground`; SliderValue 12/16 medium `muted-foreground`, tabular numerals, right-aligned, 8 above the track (agreed). No value tooltip and no tick marks (agreed).
 - Vertical (`orientation="vertical"`): track 8 wide, minimum height 160 (agreed).
 - Keyboard (Base UI): arrows ±step, PageUp and PageDown ±large step, Home and End. Disabled: 40%.
 
 ## Input OTP
 
-- Built on the Base UI OTP Field (stable in `@base-ui/react` 1.9.0), not the `input-otp` package (agreed; no new dependency). The API follows Base UI: `length`, `validationType`, `onValueComplete`, and an `index` on each slot. Export names stay shadcn's: InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator.
+- Built on the Base UI OTP Field (stable in `@base-ui/react` 1.9.0), not the `input-otp` package (agreed; no new dependency). The API follows Base UI: `length`, `validationType`, `onValueComplete`. A slot takes no `index`: its position is its order. `invalid` and `aria-describedby` are props of InputOTP (our Field is a plain wrapper, so they cannot come from a Field context) and reach every slot. Export names stay shadcn's: InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator.
 - Slot: 40×40, radius 4, `card` fill, 1px `input` border, 14/20 `foreground` centred; hover border `foreground`; separate slots 8 apart (each looks like an Input) (agreed). Active slot: the 2px ring, 2px offset; native caret (real inputs, no fake caret).
 - Invalid (`aria-invalid`): every slot border `pl-danger-text`. Disabled: 40%, no pointer events.
 - Groups: slots are grouped (for example 3 + 3) with a separator that is a 12×1px `input` line, no glyph (agreed). Not masked by default; `mask` is available.
@@ -521,5 +521,5 @@ Button Group, Slider, Input OTP and Drawer, on Base UI. Values the brand or an e
 - Header, body, footer as Sheet: header padding 24 24 0 (title 16/24 bold `pl-ink-heading`, description 14/20 `muted-foreground`, left-aligned at every width), body padding 0 24, footer padding 0 24 24 with the Buttons stacked full width, gap 8, gap 16 between the three. Close button as Sheet: Button `ghost` `icon-sm`, `close`, 16 from the top and right (agreed).
 - Motion: panel slides at `--pl-duration-slow` ease-out; scrim fades at `--pl-duration-fast`; no transition while dragging; the release speed follows the swipe (Base UI). The nested-drawer scale and brightness effect is dropped.
 - Behaviour (Base UI): Escape, a scrim click or a swipe down closes; focus is trapped and returns to the trigger.
-- Snap points: supported by the primitive, off by default.
+- Snap points: supported by the primitive, off by default. `DrawerBody` (padding 0 24, scrolls) is added so a long body scrolls under a fixed header and footer. `showSwipeHandle` (default true) and `showCloseButton` (default true) can be turned off.
 - Versus Sheet `side="bottom"`: Sheet already gives the same surface, scrim and slide, closed by Escape, scrim or the close button. Drawer adds swipe-to-dismiss with touch physics, the handle and optional snap points. On a desktop pointer the two look the same.
