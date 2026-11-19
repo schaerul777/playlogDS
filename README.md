@@ -19,3 +19,17 @@ To use the components in your app, import them from the `ui` package.
 ```tsx
 import { Button } from "@workspace/ui/components/button";
 ```
+
+## Contributing
+
+1. Branch from an up-to-date `main` (`git switch main && git pull && git switch -c my-change`).
+2. Make your change, then run the three checks from the repo root:
+
+   ```bash
+   pnpm lint
+   pnpm typecheck
+   pnpm build
+   ```
+
+   `pnpm lint` also runs the type-token check and blocks Remix icon imports.
+3. Push the branch and open a pull request. The template lists what to check. CI runs the same three checks on every pull request.
