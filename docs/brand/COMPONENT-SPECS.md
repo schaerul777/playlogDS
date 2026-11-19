@@ -566,3 +566,14 @@ Calendar, Date Picker and Date Range Picker. The Calendar is the shadcn Calendar
 ## Date: small screens
 
 - Popover at every width (agreed). A single month (312 wide) fits a 360 screen; the range picker falls back to one month below `md`. The playground shows the same Calendar inside a Drawer as a recipe for apps that prefer a bottom panel; the components do not switch on their own.
+
+## Date: implementation notes (Batch F)
+
+- Files: `calendar.tsx` (Calendar, CalendarDayButton), `date-picker.tsx` (DatePicker, DateRangePicker, DatePickerTrigger, `getDefaultDateRangePresets`). Playground: `apps/web/src/date-section.tsx`.
+- Date Picker props: `value`, `defaultValue`, `onValueChange`, `placeholder` ("Select date"), `locale`, `formatDate`, `minDate`, `maxDate`, `disabledDates` (any react-day-picker matcher), `disabled`, `invalid`, `clearable`, `size` (`default` | `sm`), `calendarProps`. Date Range Picker adds `presets` and uses the same props with a `DateRange` value (placeholder "Select dates").
+- The trigger is a Popover trigger styled as Input. The clear button is a sibling Ghost icon button (`aria-label="Clear"`), not nested inside the trigger button.
+- The popover closes on select (single) or when both ends are set (range). Escape closes it and returns focus to the trigger (Base UI behavior, checked in the playground).
+- Range picker shows two months from 768px up and one below it (`useIsMobile`). The presets column is hidden below 768px.
+- Value format uses `Intl.DateTimeFormat` (`19 Nov 2026`; `id` locale gives `19 Nov 2026` with Indonesian month names). Pass `formatDate` to change it.
+- `apps/web` pins `react-day-picker` 10.0.2 as well, only for the `react-day-picker/locale` import in the playground.
+- The Icon set gains `chevron-left` (see BRAND.md). No new tokens.
