@@ -473,3 +473,53 @@ Source: shadcn/ui AI Elements, Base UI variant (`ui.shadcn.com/docs/ai-elements/
 
 - Column: optional header (title 16/24 bold `pl-ink-heading`, description 12/16 `muted-foreground`, reset Button `outline` `icon`), the Message Scroller, then suggestions and the Prompt Input pinned at the bottom with 16 around them; content column centred, max width 768.
 - Empty thread: our Empty (`lightbulb` tile, "What should we ask?"), suggestions below.
+
+# Controls (Batch E)
+
+Button Group, Slider, Input OTP and Drawer, on Base UI. Values the brand or an earlier spec does not define were proposed and answered one by one; those marked "(agreed)" were approved individually.
+
+## Controls: shared rules
+
+- Reuse before inventing: Button Group wraps our Button (sizes, colours, focus untouched); Slider follows Progress for the track and Switch for the thumb and focus; Input OTP slots look like Input; Drawer reuses the Sheet and Dialog surface, scrim and motion.
+- Focus: 2px solid `--ring`, 2px offset (`--pl-focus-ring-width`, `--pl-focus-ring-offset`). Disabled: `--pl-opacity-disabled`, no pointer events. Invalid: border `pl-danger-text`, the ring stays `--ring` (the same token as Input, Button and Badge). Motion: `--pl-duration-fast`; panels `--pl-duration-slow`.
+- Names: every Slider thumb, the OTP field and a Button Group of icon buttons needs an accessible name.
+
+## Button Group
+
+- A row (or column) of attached controls. Joined with no gap: one outer radius 4 at the two ends, inner corners 0 (agreed). Each child keeps its own Button size (32 / 40 / 48) and variant; the group sets none.
+- Outline children share one 1px `input` edge (no double border). A focused child sits above its neighbours so the 2px ring is not clipped. Same joining rule as Toggle Group `spacing={0}`.
+- Filled children (`default`, `secondary`, `destructive`) are split by ButtonGroupSeparator: 1px (`--pl-border-width`) in the `background` colour, so it works on every fill in light and dark (agreed).
+- ButtonGroupText: a static label such as "https://" or a unit. `muted` fill, 1px `input` border, padding 0 12, 14/20 medium `foreground`, icons 16 `muted-foreground` **proposed**.
+- May hold Button, ButtonGroupText, Input, Select trigger and a Dropdown Menu trigger (a Button). An Input fills the free width. Nested groups sit 8 apart (agreed).
+- Vertical (`orientation="vertical"`): same rules turned 90°.
+- Not Toggle Group (that holds selection state and roving arrow keys) and not Input Group (that draws one border around a borderless control plus addons). Button Group has no state: `role="group"`, an `aria-label` when it needs a name, and every child is a normal tab stop.
+
+## Slider
+
+- Track: `muted` fill, height 8, radius 0 (as Progress). Range: `primary` fill (Dark Blue; Green in dark mode), eased at `--pl-duration-fast` (agreed). Progress uses Green because its fill is decoration with the value written beside it; a control's fill has to read against `muted`.
+- Thumb: 20×20, radius 4, `card` fill, 2px `primary` border (agreed). Hit area 40×40 (an `after` layer). Hover: `accent` fill. Focus: 2px ring, 2px offset. The thumb stays inside the track (`thumbAlignment="edge"`).
+- Single value, or range with two thumbs (Base UI keeps them from crossing; `minStepsBetweenValues` is available). Each range thumb is named ("Minimum price", "Maximum price") through `getAriaLabel` (agreed).
+- Optional row above, as Progress: SliderLabel 14/20 semibold `foreground`; SliderValue 12/16 medium `muted-foreground`, tabular numerals, right-aligned, 8 above the track (agreed). No value tooltip and no tick marks (agreed).
+- Vertical (`orientation="vertical"`): track 8 wide, minimum height 160 (agreed).
+- Keyboard (Base UI): arrows ±step, PageUp and PageDown ±large step, Home and End. Disabled: 40%.
+
+## Input OTP
+
+- Built on the Base UI OTP Field (stable in `@base-ui/react` 1.9.0), not the `input-otp` package (agreed; no new dependency). The API follows Base UI: `length`, `validationType`, `onValueComplete`, and an `index` on each slot. Export names stay shadcn's: InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator.
+- Slot: 40×40, radius 4, `card` fill, 1px `input` border, 14/20 `foreground` centred; hover border `foreground`; separate slots 8 apart (each looks like an Input) (agreed). Active slot: the 2px ring, 2px offset; native caret (real inputs, no fake caret).
+- Invalid (`aria-invalid`): every slot border `pl-danger-text`. Disabled: 40%, no pointer events.
+- Groups: slots are grouped (for example 3 + 3) with a separator that is a 12×1px `input` line, no glyph (agreed). Not masked by default; `mask` is available.
+- Behaviour (Base UI): numeric by default (`validationType`), `autoComplete="one-time-code"`, paste fills the slots, Backspace moves back, arrows, Home and End move between slots, one tab stop, `onValueComplete` when full, optional `mask`.
+- Label: the field's Label names the first slot (Field or a `<label>`); required.
+
+## Drawer
+
+- A bottom panel for small screens on the Base UI Drawer (`@base-ui/react/drawer`, stable in 1.9.0). It does not use Vaul, so no new package. Bottom only, swipe down to close (agreed); Sheet stays for left, right and top.
+- Surface as Sheet: `popover` fill, `popover-foreground` text, the overlay shadow, no border (shadcn adds a border). Scrim `--pl-scrim`, no blur (shadcn uses black 10% and a blur).
+- Radius 8 on the top corners only (agreed). Full width. Maximum height: the viewport minus 48, the body scrolls (agreed).
+- Handle: 40×4, radius 2, `input` colour, 8 from the top, centred (agreed); it is the swipe affordance and is hidden from screen readers.
+- Header, body, footer as Sheet: header padding 24 24 0 (title 16/24 bold `pl-ink-heading`, description 14/20 `muted-foreground`, left-aligned at every width), body padding 0 24, footer padding 0 24 24 with the Buttons stacked full width, gap 8, gap 16 between the three. Close button as Sheet: Button `ghost` `icon-sm`, `close`, 16 from the top and right (agreed).
+- Motion: panel slides at `--pl-duration-slow` ease-out; scrim fades at `--pl-duration-fast`; no transition while dragging; the release speed follows the swipe (Base UI). The nested-drawer scale and brightness effect is dropped.
+- Behaviour (Base UI): Escape, a scrim click or a swipe down closes; focus is trapped and returns to the trigger.
+- Snap points: supported by the primitive, off by default.
+- Versus Sheet `side="bottom"`: Sheet already gives the same surface, scrim and slide, closed by Escape, scrim or the close button. Drawer adds swipe-to-dismiss with touch physics, the handle and optional snap points. On a desktop pointer the two look the same.
