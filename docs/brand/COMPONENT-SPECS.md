@@ -643,3 +643,17 @@ Source: shadcn/ui AI Elements, Base UI variant (`ui.shadcn.com/docs/ai-elements/
 
 - Playground: a new "Agent" section next to Chat with static data: a Plan with every step state, a Task list, a Chain of Thought open and closed, a Queue, a Context meter at low, medium and near-full, a Checkpoint with its confirm, a Subagent running and done inside a message, and a Model Selector closed, open, with a disabled item.
 - Figma sets: Plan, Task, Chain of Thought, Queue (and QueueItem), Context (`level`), Checkpoint, Subagent (`state`), ModelSelector (trigger, menu, item `state`), all built from existing Trace, Marker, Hover Card, Progress, Dropdown Menu and Button instances.
+
+## AI Elements Phase 2: implementation notes
+
+- Files in `packages/ui/src/components/ai-elements/`; playground `apps/web/src/agent-section.tsx` ("Agent"). Nothing was installed from the CLI, so no existing file changed and no package was added.
+- APIs (all data-driven, place inside a `<Trace>` except Context, Checkpoint and Model Selector):
+  - `ChainOfThought` (`running`, `steps`, `failed`, `defaultOpen`) with `ChainOfThoughtStep` (`title`, `status`, `icon`) and `ChainOfThoughtBadges` (`items`).
+  - `Plan` (`title`, `steps: { title, state: done | running | pending | error | skipped }[]`, `description`, `defaultOpen`).
+  - `Task` (`title`, `status`) with `TaskStep` (`title`, `icon`, `status`, `href`).
+  - `Queue` (`todos: { id, title, description?, status: pending | in-progress | completed }[]`).
+  - `Context` (`used`, `limit`, `usage`); levels from `getContextLevel`. The fill colour changes through the Progress `indicator` slot, so Progress itself is unchanged.
+  - `Checkpoint` (`label`, `onRestore`, `restoreLabel`), with an Alert Dialog confirm.
+  - `Subagent` (`name`, `state: running | done | error`, `result`, `error`, `defaultOpen`).
+  - `ModelSelector` (`providers`, `model`, `onModelChange`, `efforts`, `effort`, `onEffortChange`, `disabled`): two Dropdown Menus, placed inside the Prompt Input toolbar slot.
+- Checked in the playground (light and dark): Model Selector opens, selects, shows a disabled item and returns focus on Escape; Context opens on focus with the three levels; Checkpoint confirm opens and Cancel returns focus.
