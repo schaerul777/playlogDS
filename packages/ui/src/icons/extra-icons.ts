@@ -16,6 +16,8 @@ export const extraStrokeIconPaths = {
   "thumbs-down": "M7 13V4H4v9h3zM7 13l4 8a2.5 2.5 0 0 0 2.5-2.5V15h5.2a2 2 0 0 0 2-2.3l-1.2-7a2 2 0 0 0-2-1.7H7",
   "terminal": "M3 5h18v14H3zM7 10l3 2-3 2M12 14h4",
   "arrow-up-right": "M7 17L17 7M8 7h9v9",
+  // Added for the Calendar (approved): the mirror of chevron-right.
+  "chevron-left": "M15 6l-6 6 6 6",
 } as const
 
 export type ExtraIconName = keyof typeof extraStrokeIconPaths

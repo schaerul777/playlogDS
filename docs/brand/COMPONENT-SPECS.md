@@ -523,3 +523,57 @@ Button Group, Slider, Input OTP and Drawer, on Base UI. Values the brand or an e
 - Behaviour (Base UI): Escape, a scrim click or a swipe down closes; focus is trapped and returns to the trigger.
 - Snap points: supported by the primitive, off by default. `DrawerBody` (padding 0 24, scrolls) is added so a long body scrolls under a fixed header and footer. `showSwipeHandle` (default true) and `showCloseButton` (default true) can be turned off.
 - Versus Sheet `side="bottom"`: Sheet already gives the same surface, scrim and slide, closed by Escape, scrim or the close button. Drawer adds swipe-to-dismiss with touch physics, the handle and optional snap points. On a desktop pointer the two look the same.
+
+# Date (Batch F)
+
+Calendar, Date Picker and Date Range Picker. The Calendar is the shadcn Calendar on `react-day-picker`; Date Picker and Date Range Picker are compositions (the shadcn docs have no registry item for them): Input-look trigger, Popover, Calendar. Values the brand or an earlier spec does not define were proposed and answered one by one; those marked "(agreed)" were approved individually.
+
+## Date: shared rules
+
+- Library: `react-day-picker` 10.0.2, pinned (agreed). It is not Base UI; it is the one new dependency (its own `date-fns` 4 and `@date-fns/tz` come with it, tree-shaken). About 20 KB gzip (68 KB minified) with the default locale, +1.4 to 1.9 KB gzip for the Indonesian locale. No other date library: dates are formatted with `Intl.DateTimeFormat`.
+- Reuse before inventing: Popover for the surface, Button for the nav arrows and the day buttons, Select for the month and year dropdowns, Input for the trigger look, Field for the label, hint and error, Drawer for small screens if chosen.
+- Focus: 2px solid `--ring`, 2px offset (`--pl-focus-ring-width`, `--pl-focus-ring-offset`). Disabled: `--pl-opacity-disabled`, no pointer events. Invalid: trigger border `pl-danger-text`, the ring stays `--ring` (the same token as Input and Select). Motion: colour changes at `--pl-duration-fast` ease-out; no slide between months.
+- Never Green, Blue or a secondary colour as text on a light ground: day numbers are `foreground`, `muted-foreground` or `primary-foreground` on a `primary` fill.
+
+## Calendar
+
+- No fill, border or shadow of its own: it sits in a Popover (`popover`) or a Card (`card`), padding 16.
+- Header: height 40; month and year 14/20 semibold `foreground`, centred; the previous and next arrows are Button `ghost` `icon-sm` (32) with the `chevron-left` and `chevron-right` glyphs at 16 and the library's own accessible names ("Go to the previous month"). `chevron-left` is a new glyph: a 2px round stroke, the mirror of `chevron-right` (agreed). Arrows only by default (agreed).
+- Weekday row: height 32, 12/16 medium `muted-foreground`, short names. Week starts on Monday, `weekStartsOn` is a prop (agreed). Week numbers off by default (`showWeekNumber`), column 40 wide, 12/16 `muted-foreground` (agreed).
+- Day cell 40×40 (agreed), no column gap, 4 between weeks, radius 4 (control height 40). 14/20 regular `foreground`, tabular numerals. Built on Button `ghost` `icon` (hover `accent`).
+- Selected: `primary` fill with `primary-foreground` text (Green with Dark Blue text in dark mode) (agreed). Today: a 1px `primary` inner border and 600 weight, no fill; if today is also selected it is simply filled (agreed). Hover: `accent`. Focus: the 2px ring, 2px offset, above its neighbours.
+- Range (agreed): start and end are `primary` with `primary-foreground`, radius 4 on their outer side and 0 on the inner side. Middle days are `pl-surface-selected` with `pl-ink-heading`, radius 0 so the band is continuous, with radius 4 at the left of each week's first day and the right of its last. A middle day keeps its fill on hover.
+- Outside days are shown in `muted-foreground` and stay clickable (agreed). Disabled days are 40% with no pointer events; a booked day also gets a line-through so it is not only dimmed (agreed).
+- Dropdown captions (`captionLayout="dropdown"`) use the native month and year selects looking like Select `sm`: 32 high, 1px `input` border, radius 4, 14/20 medium. Dropdowns are set by the `captionLayout="dropdown"` prop, off by default (agreed).
+- Locale: `locale` prop (English by default; Indonesian from `react-day-picker/locale`), `dir` for RTL flips the arrows (agreed).
+- Keyboard and ARIA (library): the month is a `grid`; arrows move by day and week, Page Up and Page Down by month, Shift with them by year, Home and End to the start and end of the week, Enter and Space select. Today, selected and disabled days are announced; the focused day has the ring.
+
+## Date Picker
+
+- Trigger: looks like Input: a button 40 high (sm 32), `card` fill, 1px `input` border, radius 4, padding 0 12, gap 8, 14/20 `foreground`; placeholder "Select date" in `muted-foreground`; `calendar` icon 16 `muted-foreground` at the end; hover border `foreground`; open (`aria-expanded`) border `foreground`. Input-look button, not typeable (agreed). Invalid and disabled as Input.
+- Value shown as `19 Nov 2026` (day, short month, year) with `Intl.DateTimeFormat`, so no date library is needed in our code; `formatDate` overrides it (agreed).
+- Optional clear: `clearable` adds a Button `ghost` `icon-xs` (`close`, "Clear date") before the calendar icon while a date is set; off by default (agreed).
+- Popover: `w-auto p-0`, aligned to the start, 4 below the trigger, fade; the Calendar inside has padding 16. It closes when a date is picked; Escape closes it and focus returns to the trigger.
+- Limits: `minDate` and `maxDate` disable the days outside them and stop the month navigation there; `disabled` takes any react-day-picker matcher (booked dates, weekends) (agreed).
+- Name: a Field label (`htmlFor` the trigger's id); error text in FieldError with `aria-describedby`; the value is part of the trigger's text, so it is announced.
+
+## Date Range Picker
+
+- Same trigger and Popover. The value reads `19 Nov 2026 – 26 Nov 2026` (en dash), a single date while only the first end is picked; placeholder "Select dates".
+- Two months side by side from `md`, one month below; 16 between months. The popover closes once both ends are chosen (agreed).
+- Presets (Today, Last 7 days, Last 30 days, This month): optional `presets` prop, Buttons `ghost` `sm` in a column on the left, separated by a 1px `border` (agreed).
+
+## Date: small screens
+
+- Popover at every width (agreed). A single month (312 wide) fits a 360 screen; the range picker falls back to one month below `md`. The playground shows the same Calendar inside a Drawer as a recipe for apps that prefer a bottom panel; the components do not switch on their own.
+
+## Date: implementation notes (Batch F)
+
+- Files: `calendar.tsx` (Calendar, CalendarDayButton), `date-picker.tsx` (DatePicker, DateRangePicker, DatePickerTrigger, `getDefaultDateRangePresets`). Playground: `apps/web/src/date-section.tsx`.
+- Date Picker props: `value`, `defaultValue`, `onValueChange`, `placeholder` ("Select date"), `locale`, `formatDate`, `minDate`, `maxDate`, `disabledDates` (any react-day-picker matcher), `disabled`, `invalid`, `clearable`, `size` (`default` | `sm`), `calendarProps`. Date Range Picker adds `presets` and uses the same props with a `DateRange` value (placeholder "Select dates").
+- The trigger is a Popover trigger styled as Input. The clear button is a sibling Ghost icon button (`aria-label="Clear"`), not nested inside the trigger button.
+- The popover closes on select (single) or when both ends are set (range). Escape closes it and returns focus to the trigger (Base UI behavior, checked in the playground).
+- Range picker shows two months from 768px up and one below it (`useIsMobile`). The presets column is hidden below 768px.
+- Value format uses `Intl.DateTimeFormat` (`19 Nov 2026`; `id` locale gives `19 Nov 2026` with Indonesian month names). Pass `formatDate` to change it.
+- `apps/web` pins `react-day-picker` 10.0.2 as well, only for the `react-day-picker/locale` import in the playground.
+- The Icon set gains `chevron-left` (see BRAND.md). No new tokens.
