@@ -90,7 +90,7 @@ These exist in the Figma library only. They are not in `tokens.css` and need no 
   - `spacing-36` (144px): Select popup and chart tooltip minimum width.
   - `spacing-56` (224px): Sidebar nav item width (248px sidebar minus 12px padding each side) and the StatCard drawing width.
   - `spacing-160` (640px): demo width of the Table, TableRow and BarChart drawings (full width in code).
-  - `spacing-64` (256px): Hover Card default width (`w-64`). `spacing-72` (288px): Popover default width (`w-72`). `spacing-90` (360px): Toast width.
+  - `spacing-40` (160px): Slider vertical minimum height (`min-h-40`). `spacing-64` (256px): Hover Card default width (`w-64`). `spacing-72` (288px): Popover default width (`w-72`). `spacing-90` (360px): Toast width.
   - `spacing-10` (40px): Avatar `lg`. `spacing-20` (80px): Textarea minimum height.
 - Container widths from the Tailwind scale (code syntax `var(--container-*)`): `container-xs` (320px, Tooltip max width and Alert Dialog `sm`), `container-sm` (384px, Sheet left/right), `container-md` (448px, Alert Dialog default), `container-lg` (512px, Dialog max width).
 - `pl-shadow-overlay-color`: the colour of `--pl-shadow-overlay`, split out so the `pl-shadow-overlay` effect style can switch with the mode. Light `#004d9f` at 14%, Dark black at 45%.
