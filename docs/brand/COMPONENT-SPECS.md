@@ -577,3 +577,69 @@ Calendar, Date Picker and Date Range Picker. The Calendar is the shadcn Calendar
 - Value format uses `Intl.DateTimeFormat` (`19 Nov 2026`; `id` locale gives `19 Nov 2026` with Indonesian month names). Pass `formatDate` to change it.
 - `apps/web` pins `react-day-picker` 10.0.2 as well, only for the `react-day-picker/locale` import in the playground.
 - The Icon set gains `chevron-left` (see BRAND.md). No new tokens.
+
+# AI Elements (Phase 2)
+
+Source: shadcn/ui AI Elements, Base UI variant (`ui.shadcn.com/docs/ai-elements/base/*`), checked on 19 Nov 2026. All eight names exist unchanged. Every value below was approved on review (answer "a" to all eleven questions); nothing here adds a font, a gradient, a radius or (so far) a token or a glyph.
+
+## AI Elements Phase 2: shared rules
+
+- No new component files from the CLI: five of the eight patterns are compositions of our `Trace` (Chain of Thought, Plan, Task, Queue, Subagent), one of `Hover Card` and `Progress` (Context), one of `Marker` and `Button` (Checkpoint), one of `Dropdown Menu` and `Input Group` (Model Selector). Each becomes one file in `packages/ui/src/components/ai-elements/`: `chain-of-thought.tsx`, `plan.tsx`, `task.tsx`, `queue.tsx`, `context.tsx`, `checkpoint.tsx`, `subagent.tsx`, `model-selector.tsx`.
+- Packages: none. The docs demos use `ai`, `@ai-sdk/react` and `@/lib/ai` (`createChat`) only to script a fake reply; the playground uses static mock data instead, so none of the three is added.
+- Status, streaming, focus, disabled, motion: exactly as AI Elements Phase 1 (Trace status icons `check`, Spinner, `alert-circle`, `time`; running is Spinner plus a present-tense title; no shimmer, dots or gradient; focus ring 2px with 2px offset; disabled 40%; `--pl-duration-fast`; nothing animates under reduced motion except Spinner).
+- Type: step lines 14/20 `muted-foreground`; meta 12/16 medium; summaries 14/20. Radius: 4 on triggers and buttons, 2 on badges, 8 on cards. All as Trace, Marker and Badge already are.
+
+## Chain of Thought
+
+- A thin composition over Trace, not a new look: `Trace` + `TraceCollapsible`; the summary is a `TraceLine` ("Researching" while running, "Researched in 3 steps", "Researched in 3 steps, 1 failed").
+- Open while the steps run, closes when the reply starts, the person can reopen it and that choice is kept for the turn (as Reasoning). `keepMounted` on the content so each step keeps its own open state.
+- Each step is a Tool-style line: status icon, tense-matched title ("Searching…", "Searched…", "Failed to search…"). Detail opens below a step: a Code Block (`sm`, max height 256, wrap) for output, a Trace of links for results, Badge `secondary` per hostname for web search or file names (Badge radius 2).
+- Relation to Reasoning: Reasoning is one block of the model's thinking text; Chain of Thought is the list of steps the agent took. Same Trace look, two files.
+
+## Plan
+
+- Trace + collapsible. Summary line: icon `clipboard`, title ("Plan: migrate to Base UI"), `TraceDescription` "2 of 4 done" (12/16 medium, no bar: Progress would repeat the count). Open by default; `status="running"` on the summary while any step runs.
+- Steps are Trace lines: done (`check`), running (Spinner), pending (`time`, `muted-foreground`), error (`alert-circle`, `pl-danger-text`, "Failed to…"), skipped (`close`, `muted-foreground`, title ends "(skipped)"). Steps are read-only, not checkable.
+- Optional description above the steps, inside the content, 14/20 `foreground`.
+- Use Plan when every step is known up front; use Task when the next step comes from the last.
+
+## Task
+
+- Trace + collapsible per task. Summary has no icon of its own: the status icon and a title in the present tense while running ("Updating the page metadata"), past tense when done, "Failed to update…" on error.
+- The running task is open; each task closes when it is done. Several tasks sit in one Trace, 8 apart. Steps appear only once taken (no pending steps). Step glyphs: `search`, `sticky-note` (file), `edit`; a step that links out is an anchor (`arrow-up-right`, "(opens in a new tab)").
+
+## Queue
+
+- The agent's todo list, read-only. Trace with two collapsibles: "n to do" (open) and "n completed" (closed). Section icons: `clipboard` and `check`.
+- A todo is a Trace line: pending `time`, in progress Spinner, completed `check`. A todo with a description is a collapsible that opens to 14/20 `muted-foreground` text; without one it stays a line.
+- A todo moves between sections as its status changes; empty section is hidden; an empty queue renders nothing. No reorder, remove or maximum height (a long list scrolls with the page).
+
+## Context
+
+- A Hover Card (spec as Hover Card, width 256) opened from a Button `outline` `sm`: label "7% context". Opens on hover and keyboard focus; the trigger carries an `aria-label` with the full sentence ("Context window 7% used, 9.7k of 128k tokens").
+- Content: header "Context" 14/20 medium and "9.7k / 128k" 12/16 medium `muted-foreground`, tabular numbers; our Progress track (8 high, radius 0) with `aria-label="Context used"`; optional rows Input, Output, Reasoning (12/16, label left, value right, tabular numbers).
+- Levels (`level` is Figma-only): low under 75% (fill `pl-brand-accent`), medium 75–89% (fill `pl-warning`, `warning` icon in the trigger, line "Getting full" in `pl-warning-text`), near-full 90% and above (fill `pl-danger`, `alert-circle` icon, line "Nearly full: the oldest messages may be dropped" in `pl-danger-text`). Colour is never the only cue: icon and words.
+- Token counts are formatted `9.7k`, `128k`; the limit is a prop (the model's window), never read from a provider.
+
+## Checkpoint
+
+- Our Marker `separator` after a turn: label 12/16 medium `muted-foreground` ("Button renamed"), then Button `outline` `xs` (24) "Restore", 8 apart, between two 1px `border` lines.
+- Restore keeps that turn and drops every later message. Because it removes messages it asks first: an Alert Dialog "Restore to “Button renamed”?" / "Later messages are removed." with Cancel and Restore (Button `default`). Focus returns to the checkpoint button after Cancel.
+
+## Subagent
+
+- Trace + collapsible. Line: "Running the research agent" (Spinner), "Ran the research agent" (`check`), "Failed to run the research agent" (`alert-circle`). Open while running, closed when done, reopenable, `keepMounted`.
+- Content: a nested Trace of the subagent's tool lines (the existing Tool lines), then its result as 14/20 `foreground` text; an error opens a destructive Code Block (`sm`). Nesting uses Trace's own left border (1px `border`) and 16 indent; one level of nesting is supported and designed (a subagent inside a subagent is not).
+- The subagent's own status is the line; there is no extra Badge.
+
+## Model Selector
+
+- The docs version is two Dropdown Menus in the Prompt Input toolbar (the slot Phase 1 left between attach and send): a model menu and an effort menu. It has no search, badges or disabled models.
+- Triggers: Input Group Button `sm` (32) with the current value and `chevron-down` 16; `aria-label` "Model" and "Effort". Menu as Dropdown Menu (radius 4, padding 4, width 192 model / 144 effort): provider groups with a `DropdownMenuLabel` (12/16 medium), radio items with the `check` on the right, separators between providers. Items close the menu on click.
+- Keys (Base UI menu): Enter and Space open, arrows move, typing jumps to an item, Escape closes and returns focus to the trigger.
+- Static list only: three example providers, two or three models each; disabled item at 40% with "(unavailable)" in its text; optional Badge `secondary` ("New") at the end of an item.
+
+## Phase 2: playground and Figma (for after approval)
+
+- Playground: a new "Agent" section next to Chat with static data: a Plan with every step state, a Task list, a Chain of Thought open and closed, a Queue, a Context meter at low, medium and near-full, a Checkpoint with its confirm, a Subagent running and done inside a message, and a Model Selector closed, open, with a disabled item.
+- Figma sets: Plan, Task, Chain of Thought, Queue (and QueueItem), Context (`level`), Checkpoint, Subagent (`state`), ModelSelector (trigger, menu, item `state`), all built from existing Trace, Marker, Hover Card, Progress, Dropdown Menu and Button instances.
