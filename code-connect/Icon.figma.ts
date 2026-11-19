@@ -4,8 +4,8 @@
 import figma from 'figma'
 const instance = figma.selectedInstance
 
-// Every glyph is a variant of one set; `name` maps 1:1 to the Icon `name` prop (62 glyphs: 48 filled,
-// 5 design-system strokes and 9 approved extra strokes). Size and colour come from the parent component in code.
+// Every glyph is a variant of one set; `name` maps 1:1 to the Icon `name` prop (66 glyphs: 48 filled,
+// 5 design-system strokes and 13 approved extra strokes). Size and colour come from the parent component in code.
 const name = instance.getEnum('name', {
   close: 'close',
   'chevron-down': 'chevron-down',
@@ -69,6 +69,10 @@ const name = instance.getEnum('name', {
   rocket: 'rocket',
   gauge: 'gauge',
   loader: 'loader',
+  stop: 'stop',
+  'thumbs-down': 'thumbs-down',
+  terminal: 'terminal',
+  'arrow-up-right': 'arrow-up-right',
 })
 
 export default {
