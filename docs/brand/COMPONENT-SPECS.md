@@ -657,3 +657,69 @@ Source: shadcn/ui AI Elements, Base UI variant (`ui.shadcn.com/docs/ai-elements/
   - `Subagent` (`name`, `state: running | done | error`, `result`, `error`, `defaultOpen`).
   - `ModelSelector` (`providers`, `model`, `onModelChange`, `efforts`, `effort`, `onEffortChange`, `disabled`): two Dropdown Menus, placed inside the Prompt Input toolbar slot.
 - Checked in the playground (light and dark): Model Selector opens, selects, shows a disabled item and returns focus on Escape; Context opens on focus with the three levels; Checkpoint confirm opens and Cancel returns focus.
+
+# Charts (Batch H)
+
+Starting point (checked 20 Nov 2026): the shadcn Chart wrapper is already in the repo (`chart.tsx`: `ChartContainer`, `ChartTooltip`, `ChartTooltipContent`, `ChartLegend`, `ChartLegendContent`, `ChartConfig`, plus `CHART_COLORS`), and so is a branded `BarChart` (`bar-chart.tsx`: grouped, stacked, horizontal, value labels, legend, tooltip, `valueFormatter`, `accessibilityLayer`). `recharts` 3.8.0 is already a dependency. The current shadcn docs (Recharts v3, `var(--chart-1)` colours, `accessibilityLayer`) match what we have; they only show bar charts in full, so Line, Area, Pie and Donut are our own compositions. No library other than Recharts is needed. Every value below was approved on review (answer "a" to all fifteen questions).
+
+## Charts: shared rules
+
+- Frame: our Card (header title 16/24 bold `pl-ink-heading`, description 12/16 medium `muted-foreground`, header actions on the right, content padding 16 24 24). The chart sits in the Card content; default plot height 256, never less than 160.
+- Type: Reddit Sans only; ticks, legend and labels 12/16 medium. Tick and legend text `muted-foreground`; value labels on marks `foreground`. Mark colours are fine for fills and strokes, never for text.
+- Axes: no tick lines; no axis line on the value axis; the category axis has no line either (the gridline at zero is enough). Ticks 8 from the plot.
+- Grid: horizontal lines only (vertical for horizontal bars), solid, 1px `pl-chart-grid`.
+- Series colours: `chart-1` to `chart-8` in order (existing tokens, light and dark). Product lines keep `line-*`.
+- Motion: marks do not animate on mount; the tooltip cursor follows the pointer without easing; nothing needs a reduced-motion branch.
+- Accessibility: Recharts `accessibilityLayer` on every chart (arrow keys move between data points); `ChartContainer` gets a visible focus ring (2px, 2px offset), an `aria-label` and a one-sentence summary linked with `aria-describedby`; a "Chart | Table" toggle in the Card header swaps the plot for our Table with the same data.
+- Colour contrast of marks (3:1 against the card, measured):
+
+| Token | Light on `#ffffff` | Dark on `#0b2547` |
+|---|---|---|
+| chart-1 | 8.2 | 6.6 |
+| chart-2 (Green) | **1.4** | 10.7 |
+| chart-3 | **2.3** | 9.3 |
+| chart-4 | 3.5 | 6.9 |
+| chart-5 (orange) | **2.6** | 5.8 |
+| chart-6 | 3.2 | 6.9 |
+| chart-7 | 4.2 | 6.1 |
+| chart-8 | **2.1** | 4.8 |
+
+- Colour-blind check (Machado simulation, smallest perceptual distance between two series in the first 3 / first 5, CIE ΔE; about 20 or more reads as clearly different): normal vision light 44 / 35, dark 19 / 19; protanopia light 38 / 32, dark 18 / 18; deuteranopia light 36 / 30, dark 21 / 18; tritanopia light 22 / 16, dark 12 / 9. The weak spots are chart-1 against chart-3 in dark mode and chart-3 against chart-4 for tritanopia.
+
+## Line
+
+- 2px stroke, round joins, straight segments between points (proposed: honest for a trend). Points hidden by default; on hover or keyboard focus the active point is a 6px dot in the series colour with a 2px `card` ring. More than one series: different point shapes (circle, square, diamond) on the active point and in the legend.
+- Cursor: 1px `border` vertical line.
+
+## Area
+
+- Flat fill at 20% of the series colour, no gradient, with the 2px line of the line chart on top. Stacked areas use 40% fill and a 1px `card` separator between layers.
+
+## Bar (exists)
+
+- Keep the current BarChart. Proposed additions only: corner radius 2 on the data end, 4 between bars in a group, 16% between categories, value labels as today.
+
+## Pie and Donut
+
+- Donut: outer radius 100, thickness 36 (inner 64); Pie is the same with inner 0. 2px `card` gap between slices, first slice at 12 o'clock, clockwise, largest first.
+- Centre label (donut): the total in 24/32 bold `foreground` with a 12/16 medium `muted-foreground` caption under it.
+- No labels on the slices; the legend (right on wide cards, below on narrow ones) carries name, value and percent. At most 5 slices; the rest are summed into "Other" in `chart-8`.
+
+## Tooltip
+
+- The Tooltip surface: `popover` fill, overlay shadow, radius 4, padding 8 12 (6 12 for one row), 12/16 medium, min width 144, no arrow. Header row (category) `foreground` medium; one row per series: 10×10 swatch with radius 2, name `muted-foreground`, value 600 weight tabular numbers right-aligned.
+- Cursor: band (`muted` fill) for bars, 1px `border` line for line and area.
+- Numbers: Indonesian locale (`id-ID`): thousands separator ".", decimal ","; rupiah "Rp 1.250.000"; percent "12,5%"; compact "1,2 jt" on axes. One `valueFormatter` per chart, as today.
+
+## Legend
+
+- Above the plot, left aligned, 12/16 medium `muted-foreground`, 16 between items, swatch 10×10 radius 2 (as today). Not clickable (proposed): a hidden series changes what the chart means and has no keyboard-friendly default.
+
+## States
+
+- Empty: our Empty in the plot area ("No data for this period"). Loading: Skeleton blocks in the plot area (axis ticks and a few bars or a line), `aria-busy` on the Card content. Error: Empty with a "Try again" Button, `pl-danger-text` title; the toggle stays available.
+- Focus: container ring; the active mark is also highlighted (bar `muted` band, line point dot).
+
+## Charts: Figma (for after approval)
+
+- A Chart Frame component (title, description, header actions, legend, plot slot), the chart Tooltip, and one static example per type drawn with vector shapes bound to the chart variables. Illustrative only: the data, shapes and curves; real behaviour (hover, keyboard, animation) is code.
