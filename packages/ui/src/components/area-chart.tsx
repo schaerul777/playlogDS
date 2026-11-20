@@ -9,7 +9,15 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@workspace/ui/components/chart"
-import { ActivePoint, shapeFor, shapeIcon, withSeriesColors } from "@workspace/ui/components/chart-utils"
+import {
+  ActivePoint,
+  InteractiveLegend,
+  legendItems,
+  shapeFor,
+  shapeIcon,
+  useSeriesVisibility,
+  withSeriesColors,
+} from "@workspace/ui/components/chart-utils"
 
 type AreaChartProps = Omit<React.ComponentProps<"div">, "children"> & {
   data: Record<string, string | number>[]
@@ -19,6 +27,8 @@ type AreaChartProps = Omit<React.ComponentProps<"div">, "children"> & {
   stacked?: boolean
   showLegend?: boolean
   showTooltip?: boolean
+  /** Hover a legend item to dim the other series; press it to hide or show that series. Default on. */
+  interactiveLegend?: boolean
   valueFormatter?: (value: number) => string
   /** Shorter form for the value axis, for example `idCompact`. */
   axisFormatter?: (value: number) => string
@@ -33,6 +43,7 @@ function AreaChart({
   stacked = false,
   showLegend,
   showTooltip = true,
+  interactiveLegend = true,
   valueFormatter,
   axisFormatter,
   ...props
@@ -47,6 +58,7 @@ function AreaChart({
     ) as ChartConfig
   }, [config, series])
   const formatAxis = axisFormatter ?? valueFormatter
+  const visibility = useSeriesVisibility(series)
   const format = (v: unknown) => (typeof v === "number" && formatAxis ? formatAxis(v) : String(v))
 
   return (
@@ -58,7 +70,11 @@ function AreaChart({
         {showTooltip ? (
           <ChartTooltip cursor content={<ChartTooltipContent valueFormatter={valueFormatter} />} />
         ) : null}
-        {(showLegend ?? multi) ? <ChartLegend verticalAlign="top" itemSorter={null} content={<ChartLegendContent />} /> : null}
+        {(showLegend ?? multi) ? <ChartLegend
+            verticalAlign="top"
+            itemSorter={null}
+            content={interactiveLegend ? <InteractiveLegend items={legendItems(colored)} visibility={visibility} /> : <ChartLegendContent />}
+          /> : null}
         {series.map((key, i) => (
           <Area
             key={key}
@@ -68,7 +84,9 @@ function AreaChart({
             stroke={`var(--color-${key})`}
             strokeWidth={2}
             fill={`var(--color-${key})`}
-            fillOpacity={stacked ? 0.4 : 0.2}
+            fillOpacity={(stacked ? 0.4 : 0.2) * visibility.opacity(key)}
+            strokeOpacity={visibility.opacity(key)}
+            hide={visibility.isHidden(key)}
             activeDot={(p: { cx?: number; cy?: number }) => (
               <ActivePoint cx={p.cx} cy={p.cy} shape={multi ? shapeFor(i) : "circle"} color={`var(--color-${key})`} />
             )}

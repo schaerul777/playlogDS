@@ -713,7 +713,7 @@ Starting point (checked 20 Nov 2026): the shadcn Chart wrapper is already in the
 
 ## Legend
 
-- Above the plot, left aligned, 12/16 medium `muted-foreground`, 16 between items, swatch 10×10 radius 2 (as today). Not clickable (proposed): a hidden series changes what the chart means and has no keyboard-friendly default.
+- Above the plot, left aligned, 12/16 medium `muted-foreground`, 16 between items, swatch 10×10 radius 2 (as today). Interactive (changed after Batch H, on request): each item is a button (`aria-pressed`, radius 4, `accent` on hover, focus ring). Hovering or focusing an item dims every other series to 30%; pressing it (click, Enter or Space) hides or shows that series, which then shows at 40% with its name struck through. The last visible series cannot be hidden. The value axis rescales to the visible series. Turn it off with `interactiveLegend={false}`. In Pie and Donut the legend rows do the same and the total and percentages follow the visible slices.
 
 ## States
 
@@ -730,3 +730,5 @@ Starting point (checked 20 Nov 2026): the shadcn Chart wrapper is already in the
 - Changed (small, agreed): `bar-chart.tsx` (radius 2 on the data end, 4 between bars, 16% between categories, legend in series order, `axisFormatter`) and `chart.tsx` (tooltip padding 8 12 and min width 144, a visible focus ring on the plot). `recharts` 3.8.0 was already installed; no package added.
 - Shared props: `data`, `config`, `categoryKey`, `valueFormatter`, `axisFormatter`, `showLegend`, `showTooltip`; Area also takes `stacked`. Pass `aria-label` on a chart and a one-sentence `summary` on its `ChartPanel`.
 - Legends list series in the order of `config` (Recharts sorts them alphabetically unless told not to).
+
+- Interactive legend: `useSeriesVisibility`, `InteractiveLegend` and `legendItems` in `chart-utils.tsx`; `interactiveLegend` (default on) on `BarChart`, `LineChart`, `AreaChart` and `PieChart`.

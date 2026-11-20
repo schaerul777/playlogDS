@@ -9,7 +9,15 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@workspace/ui/components/chart"
-import { ActivePoint, shapeFor, shapeIcon, withSeriesColors } from "@workspace/ui/components/chart-utils"
+import {
+  ActivePoint,
+  InteractiveLegend,
+  legendItems,
+  shapeFor,
+  shapeIcon,
+  useSeriesVisibility,
+  withSeriesColors,
+} from "@workspace/ui/components/chart-utils"
 
 type LineChartProps = Omit<React.ComponentProps<"div">, "children"> & {
   /** One object per point, for example `{ week: "W1", completions: 120 }`. */
@@ -21,6 +29,8 @@ type LineChartProps = Omit<React.ComponentProps<"div">, "children"> & {
   /** Legend above the plot. Defaults to on when there is more than one series. */
   showLegend?: boolean
   showTooltip?: boolean
+  /** Hover a legend item to dim the other series; press it to hide or show that series. Default on. */
+  interactiveLegend?: boolean
   /** Formats values in the tooltip (and on the axis unless `axisFormatter` is set). */
   valueFormatter?: (value: number) => string
   /** Shorter form for the value axis, for example `idCompact`. */
@@ -36,6 +46,7 @@ function LineChart({
   categoryKey,
   showLegend,
   showTooltip = true,
+  interactiveLegend = true,
   valueFormatter,
   axisFormatter,
   ...props
@@ -50,6 +61,7 @@ function LineChart({
     ) as ChartConfig
   }, [config, series])
   const formatAxis = axisFormatter ?? valueFormatter
+  const visibility = useSeriesVisibility(series)
   const format = (v: unknown) => (typeof v === "number" && formatAxis ? formatAxis(v) : String(v))
 
   return (
@@ -61,7 +73,11 @@ function LineChart({
         {showTooltip ? (
           <ChartTooltip cursor content={<ChartTooltipContent valueFormatter={valueFormatter} />} />
         ) : null}
-        {(showLegend ?? multi) ? <ChartLegend verticalAlign="top" itemSorter={null} content={<ChartLegendContent />} /> : null}
+        {(showLegend ?? multi) ? <ChartLegend
+            verticalAlign="top"
+            itemSorter={null}
+            content={interactiveLegend ? <InteractiveLegend items={legendItems(colored)} visibility={visibility} /> : <ChartLegendContent />}
+          /> : null}
         {series.map((key, i) => (
           <Line
             key={key}
@@ -71,6 +87,8 @@ function LineChart({
             strokeWidth={2}
             strokeLinejoin="round"
             dot={false}
+            hide={visibility.isHidden(key)}
+            strokeOpacity={visibility.opacity(key)}
             activeDot={(p: { cx?: number; cy?: number }) => (
               <ActivePoint cx={p.cx} cy={p.cy} shape={multi ? shapeFor(i) : "circle"} color={`var(--color-${key})`} />
             )}

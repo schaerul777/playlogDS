@@ -11,6 +11,11 @@ import {
 } from "recharts"
 
 import {
+  InteractiveLegend,
+  legendItems,
+  useSeriesVisibility,
+} from "@workspace/ui/components/chart-utils"
+import {
   CHART_COLORS,
   ChartContainer,
   ChartLegend,
@@ -37,6 +42,8 @@ type BarChartProps = Omit<React.ComponentProps<"div">, "children"> & {
   showLabels?: boolean
   /** Hover tooltip. Defaults to on. */
   showTooltip?: boolean
+  /** Hover a legend item to dim the other series; press it to hide or show that series. Default on. */
+  interactiveLegend?: boolean
   /** Formats values on the axis, the labels and the tooltip. */
   valueFormatter?: (value: number) => string
   /** Shorter form for the value axis only, for example `idCompact`. */
@@ -52,6 +59,7 @@ function BarChart({
   showLegend,
   showLabels,
   showTooltip = true,
+  interactiveLegend = true,
   valueFormatter,
   axisFormatter,
   ...props
@@ -76,6 +84,7 @@ function BarChart({
   const legend = showLegend ?? series.length > 1
   const labels = showLabels ?? (series.length === 1 && !stacked)
   const bars = layout === "vertical" // horizontal bars
+  const visibility = useSeriesVisibility(series)
   const axis = (v: unknown) =>
     typeof v === "number" && (axisFormatter ?? valueFormatter) ? (axisFormatter ?? valueFormatter)!(v) : String(v)
   const format = (v: unknown) =>
@@ -128,13 +137,19 @@ function BarChart({
           />
         ) : null}
         {legend ? (
-          <ChartLegend verticalAlign="top" itemSorter={null} content={<ChartLegendContent />} />
+          <ChartLegend
+            verticalAlign="top"
+            itemSorter={null}
+            content={interactiveLegend ? <InteractiveLegend items={legendItems(colored)} visibility={visibility} /> : <ChartLegendContent />}
+          />
         ) : null}
         {series.map((key) => (
           <Bar
             key={key}
             dataKey={key}
             fill={`var(--color-${key})`}
+            fillOpacity={visibility.opacity(key)}
+            hide={visibility.isHidden(key)}
             stackId={stacked ? "stack" : undefined}
             // Playlog: radius 2 on the data end; stacked bars stay square so the layers meet.
             radius={stacked ? 0 : bars ? [0, 2, 2, 0] : [2, 2, 0, 0]}

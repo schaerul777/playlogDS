@@ -8,6 +8,7 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@workspace/ui/components/chart"
+import { useSeriesVisibility } from "@workspace/ui/components/chart-utils"
 import { cn } from "@workspace/ui/lib/utils" // Playlog: brand-aware merger
 
 type PieChartProps = Omit<React.ComponentProps<"div">, "children"> & {
@@ -22,6 +23,8 @@ type PieChartProps = Omit<React.ComponentProps<"div">, "children"> & {
   /** Formats the total, the slice values and the tooltip. */
   valueFormatter?: (value: number) => string
   showTooltip?: boolean
+  /** Hover a legend row to dim the other slices; press it to hide or show that slice. Default on. */
+  interactiveLegend?: boolean
 }
 
 const percent = (v: number, total: number) =>
@@ -38,6 +41,7 @@ function PieChart({
   centerCaption = "Total",
   valueFormatter = (v) => v.toLocaleString("id-ID"),
   showTooltip = true,
+  interactiveLegend = true,
   className,
   ...props
 }: PieChartProps) {
@@ -55,7 +59,9 @@ function PieChart({
       return { key, ...slice, color, fill: `var(--color-${key})` }
     })
   }, [data, maxSlices])
-  const total = slices.reduce((sum, s) => sum + s.value, 0)
+  const visibility = useSeriesVisibility(React.useMemo(() => slices.map((s) => s.key), [slices]))
+  const shown = slices.filter((s) => !visibility.isHidden(s.key))
+  const total = shown.reduce((sum, s) => sum + s.value, 0)
   const config = React.useMemo(
     () =>
       Object.fromEntries(slices.map((s) => [s.key, { label: s.name, color: s.color }])) as ChartConfig,
@@ -73,7 +79,7 @@ function PieChart({
               />
             ) : null}
             <Pie
-              data={slices}
+              data={shown}
               dataKey="value"
               nameKey="key"
               innerRadius={donut ? 64 : 0}
@@ -84,8 +90,8 @@ function PieChart({
               strokeWidth={2}
               isAnimationActive={false}
             >
-              {slices.map((s) => (
-                <Cell key={s.key} fill={s.fill} />
+              {shown.map((s) => (
+                <Cell key={s.key} fill={s.fill} fillOpacity={visibility.opacity(s.key)} />
               ))}
             </Pie>
           </RechartsPieChart>
@@ -97,15 +103,42 @@ function PieChart({
           </div>
         ) : null}
       </div>
-      <ul className="flex min-w-48 flex-col gap-2 text-caption" aria-label="Legend">
-        {slices.map((s) => (
-          <li key={s.key} className="flex items-center gap-1.5">
-            <span className="size-2.5 shrink-0 rounded-sm" style={{ backgroundColor: s.color }} aria-hidden="true" />
-            <span className="text-muted-foreground">{s.name}</span>
-            <span className="ml-auto pl-4 font-semibold text-foreground tabular-nums">{valueFormatter(s.value)}</span>
-            <span className="w-12 text-right text-muted-foreground tabular-nums">{percent(s.value, total)}</span>
-          </li>
-        ))}
+      <ul className="flex min-w-48 flex-col gap-1 text-caption" aria-label="Legend">
+        {slices.map((s) => {
+          const hidden = visibility.isHidden(s.key)
+          const row = (
+            <>
+              <span className="size-2.5 shrink-0 rounded-sm" style={{ backgroundColor: s.color }} aria-hidden="true" />
+              <span className={cn("text-muted-foreground", hidden && "line-through")}>{s.name}</span>
+              <span className="ml-auto pl-4 font-semibold text-foreground tabular-nums">{valueFormatter(s.value)}</span>
+              <span className="w-12 text-right text-muted-foreground tabular-nums">{hidden ? "–" : percent(s.value, total)}</span>
+            </>
+          )
+          return (
+            <li key={s.key}>
+              {interactiveLegend ? (
+                <button
+                  type="button"
+                  aria-pressed={!hidden}
+                  onClick={() => visibility.toggle(s.key)}
+                  onMouseEnter={() => visibility.setActive(s.key)}
+                  onMouseLeave={() => visibility.setActive(null)}
+                  onFocus={() => visibility.setActive(s.key)}
+                  onBlur={() => visibility.setActive(null)}
+                  // Playlog: a row is a button, radius 4, accent on hover, focus ring; hidden rows go to 40% with the name struck through.
+                  className={cn(
+                    "flex w-full cursor-pointer items-center gap-1.5 rounded-md px-1.5 py-0.5 text-left transition-colors duration-(--pl-duration-fast) ease-out outline-none hover:bg-accent focus-visible:outline-(length:--pl-focus-ring-width) focus-visible:outline-offset-(--pl-focus-ring-offset) focus-visible:outline-solid focus-visible:outline-ring",
+                    hidden && "opacity-(--pl-opacity-disabled)"
+                  )}
+                >
+                  {row}
+                </button>
+              ) : (
+                <div className="flex items-center gap-1.5 px-1.5 py-0.5">{row}</div>
+              )}
+            </li>
+          )
+        })}
       </ul>
     </div>
   )
