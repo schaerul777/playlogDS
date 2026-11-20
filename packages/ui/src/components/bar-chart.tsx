@@ -11,6 +11,11 @@ import {
 } from "recharts"
 
 import {
+  InteractiveLegend,
+  legendItems,
+  useSeriesVisibility,
+} from "@workspace/ui/components/chart-utils"
+import {
   CHART_COLORS,
   ChartContainer,
   ChartLegend,
@@ -37,8 +42,12 @@ type BarChartProps = Omit<React.ComponentProps<"div">, "children"> & {
   showLabels?: boolean
   /** Hover tooltip. Defaults to on. */
   showTooltip?: boolean
+  /** Hover a legend item to dim the other series; press it to hide or show that series. Default on. */
+  interactiveLegend?: boolean
   /** Formats values on the axis, the labels and the tooltip. */
   valueFormatter?: (value: number) => string
+  /** Shorter form for the value axis only, for example `idCompact`. */
+  axisFormatter?: (value: number) => string
 }
 
 function BarChart({
@@ -50,7 +59,9 @@ function BarChart({
   showLegend,
   showLabels,
   showTooltip = true,
+  interactiveLegend = true,
   valueFormatter,
+  axisFormatter,
   ...props
 }: BarChartProps) {
   const series = Object.keys(config)
@@ -73,12 +84,22 @@ function BarChart({
   const legend = showLegend ?? series.length > 1
   const labels = showLabels ?? (series.length === 1 && !stacked)
   const bars = layout === "vertical" // horizontal bars
+  const visibility = useSeriesVisibility(series)
+  const axis = (v: unknown) =>
+    typeof v === "number" && (axisFormatter ?? valueFormatter) ? (axisFormatter ?? valueFormatter)!(v) : String(v)
   const format = (v: unknown) =>
     typeof v === "number" && valueFormatter ? valueFormatter(v) : String(v)
 
   return (
     <ChartContainer config={colored} {...props}>
-      <RechartsBarChart data={data} layout={layout} accessibilityLayer>
+      <RechartsBarChart
+        data={data}
+        layout={layout}
+        accessibilityLayer
+        // Playlog: 4 between bars in a group, 16% between categories.
+        barGap={4}
+        barCategoryGap="16%"
+      >
         {/* Playlog: gridlines only across the value axis. */}
         <CartesianGrid vertical={bars} horizontal={!bars} />
         {bars ? (
@@ -87,7 +108,7 @@ function BarChart({
               type="number"
               tickLine={false}
               axisLine={false}
-              tickFormatter={format}
+              tickFormatter={axis}
             />
             <YAxis
               type="category"
@@ -106,7 +127,7 @@ function BarChart({
               axisLine={false}
               interval={0}
             />
-            <YAxis tickLine={false} axisLine={false} tickFormatter={format} />
+            <YAxis tickLine={false} axisLine={false} tickFormatter={axis} />
           </>
         )}
         {showTooltip ? (
@@ -116,14 +137,22 @@ function BarChart({
           />
         ) : null}
         {legend ? (
-          <ChartLegend verticalAlign="top" content={<ChartLegendContent />} />
+          <ChartLegend
+            verticalAlign="top"
+            itemSorter={null}
+            content={interactiveLegend ? <InteractiveLegend items={legendItems(colored)} visibility={visibility} /> : <ChartLegendContent />}
+          />
         ) : null}
         {series.map((key) => (
           <Bar
             key={key}
             dataKey={key}
             fill={`var(--color-${key})`}
+            fillOpacity={visibility.opacity(key)}
+            hide={visibility.isHidden(key)}
             stackId={stacked ? "stack" : undefined}
+            // Playlog: radius 2 on the data end; stacked bars stay square so the layers meet.
+            radius={stacked ? 0 : bars ? [0, 2, 2, 0] : [2, 2, 0, 0]}
             isAnimationActive={false}
           >
             {labels ? (

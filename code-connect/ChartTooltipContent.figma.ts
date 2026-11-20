@@ -4,11 +4,11 @@
 import figma from 'figma'
 const instance = figma.selectedInstance
 
-// The tooltip label and rows come from the hovered data point at runtime, so the
-// Figma `label` text has no code prop. BarChart renders this tooltip for you.
+// The tooltip is rendered by Recharts on hover or keyboard focus, so rows come from the chart's series. Pass
+// `valueFormatter` (for example idNumber) for Indonesian number formats.
 export default {
-  example: figma.code`<ChartTooltip content={<ChartTooltipContent valueFormatter={formatNumber} />} />`,
-  imports: ['import { ChartTooltip, ChartTooltipContent } from "@workspace/ui/components/chart"'],
+  example: figma.code`<ChartTooltip cursor content={<ChartTooltipContent valueFormatter={idNumber} />} />`,
+  imports: ['import { ChartTooltip, ChartTooltipContent } from "@workspace/ui/components/chart"', 'import { idNumber } from "@workspace/ui/lib/chart-format"'],
   id: 'chart-tooltip-content',
   metadata: { nestable: true },
 }
