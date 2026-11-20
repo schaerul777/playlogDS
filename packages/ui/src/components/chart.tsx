@@ -75,7 +75,7 @@ function ChartContainer({
         data-chart={chartId}
         className={cn(
           // Playlog: axis labels 12px medium ink-muted; gridlines 1px chart-grid; labels may sit outside the plot.
-          "flex aspect-video justify-center text-caption [&_.recharts-cartesian-axis-tick_text]:fill-muted-foreground [&_.recharts-cartesian-axis-tick-value]:fill-muted-foreground [&_.recharts-cartesian-grid_line]:stroke-chart-grid [&_.recharts-cartesian-grid_line]:stroke-(length:--pl-border-width) [&_.recharts-surface]:overflow-visible [&_.recharts-label-list_text]:fill-foreground [&_.recharts-curve.recharts-tooltip-cursor]:stroke-border [&_.recharts-dot[stroke='#fff']]:stroke-transparent [&_.recharts-layer]:outline-hidden [&_.recharts-polar-grid_[stroke='#ccc']]:stroke-border [&_.recharts-radial-bar-background-sector]:fill-muted [&_.recharts-rectangle.recharts-tooltip-cursor]:fill-muted [&_.recharts-reference-line_[stroke='#ccc']]:stroke-border [&_.recharts-sector]:outline-hidden [&_.recharts-sector[stroke='#fff']]:stroke-transparent [&_.recharts-surface]:outline-hidden",
+          "flex aspect-video justify-center text-caption [&_.recharts-cartesian-axis-tick_text]:fill-muted-foreground [&_.recharts-cartesian-axis-tick-value]:fill-muted-foreground [&_.recharts-cartesian-grid_line]:stroke-chart-grid [&_.recharts-cartesian-grid_line]:stroke-(length:--pl-border-width) [&_.recharts-surface]:overflow-visible [&_.recharts-label-list_text]:fill-foreground [&_.recharts-curve.recharts-tooltip-cursor]:stroke-border [&_.recharts-dot[stroke='#fff']]:stroke-transparent [&_.recharts-layer]:outline-hidden [&_.recharts-polar-grid_[stroke='#ccc']]:stroke-border [&_.recharts-radial-bar-background-sector]:fill-muted [&_.recharts-rectangle.recharts-tooltip-cursor]:fill-muted [&_.recharts-reference-line_[stroke='#ccc']]:stroke-border [&_.recharts-sector]:outline-hidden [&_.recharts-sector[stroke='#fff']]:stroke-transparent [&_.recharts-surface]:outline-hidden [&_.recharts-surface:focus-visible]:outline-(length:--pl-focus-ring-width) [&_.recharts-surface:focus-visible]:outline-offset-(--pl-focus-ring-offset) [&_.recharts-surface:focus-visible]:outline-solid [&_.recharts-surface:focus-visible]:outline-ring",
           className
         )}
         {...props}
@@ -204,8 +204,9 @@ function ChartTooltipContent({
   return (
     <div
       className={cn(
-        // Playlog: popover surface, 4px radius, overlay shadow, caption text.
-        "grid min-w-32 items-start gap-1.5 rounded-md bg-popover px-2.5 py-1.5 text-caption text-popover-foreground shadow-(--pl-shadow-overlay)",
+        // Playlog: popover surface, 4px radius, overlay shadow, caption text. Padding 8 12 (6 12 for one row), min width 144.
+        "grid min-w-36 items-start gap-1.5 rounded-md bg-popover px-3 text-caption text-popover-foreground shadow-(--pl-shadow-overlay)",
+        payload.length > 1 ? "py-2" : "py-1.5",
         className
       )}
     >

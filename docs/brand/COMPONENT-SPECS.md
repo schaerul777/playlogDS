@@ -693,7 +693,7 @@ Starting point (checked 20 Nov 2026): the shadcn Chart wrapper is already in the
 
 ## Area
 
-- Flat fill at 20% of the series colour, no gradient, with the 2px line of the line chart on top. Stacked areas use 40% fill and a 1px `card` separator between layers.
+- Flat fill at 20% of the series colour, no gradient, with the 2px line of the line chart on top. Stacked areas use 40% fill; the 2px line on each layer is what separates them (no extra separator).
 
 ## Bar (exists)
 
@@ -723,3 +723,10 @@ Starting point (checked 20 Nov 2026): the shadcn Chart wrapper is already in the
 ## Charts: Figma (for after approval)
 
 - A Chart Frame component (title, description, header actions, legend, plot slot), the chart Tooltip, and one static example per type drawn with vector shapes bound to the chart variables. Illustrative only: the data, shapes and curves; real behaviour (hover, keyboard, animation) is code.
+
+## Charts: implementation notes
+
+- New: `line-chart.tsx`, `area-chart.tsx`, `pie-chart.tsx` (Donut by default, `donut={false}` for Pie), `chart-panel.tsx` (Card frame with the Chart | Table toggle, summary and the loading, empty and error states), `chart-utils.tsx` (series colours, shapes) and `lib/chart-format.ts` (`idNumber`, `idRupiah`, `idPercent`, `idCompact`). Playground: `apps/web/src/charts-section.tsx`.
+- Changed (small, agreed): `bar-chart.tsx` (radius 2 on the data end, 4 between bars, 16% between categories, legend in series order, `axisFormatter`) and `chart.tsx` (tooltip padding 8 12 and min width 144, a visible focus ring on the plot). `recharts` 3.8.0 was already installed; no package added.
+- Shared props: `data`, `config`, `categoryKey`, `valueFormatter`, `axisFormatter`, `showLegend`, `showTooltip`; Area also takes `stacked`. Pass `aria-label` on a chart and a one-sentence `summary` on its `ChartPanel`.
+- Legends list series in the order of `config` (Recharts sorts them alphabetically unless told not to).

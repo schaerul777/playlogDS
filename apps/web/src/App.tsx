@@ -137,6 +137,7 @@ import { NavSection } from "@/nav-section"
 import { DisplaySection } from "@/display-section"
 import { ChatSection } from "@/chat-section"
 import { AgentSection } from "@/agent-section"
+import { ChartsSection } from "@/charts-section"
 import { ControlsSection } from "@/controls-section"
 import { DateSection } from "@/date-section"
 
@@ -264,6 +265,7 @@ function Showcase({ label, className }: { label: string; className?: string }) {
       <DisplaySection />
       <ChatSection />
       <AgentSection />
+      <ChartsSection />
       <ControlsSection />
       <DateSection />
     </main>
