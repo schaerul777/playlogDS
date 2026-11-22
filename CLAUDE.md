@@ -93,6 +93,18 @@ When writing to Figma through the MCP:
 - Global stylesheet: `packages/ui/src/styles/globals.css`
 - Fonts: `apps/web/public/fonts/`
 
+## Vue library
+
+A Vue 3 port of the design lives in `packages/ui-vue` (shadcn-vue on Reka UI), with the playground `apps/web-vue` (port 5180). `packages/ui` and `apps/web` (React) stay the reference. Plan and open decisions: `docs/VUE-PORT-PLAN.md`.
+
+- Shared source: `packages/tokens` (`tokens.json`, `tokens.css`, `theme.css`, `icons/`). Both libraries import `@workspace/tokens/theme.css`. Do not copy tokens into a library.
+- Same rules as React: tokens only, `Icon` only (`packages/ui-vue/src/icons`), radii 2/4/8, control height 40 (32, 48), 2px focus ring with 2px offset, disabled 40%, `--pl-duration-fast`. Variant and size names match the React components exactly.
+- Add components one at a time with the shadcn-vue CLI, run from `packages/ui-vue` (`yes n | pnpm dlx shadcn-vue@latest add <name> -y`). Never use `--overwrite`; answer no to overwrite questions. After each install check `git status` and `git diff`, then restyle, replace icon imports with `Icon`, use `cn` from `@workspace/ui-vue/lib/utils` (not the CLI's `cn` import), and remove `@lucide/vue` and `@vueuse/core` from `packages/ui-vue/package.json` if the CLI added them (ask before keeping any new dependency).
+- Reka UI differs from Base UI: state attributes are `data-state="open|closed"`, composition is `as-child`, and exit animations use CSS keyframes (`data-[state=closed]:animate-out`), not `data-ending-style`. Report any behavior difference and ask before accepting it.
+- Check both libraries: `pnpm lint`, `pnpm typecheck`, `pnpm build` from the root.
+- Visual check against React: `docs/vue-compare/README.md`.
+- Code Connect for Vue: templates in `code-connect-vue/`, config `figma.vue.config.json` (label `Vue`). Publish only from your own terminal: `pnpm exec figma connect publish --config figma.vue.config.json --dry-run`. Never store a Figma token.
+
 ## Do not
 
 - Do not hardcode brand values in components.

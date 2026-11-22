@@ -23,7 +23,7 @@ packages/
   ui-vue/        NEW  Vue library (shadcn-vue + Reka UI), name @workspace/ui-vue
 apps/
   web/           React playground. Unchanged.
-  web-vue/       NEW  Vue playground, fixed dev port 5174 (web uses Vite's default).
+  web-vue/       NEW  Vue playground, fixed dev port 5180 (web uses Vite's default).
 code-connect/        React templates. Unchanged.
 code-connect-vue/  NEW  Vue templates.
 figma.config.json         React (unchanged)
