@@ -157,10 +157,9 @@ See the message that accompanies this plan. Answers will be recorded here:
 
 | # | Topic | Answer |
 |---|---|---|
-| 1 | Shared tokens | |
-| 2 | `apps/web-vue` role | |
-| 3 | Nuxt | |
-| 4 | Components without a Vue equivalent / other libs (charts, drawer, OTP, toast) | |
-| 5 | npm or monorepo | |
-| 6 | Figma plan and Code Connect format | |
-| 7 | Class merging (`cn` package vs `tailwind-merge`) | |
+| 1 | Shared tokens | (a) Shared `packages/tokens`, approved. React files may change only as listed in section 1. |
+| 2 | `apps/web-vue` role, npm or monorepo | (a) Playground only now; workspace package later; no npm publishing now. |
+| 3 | Nuxt | (a) Plain Vue 3 + Vite. |
+| 4 | Libraries beyond Reka UI (Chart, Drawer, Input OTP, Sonner) | (a) Ask per batch, with name, version and size. |
+| 5 | Figma plan (one active Code Connect framework on Professional) | Open: user to check before publishing. |
+| 6 | Class merging | Default: reuse the `cn` package with the same type-scale list, unless told otherwise. |
