@@ -1,6 +1,6 @@
 # Playlog brand rules for the UI library
 
-Condensed from the Playlog Design System and the 2026 Brand Identity Guideline. Values live in `tokens.json` and `tokens.css`. This file explains how to use them.
+Condensed from the Playlog Design System and the 2026 Brand Identity Guideline. Values live in `packages/tokens/tokens.json` and `packages/tokens/tokens.css` (shared theme: `theme.css`). This file explains how to use them.
 
 ## Brand character
 

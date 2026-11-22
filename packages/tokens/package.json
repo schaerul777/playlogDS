@@ -1,0 +1,13 @@
+{
+  "name": "@workspace/tokens",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "exports": {
+    "./theme.css": "./theme.css",
+    "./tokens.css": "./tokens.css",
+    "./tokens.json": "./tokens.json",
+    "./icons/icon-data": "./icons/icon-data.ts",
+    "./icons/extra-icons": "./icons/extra-icons.ts"
+  }
+}
