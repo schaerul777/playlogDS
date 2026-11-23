@@ -4,6 +4,7 @@ import { Button } from "@workspace/ui-vue/components/button"
 import ButtonSection from "./sections/ButtonSection.vue"
 import FormsSection from "./sections/FormsSection.vue"
 import SelectFieldSection from "./sections/SelectFieldSection.vue"
+import Batch3Section from "./sections/Batch3Section.vue"
 import DialogSection from "./sections/DialogSection.vue"
 import InputSection from "./sections/InputSection.vue"
 
@@ -28,6 +29,7 @@ onMounted(() => apply(new URLSearchParams(location.search).get("theme") === "dar
     <InputSection />
     <FormsSection />
     <SelectFieldSection />
+    <Batch3Section />
     <DialogSection />
   </main>
 </template>

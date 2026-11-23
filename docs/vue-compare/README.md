@@ -125,3 +125,44 @@ Separator came with Field (the CLI installs it as a dependency). Specimens: 5 Se
 - Select keyboard tests in React were unreliable (hidden Browser pane: exit animations stall, so "open" stays true). React's keyboard behavior was taken from the earlier results and Base UI behavior, not re-measured. In Vue, ArrowDown right after a page reload did not move the highlight once; it worked in a fresh session. Not reproduced.
 - Scrolling lists (scroll buttons), long lists, `popper` position, RTL, touch.
 - Screen readers.
+
+# Batch 3: Toggle, Toggle Group, Slider, Combobox
+
+Specimens: Toggle (2 variants x 3 sizes, pressed, icon, disabled, invalid), 4 Toggle Groups (joined outline, joined default with disabled item, spacing 2, vertical), 4 Sliders (single, range, disabled, vertical), 4 Comboboxes (single, chips, invalid, disabled).
+
+## Pixel check
+
+- Toggle: all 14 match in light and dark. The 2 "pressed" ones differed until I used Reka's `default-value` (not `default-pressed`); now the pressed fill is `surface-selected` as in React.
+- Toggle Group (4): **0 differences**, light and dark.
+- Combobox chips: **0 differences** (height, chip size, radius, colors, remove button).
+- Combobox single, invalid, disabled: the Input Group wrapper and every child (input, clear and chevron buttons) have the same position, size and colors. Only `min-height` computes as `0px` in Vue and `auto` in React (the height is fixed at 40 anyway).
+- Slider (4): track, thumb (20 x 20, radius 4, 2px primary border) and the label and value row are at the same positions. Two small differences: the filled range ends 2 px earlier in Vue (it is behind the thumb), and React adds a hidden 16 px `input` inside each thumb (Base UI form support).
+
+## Behavior check (Vue, real key presses)
+
+| Behavior | Result |
+|---|---|
+| Toggle Group: ArrowRight moves focus, Space toggles, single mode replaces the pressed item | works |
+| Slider: arrows (+1), PageUp (+10), End (max); label and value row follow; 2px ring with 2px offset | works |
+| Range slider thumbs are named by `thumbLabels` | works |
+| Combobox: typing filters ("su" shows Surabaya, highlighted), Enter selects and closes | works |
+| Combobox: "No results" row (14/20 muted, centred, 36 high) when nothing matches | works |
+| Combobox: clear button only while there is a value; clears the input | works |
+| Combobox multiple: Enter adds a chip; typed text clears after a pick; Backspace in an empty input removes the last chip; the x removes a chip | works after the fixes below |
+
+React keyboard behavior was not re-measured (hidden Browser pane); it follows the approved Base UI behavior.
+
+## Differences found
+
+1. **Prop names.** Toggle: `default-value` / `v-model` (React `defaultPressed`). Toggle Group: Reka needs `type="single"` or `"multiple"` (React `multiple` and `defaultValue` array). Slider and Combobox keep Reka's `v-model` / `default-value`.
+2. **Combobox API.** Reka has no `items` prop and no render-function children; items are written as `v-for` inside `ComboboxList`. `ComboboxInput` (an Input Group with clear and chevron) and `ComboboxChips` / `ComboboxChip` / `ComboboxChipsInput` keep the React names. Chips need `:value` on each `ComboboxChip`.
+3. **Fixed in the wrapper (Reka does not do these):** clear the typed text after a pick in multiple mode, remove the last chip on Backspace in an empty input, show the clear button only while there is a value. All three are in `combobox/`.
+4. **Slider label row.** React uses Base UI `Slider.Label` and `Slider.Value`. Vue uses a plain `SliderLabel` and an `<output>` `SliderValue` that follows the model.
+5. **Typing into a filled single combobox** appends to the shown text in both (Reka and Base UI). Select the text first to replace it.
+6. **Closed popup in the DOM.** Reka keeps a hidden copy of the items while closed; use `aria-expanded` to read the open state.
+
+## Not verified
+
+- Combobox popup geometry and the `popper` position against React (only the input side was compared); long lists and scrolling; `Combobox` with object values (`by`); async items.
+- Touch dragging on Slider, RTL, screen readers.
+- React Combobox keyboard.

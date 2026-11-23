@@ -48,6 +48,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@workspace/ui/components/select"
+import {
+  Combobox,
+  ComboboxChip,
+  ComboboxChips,
+  ComboboxChipsInput,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+  ComboboxValue,
+  useComboboxAnchor,
+} from "@workspace/ui/components/combobox"
+import { Slider, SliderLabel, SliderValue } from "@workspace/ui/components/slider"
+import { Toggle } from "@workspace/ui/components/toggle"
+import { ToggleGroup, ToggleGroupItem } from "@workspace/ui/components/toggle-group"
 import { Textarea } from "@workspace/ui/components/textarea"
 import { Icon } from "@workspace/ui/icons/icon"
 import "./styles.css"
@@ -341,6 +357,133 @@ function SelectFieldSection() {
   )
 }
 
+const CITY_LIST = ["Jakarta", "Bandung", "Surabaya", "Medan", "Makassar"]
+
+function Batch3Section() {
+  const anchor = useComboboxAnchor()
+  const sizes = ["sm", "default", "lg"] as const
+  const cbList = (items: string[]) => (
+    <ComboboxContent>
+      <ComboboxEmpty>No results</ComboboxEmpty>
+      <ComboboxList>
+        {(item: string) => (
+          <ComboboxItem key={item} value={item}>
+            {item}
+          </ComboboxItem>
+        )}
+      </ComboboxList>
+    </ComboboxContent>
+  )
+  return (
+    <section id="batch3" className="flex flex-col gap-6">
+      <h2 className="text-h2 text-ink-heading">Batch 3: Toggle, Toggle Group, Slider, Combobox</h2>
+      <div className="flex flex-col gap-3">
+        {(["default", "outline"] as const).map((variant) => (
+          <div key={variant} className="flex flex-wrap items-center gap-3">
+            <span className="w-28 text-caption text-muted-foreground">toggle {variant}</span>
+            {sizes.map((size) => (
+              <Toggle key={size} variant={variant} size={size} data-specimen={`toggle-${variant}-${size}`}>Toggle</Toggle>
+            ))}
+            <Toggle variant={variant} defaultPressed data-specimen={`toggle-${variant}-pressed`}>Pressed</Toggle>
+            <Toggle variant={variant} aria-label="Bold" data-specimen={`toggle-${variant}-icon`}><Icon name="star" /></Toggle>
+            <Toggle variant={variant} disabled data-specimen={`toggle-${variant}-disabled`}>Disabled</Toggle>
+            <Toggle variant={variant} aria-invalid="true" data-specimen={`toggle-${variant}-invalid`}>Invalid</Toggle>
+          </div>
+        ))}
+      </div>
+      <div className="flex flex-col gap-3">
+        <div className="flex flex-wrap items-center gap-3">
+          <ToggleGroup variant="outline" defaultValue={["quarter"]} data-specimen="tg-joined-outline">
+            <ToggleGroupItem value="month">Month</ToggleGroupItem>
+            <ToggleGroupItem value="quarter">Quarter</ToggleGroupItem>
+            <ToggleGroupItem value="year">Year</ToggleGroupItem>
+          </ToggleGroup>
+          <ToggleGroup defaultValue={["bar"]} data-specimen="tg-joined-default">
+            <ToggleGroupItem value="bar" aria-label="Bar chart"><Icon name="bar-chart" /></ToggleGroupItem>
+            <ToggleGroupItem value="line" aria-label="Line chart"><Icon name="chart-line" /></ToggleGroupItem>
+            <ToggleGroupItem value="pie" aria-label="Pie chart" disabled><Icon name="pie-chart" /></ToggleGroupItem>
+          </ToggleGroup>
+          <ToggleGroup variant="outline" size="sm" spacing={2} multiple defaultValue={["jkt", "sby"]} data-specimen="tg-spacing">
+            <ToggleGroupItem value="jkt">Jakarta</ToggleGroupItem>
+            <ToggleGroupItem value="sby">Surabaya</ToggleGroupItem>
+            <ToggleGroupItem value="bdg">Bandung</ToggleGroupItem>
+          </ToggleGroup>
+          <ToggleGroup variant="outline" orientation="vertical" defaultValue={["top"]} data-specimen="tg-vertical">
+            <ToggleGroupItem value="top">Top 10</ToggleGroupItem>
+            <ToggleGroupItem value="all">All cities</ToggleGroupItem>
+          </ToggleGroup>
+        </div>
+      </div>
+      <div className="grid max-w-md gap-6">
+        <Slider defaultValue={[40]} aria-label="Reach" data-specimen="slider-single">
+          <SliderLabel>Reach target</SliderLabel>
+          <SliderValue />
+        </Slider>
+        <Slider defaultValue={[20, 80]} thumbLabels={["Minimum", "Maximum"]} data-specimen="slider-range">
+          <SliderLabel>Range</SliderLabel>
+          <SliderValue />
+        </Slider>
+        <Slider defaultValue={[60]} disabled aria-label="Disabled" data-specimen="slider-disabled" />
+        <div className="h-40">
+          <Slider defaultValue={[30]} orientation="vertical" aria-label="Vertical" data-specimen="slider-vertical" />
+        </div>
+      </div>
+      <div className="grid max-w-md gap-6">
+        <Field>
+          <FieldLabel htmlFor="cb-a">City</FieldLabel>
+          <Combobox items={CITY_LIST} defaultValue="Bandung">
+            <ComboboxInput id="cb-a" placeholder="Select a city" data-specimen="cb-single" />
+            {cbList(CITY_LIST)}
+          </Combobox>
+          <FieldDescription>Type to filter. The clear button shows once a city is chosen.</FieldDescription>
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="cb-b">Cities (multiple)</FieldLabel>
+          <Combobox multiple items={CITY_LIST} defaultValue={["Jakarta", "Surabaya"]}>
+            <ComboboxChips ref={anchor} data-specimen="cb-chips">
+              <ComboboxValue>
+                {(values: string[]) => (
+                  <>
+                    {values.map((v) => (
+                      <ComboboxChip key={v}>{v}</ComboboxChip>
+                    ))}
+                    <ComboboxChipsInput id="cb-b" placeholder="Add city" />
+                  </>
+                )}
+              </ComboboxValue>
+            </ComboboxChips>
+            <ComboboxContent anchor={anchor}>
+              <ComboboxEmpty>No results</ComboboxEmpty>
+              <ComboboxList>
+                {(item: string) => (
+                  <ComboboxItem key={item} value={item}>
+                    {item}
+                  </ComboboxItem>
+                )}
+              </ComboboxList>
+            </ComboboxContent>
+          </Combobox>
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="cb-c">Team</FieldLabel>
+          <Combobox items={["Roadside", "Transit"]}>
+            <ComboboxInput id="cb-c" aria-invalid="true" placeholder="Select a team" data-specimen="cb-invalid" />
+            {cbList(["Roadside", "Transit"])}
+          </Combobox>
+          <FieldError>Choose a team.</FieldError>
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="cb-d">Region</FieldLabel>
+          <Combobox items={["Java", "Bali"]} defaultValue="Java" disabled>
+            <ComboboxInput id="cb-d" disabled placeholder="Select a region" data-specimen="cb-disabled" />
+            {cbList(["Java", "Bali"])}
+          </Combobox>
+        </Field>
+      </div>
+    </section>
+  )
+}
+
 function DialogSection() {
   return (
     <section id="dialog" className="flex flex-col gap-6">
@@ -405,6 +548,7 @@ function App() {
       <InputSection />
       <FormsSection />
       <SelectFieldSection />
+      <Batch3Section />
       <DialogSection />
     </main>
   )
