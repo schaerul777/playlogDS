@@ -78,11 +78,11 @@ Same method as the pilot (20 more specimens, same markup on both pages, `FormsSe
 | Space toggles Checkbox | yes | yes |
 | Space toggles Switch | yes | yes |
 | Switch focus ring | 2px solid, 2px offset | same |
-| Arrow keys in Radio Group | move focus **and select** | move focus, **do not select** (needs your decision) |
+| Arrow keys in Radio Group | move focus **and select** | Reka alone only moves focus; **fixed to match React** (decision 2026-11-23) |
 
 ## Differences found
 
-1. **Radio arrow keys (needs your decision).** In React, ArrowDown or ArrowUp selects the radio it moves to (the WAI-ARIA radio pattern). In Reka, the arrows only move focus; the selection changes on Space or click. Tested: React ArrowDown x2 from the first radio selects the third. Vue leaves the first selected, with focus on the third. Fix if you want parity: select on arrow focus (`@keydown`/`@focus` handler on `RadioGroupItem`), or accept Reka's behavior.
+1. **Radio arrow keys (decided: select like React, implemented).** `RadioGroup` notes arrow key presses and each `RadioGroupItem` selects itself when focused by one (`radio-group/context.ts`). Re-tested: ArrowDown x2 selects the third radio and ArrowDown wraps past the disabled one, as in React. Original finding: In React, ArrowDown or ArrowUp selects the radio it moves to (the WAI-ARIA radio pattern). In Reka, the arrows only move focus; the selection changes on Space or click. Tested: React ArrowDown x2 from the first radio selects the third. Vue leaves the first selected, with focus on the third. Fix if you want parity: select on arrow focus (`@keydown`/`@focus` handler on `RadioGroupItem`), or accept Reka's behavior.
 2. **Radio cursor.** Vue shows the pointer cursor on radios (and the default cursor when disabled). React shows `auto`, because Base UI renders a `span` and the base rule in `globals.css` has no `[role="radio"]`. Vue follows the brand rule ("interactive controls use the pointer cursor"). React is the one that is out of line. I did not change React.
 3. **API names.** Reka uses `v-model` and `default-value` (`checked` and `defaultChecked` in React). Checkbox and Switch take a boolean model. Radio Group uses `v-model` or `default-value` with `value` on each item. Vue keeps the Reka names so templates stay idiomatic. `size="sm"` on Switch and `aria-invalid` behave as in React.
 4. **State attribute.** `data-state="checked|unchecked"` instead of `data-checked` and `data-unchecked`. No visible difference.

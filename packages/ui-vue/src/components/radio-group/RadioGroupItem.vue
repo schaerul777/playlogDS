@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import type { RadioGroupItemProps } from "reka-ui"
 import type { HTMLAttributes } from "vue"
-import { computed } from "vue"
+import { computed, inject } from "vue"
 import { cn } from "@workspace/ui-vue/lib/utils" // Playlog: brand-aware merger
+import { radioArrowNavKey } from "./context"
 import { RadioGroupIndicator, RadioGroupItem, useForwardProps } from "reka-ui"
 
 const props = defineProps<RadioGroupItemProps & { class?: HTMLAttributes["class"] }>()
@@ -13,12 +14,19 @@ const delegatedProps = computed(() => {
 })
 
 const forwardedProps = useForwardProps(delegatedProps)
+
+// Playlog: select on arrow-key focus, as in React (see RadioGroup.vue).
+const arrowNav = inject(radioArrowNavKey, undefined)
+function onFocus(event: FocusEvent) {
+  if (arrowNav?.value) (event.currentTarget as HTMLElement).click()
+}
 </script>
 
 <template>
   <RadioGroupItem
     data-slot="radio-group-item"
     v-bind="forwardedProps"
+    @focus="onFocus"
     :class="
       cn(
         // Playlog: COMPONENT-SPECS Radio Group. 18px circle, 1.5px --input edge, card fill, flat, mirrors Checkbox.
