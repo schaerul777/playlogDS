@@ -203,3 +203,42 @@ Specimens: Alert Dialog default (media, destructive action) and `sm`, Sheet on a
 - Sheet and Alert Dialog animation timing, tooltip close timing, tooltip skip-delay behavior when moving between triggers, and the React tooltip box.
 - Focus trap in Sheet and Alert Dialog (same Reka dialog as the pilot, which was checked), touch, screen readers.
 - Scroll lock layout shift with a page scrollbar.
+
+# Batch 5 (Menus): Dropdown Menu, Context Menu, Hover Card
+
+Sonner was left out of this batch: it needs the `vue-sonner` package (2.9.0, 216 KB unpacked), and dependencies need your OK first.
+
+Specimens: a Dropdown Menu with label, icon items, shortcut, disabled item, checkbox items, radio items, submenu and a destructive item; a Context Menu (label, item with shortcut, disabled, destructive); a Hover Card.
+
+## Pixel check
+
+- Dropdown Menu (30 elements: popup, items, label, separators, indicators, submenu trigger): **0 differences**. Same position (60, 658), 144 x 360.
+- Hover Card (3 elements): **0 differences**, same position and 256 x 92.
+- Context Menu (8 elements): the styles of every element match; only the position differs (below).
+
+## Behavior check (real clicks and key presses)
+
+| Behavior | React (Base UI) | Vue (Reka UI) |
+|---|---|---|
+| Menu role | `menu` | `menu` |
+| ArrowDown x2 from a fresh menu | highlights Download | highlights Download |
+| Typeahead "s" | highlights Show totals (skips the disabled item) | same |
+| Escape | closes, focus returns to the trigger | same |
+| Click a plain item | closes | closes |
+| Click a checkbox item | **stays open** | **stays open** (fixed, see 1) |
+| ArrowRight on "Share" opens the submenu | not re-measured | the submenu did not show after typeahead put the highlight on "Show totals" (the test was on the wrong item); not re-tested |
+| Hover Card | opens 300 ms after hover, closes 150 ms after leaving | same delays set; open position and size match |
+
+## Differences found
+
+1. **Checkbox and radio items closed the menu in Vue (fixed).** Base UI keeps the menu open when you pick a checkbox or radio item; Reka closed it. Both items now call `preventDefault` on select unless `close-on-click` is set (same name idea as Base UI's `closeOnClick`).
+2. **Context Menu position near the screen edge.** With a right-click at the bottom of the viewport, React flips the menu above the pointer (y 897) and Vue slides it up to fit (y 968). Away from the edges there is no difference expected. The x position is 2 px further right in Vue (312 vs 310).
+3. **Focus on open.** After a click, React keeps focus on the trigger and highlights with arrows; Reka moves focus into the menu (`role="menu"`). Same keyboard result, not visible.
+4. **Hover Card delays.** Base UI puts `delay` and `closeDelay` on the trigger; Reka puts `open-delay` and `close-delay` on the root. Defaults 300 and 150 are set on `HoverCard`.
+5. **Label needs a group.** In React, `DropdownMenuLabel` and `ContextMenuLabel` must sit inside a group (Base UI throws otherwise). In Vue a label works anywhere; use `DropdownMenuGroup` for the same markup.
+6. **Collision padding.** 5 px as in the earlier overlays.
+
+## Not verified
+
+- Submenu open and close with the keyboard, the radio item behavior, disabled item behavior with the pointer, long menus and scrolling, touch long-press for Context Menu.
+- Animation timing (hidden pane) and screen readers.

@@ -79,6 +79,33 @@ import {
 import { Popover, PopoverContent, PopoverDescription, PopoverHeader, PopoverTitle, PopoverTrigger } from "@workspace/ui/components/popover"
 import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@workspace/ui/components/sheet"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@workspace/ui/components/tooltip"
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuGroup,
+  ContextMenuItem,
+  ContextMenuLabel,
+  ContextMenuSeparator,
+  ContextMenuShortcut,
+  ContextMenuTrigger,
+} from "@workspace/ui/components/context-menu"
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from "@workspace/ui/components/dropdown-menu"
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@workspace/ui/components/hover-card"
 import { Textarea } from "@workspace/ui/components/textarea"
 import { Icon } from "@workspace/ui/icons/icon"
 import "./styles.css"
@@ -568,6 +595,66 @@ function OverlaysSection() {
   )
 }
 
+function MenusSection() {
+  return (
+    <section id="menus" className="flex flex-col gap-6">
+      <h2 className="text-h2 text-ink-heading">Menus: Dropdown Menu, Context Menu, Hover Card</h2>
+      <div className="flex flex-wrap items-center gap-3">
+        <DropdownMenu>
+          <DropdownMenuTrigger render={<Button variant="outline" data-specimen="dd-trigger" />}>Report actions</DropdownMenuTrigger>
+          <DropdownMenuContent data-specimen="dd">
+            <DropdownMenuGroup>
+              <DropdownMenuLabel>Report</DropdownMenuLabel>
+              <DropdownMenuItem><Icon name="edit" />Edit<DropdownMenuShortcut>Cmd E</DropdownMenuShortcut></DropdownMenuItem>
+              <DropdownMenuItem><Icon name="download" />Download</DropdownMenuItem>
+              <DropdownMenuItem disabled>Archive</DropdownMenuItem>
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+            <DropdownMenuCheckboxItem checked>Show totals</DropdownMenuCheckboxItem>
+            <DropdownMenuCheckboxItem checked={false}>Show deltas</DropdownMenuCheckboxItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuRadioGroup value="quarter">
+              <DropdownMenuRadioItem value="month">Month</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="quarter">Quarter</DropdownMenuRadioItem>
+            </DropdownMenuRadioGroup>
+            <DropdownMenuSeparator />
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger>Share</DropdownMenuSubTrigger>
+              <DropdownMenuSubContent>
+                <DropdownMenuItem>Email</DropdownMenuItem>
+                <DropdownMenuItem>Copy link</DropdownMenuItem>
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem variant="destructive"><Icon name="trash" />Delete</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <ContextMenu>
+          <ContextMenuTrigger render={<div className="flex h-24 w-56 items-center justify-center rounded-lg border border-dashed border-border text-body-sm text-muted-foreground" data-specimen="cm-trigger" />}>
+            Right-click here
+          </ContextMenuTrigger>
+          <ContextMenuContent data-specimen="cm">
+            <ContextMenuGroup>
+              <ContextMenuLabel>City</ContextMenuLabel>
+            </ContextMenuGroup>
+            <ContextMenuItem>Open<ContextMenuShortcut>Enter</ContextMenuShortcut></ContextMenuItem>
+            <ContextMenuItem disabled>Compare</ContextMenuItem>
+            <ContextMenuSeparator />
+            <ContextMenuItem variant="destructive">Remove</ContextMenuItem>
+          </ContextMenuContent>
+        </ContextMenu>
+        <HoverCard>
+          <HoverCardTrigger render={<Button variant="link" data-specimen="hc-trigger" />}>@playlog</HoverCardTrigger>
+          <HoverCardContent data-specimen="hc">
+            <p className="text-label text-ink-heading">Playlog</p>
+            <p className="text-body-sm text-muted-foreground">Out-of-home audience analytics for 25 Indonesian cities.</p>
+          </HoverCardContent>
+        </HoverCard>
+      </div>
+    </section>
+  )
+}
+
 function DialogSection() {
   return (
     <section id="dialog" className="flex flex-col gap-6">
@@ -635,6 +722,7 @@ function App() {
       <Batch3Section />
       <DialogSection />
       <OverlaysSection />
+      <MenusSection />
     </main>
   )
 }
