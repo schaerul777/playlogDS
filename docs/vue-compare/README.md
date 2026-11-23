@@ -88,3 +88,40 @@ Same method as the pilot (20 more specimens, same markup on both pages, `FormsSe
 4. **State attribute.** `data-state="checked|unchecked"` instead of `data-checked` and `data-unchecked`. No visible difference.
 5. **Invalid state.** React also styles `data-invalid` (Base UI Field). Vue styles `aria-invalid` only; there is no Field integration yet (Field is in the Forms batch 2).
 6. **Indeterminate Checkbox.** Reka supports `indeterminate`; it shows the check mark. Not in the spec, not styled, not used.
+
+# Batch 2: Select, Native Select, Field, Input Group (+ Separator)
+
+Separator came with Field (the CLI installs it as a dependency). Specimens: 5 Select triggers, 4 Native Select, Field (group, set, vertical, error, horizontal, separator), 4 Input Group; React and Vue pages use the same markup.
+
+## Pixel check
+
+- Select (5), Native Select (4), Input Group (4), Field vertical, error state and separator: **0 differences**, light and dark, including the position, size, colors and font of every child element.
+- Field group, set and horizontal: the geometry of every child is identical (checkbox 18 x 18 at the same x and y, label at the same x and width). Only the DOM differs: Base UI renders the checkbox as a `span` plus a hidden `input`, Reka renders a `button`.
+- Open Select popup (item-aligned, selected Jakarta): same position (28 px above the trigger), same 241 px height, radius 4, shadow `--pl-shadow-overlay`, no border, items 32 high with radius 2, label 12 px muted, disabled item at 40%.
+
+## Behavior check
+
+| Behavior | React (Base UI) | Vue (Reka UI) |
+|---|---|---|
+| Popup aligns the selected item over the trigger | yes | yes (`position="item-aligned"`, the default here) |
+| Highlight color | `surface-hover` over the selected fill | same (fixed, see 2) |
+| Typeahead "m" | highlights Medan | highlights Medan |
+| Enter selects, popup closes, focus returns to trigger | yes | yes |
+| Escape closes without changing the value, focus returns | yes | yes |
+
+## Differences found
+
+1. **1px narrower popup.** The Reka popup is 191 px wide where React's is 192 (the trigger is 192). Items are 183 instead of 184. Not visible in practice.
+2. **Highlight vs selected (fixed).** On first Vue pass the selected item kept its selected fill while highlighted. Added `data-[highlighted]:data-[state=checked]:bg-accent` so the highlight wins, as in React.
+3. **API.** Reka `Select` takes `v-model` and `default-value`; there is no `items` prop (the selected label comes from the item text). `SelectContent` has `position` (`item-aligned` default, or `popper`). The React `alignItemWithTrigger`, `side` and `align` props map to `position` plus Reka's `side` and `align`.
+4. **State attributes.** `data-state="open|closed|checked|unchecked"`, `data-highlighted`, `data-disabled`, `data-placeholder`; React uses `data-open`, `data-selected` and so on. No visible difference.
+5. **Animation.** `item-aligned` opens with no animation in both. `popper` fades with `animate-in` / `animate-out` at `--pl-duration-fast`.
+6. **Field and `data-invalid`.** Vue Field is plain markup; set `aria-invalid` on the control and show `FieldError`, as in the React examples. There is no Base UI Field validity state to connect.
+7. **`FieldError`** takes an `errors` array or a slot (messages only, one string or a list).
+8. **No `v-model` on `InputGroupInput` wrapper work needed:** attributes and `v-model` fall through to `Input`.
+
+## Not verified
+
+- Select keyboard tests in React were unreliable (hidden Browser pane: exit animations stall, so "open" stays true). React's keyboard behavior was taken from the earlier results and Base UI behavior, not re-measured. In Vue, ArrowDown right after a page reload did not move the highlight once; it worked in a fresh session. Not reproduced.
+- Scrolling lists (scroll buttons), long lists, `popper` position, RTL, touch.
+- Screen readers.
