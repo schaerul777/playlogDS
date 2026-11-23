@@ -186,14 +186,13 @@ Specimens: Alert Dialog default (media, destructive action) and `sm`, Sheet on a
 | First focus | Cancel | Cancel |
 | Outside click | does not close | does not close |
 | Escape | cancels, focus returns to the trigger | same |
-| Click on the action button | **stays open** (the caller closes it) | **closes** (Reka's action closes the dialog) |
+| Click on the action button | **stays open** (the caller closes it) | **stays open** (decided 2026-11-23: matches React; Reka's own action would close it) |
 | Popover: Escape, outside click | close, focus back on the trigger | same |
 | Popover opens above the trigger when there is no room below | flips | flips |
 
 ## Differences found
 
-1. **Alert Dialog action closes the dialog in Vue (needs your decision).** In React, `AlertDialogAction` is a plain Button; clicking it does nothing to the dialog, and the caller closes it (in the playground nothing closes it). In Reka, `AlertDialogAction` closes the dialog on click. Closing is what most callers want, and `v-model:open` still works for async confirms, but it is a different contract. I kept Reka's behavior.
-2. **Collision padding (fixed).** Base UI keeps overlays 5 px from the viewport edge by default; Reka uses 0. Added `collisionPadding: 5` to Popover, Tooltip, Select and Combobox so the position matches.
+1. **Alert Dialog action (decided: match React, implemented).** `AlertDialogAction` is now a plain Button that does not close the dialog; use `v-model:open` to close it. Original finding: In React, `AlertDialogAction` is a plain Button; clicking it does nothing to the dialog, and the caller closes it (in the playground nothing closes it). In Reka, `AlertDialogAction` closes the dialog on click. Closing is what most callers want, and `v-model:open` still works for async confirms, but it is a different contract. 2. **Collision padding (fixed).** Base UI keeps overlays 5 px from the viewport edge by default; Reka uses 0. Added `collisionPadding: 5` to Popover, Tooltip, Select and Combobox so the position matches.
 3. **Popover title tag (fixed).** Base UI renders the title as `h2`; the Vue title was `h4`. Now `h2`.
 4. **Sheet and fade animations.** Base UI slides the sheet with a CSS transition driven by `data-starting-style` / `data-ending-style`; Reka needs keyframes, so Vue uses `animate-in slide-in-from-right` and `animate-out slide-out-to-right` at `--pl-duration-slow` (200 ms), and fades at `--pl-duration-fast`. Same look; timing was not measured (hidden pane).
 5. **Tooltip.** Reka's `TooltipProvider` takes `delayDuration` (set to 300 by default here), React's `delay`. The tooltip has no arrow, as in the spec. The tooltip box has no `role` of its own in Reka (the role sits on a hidden copy).
