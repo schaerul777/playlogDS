@@ -242,3 +242,22 @@ Specimens: a Dropdown Menu with label, icon items, shortcut, disabled item, chec
 
 - Submenu open and close with the keyboard, the radio item behavior, disabled item behavior with the pointer, long menus and scrolling, touch long-press for Context Menu.
 - Animation timing (hidden pane) and screen readers.
+
+# Sonner (Toast)
+
+Added `vue-sonner` **2.0.9** (216 KB unpacked, approved 2026-11-23; earlier notes said 2.9.0 by mistake). It works in plain Vue 3 without Nuxt. Its stylesheet is imported by `Sonner.vue` (`vue-sonner/style.css`), and a one-line type declaration for that import is in `packages/ui-vue/src/env.d.ts`.
+
+## Pixel check
+
+Default, success, info, warning and error toasts, each measured as the front toast: **0 differences** on every element (position 24 px from the bottom and right, 360 wide, heights 44, 66 and 86, radius 4, padding, gap, shadow, title and description type) and on the status icon colors (`success-text`, `info-text`, `warning-text`, `danger-text`).
+
+## Differences and notes
+
+1. **Icons through slots.** vue-sonner takes icons as slots (`#success-icon` and so on) in the Toaster; React takes an `icons` prop. Both use the Playlog `Icon` (check, info, warning, alert-circle, close). Loading keeps the built-in spinner.
+2. **Class option name.** vue-sonner calls the class map `toastOptions.classes`; Sonner (React) calls it `classNames`.
+3. **Theme.** Follows the `.dark` class on `<html>` through a MutationObserver, like React. No color-mode package.
+4. **API.** `toast`, `toast.success`, `toast.info`, `toast.warning`, `toast.error` and `<Toaster />` have the same names; import from `@workspace/ui-vue/components/sonner`.
+
+## Not verified
+
+- The 6 second auto-dismiss, stacking and swipe behavior (the same library family as React, not re-timed), action and cancel buttons, `toast.promise`, loading state, and the dark-mode look.

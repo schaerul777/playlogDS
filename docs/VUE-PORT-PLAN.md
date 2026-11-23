@@ -85,7 +85,7 @@ Legend: ✅ exists in shadcn-vue under the same name; ➕ exists with a differen
 | Sidebar | ✅ | `@vueuse/core` (comes with Reka) |
 | Input OTP | ➕ Input OTP and Pin Input | Input OTP may use `vue-input-otp` (0.4.0) **(verify)**; Pin Input is Reka only |
 | Drawer | ✅ | `vaul-vue` (0.4.1) **(verify)** |
-| Sonner / Toast | ✅ | `vue-sonner` (2.9.0 on npm). Its npm metadata lists Nuxt as a peer, so check this before adding |
+| Sonner / Toast | ✅ | `vue-sonner` (2.0.9 on npm). Its npm metadata lists Nuxt as a peer, so check this before adding |
 | Chart (Bar, Line, Area, Pie, Donut, ChartPanel, ChartFrame, tooltip) | ➕ one "Chart" component | React uses Recharts. Vue needs a different lib (shadcn-vue's Chart is Unovis-based **(verify)**, `@unovis/vue` 1.8.1; `vue-chrts` 2.2.4 is another candidate). The Playlog chart specs (series colors, legend interactions, Indonesian number formats) must be rebuilt on top |
 | Code Block | ✅ | `shiki` (already a React dep) |
 | Attachment, Bubble, Marker, Message, Message Scroller, Trace | ✅ | none expected |

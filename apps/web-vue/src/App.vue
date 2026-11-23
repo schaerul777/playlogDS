@@ -7,6 +7,7 @@ import SelectFieldSection from "./sections/SelectFieldSection.vue"
 import Batch3Section from "./sections/Batch3Section.vue"
 import OverlaysSection from "./sections/OverlaysSection.vue"
 import MenusSection from "./sections/MenusSection.vue"
+import ToastSection from "./sections/ToastSection.vue"
 import DialogSection from "./sections/DialogSection.vue"
 import InputSection from "./sections/InputSection.vue"
 
@@ -35,5 +36,6 @@ onMounted(() => apply(new URLSearchParams(location.search).get("theme") === "dar
     <DialogSection />
     <OverlaysSection />
     <MenusSection />
+    <ToastSection />
   </main>
 </template>

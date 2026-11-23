@@ -106,6 +106,7 @@ import {
   DropdownMenuTrigger,
 } from "@workspace/ui/components/dropdown-menu"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@workspace/ui/components/hover-card"
+import { Toaster, toast } from "@workspace/ui/components/sonner"
 import { Textarea } from "@workspace/ui/components/textarea"
 import { Icon } from "@workspace/ui/icons/icon"
 import "./styles.css"
@@ -655,6 +656,22 @@ function MenusSection() {
   )
 }
 
+function ToastSection() {
+  return (
+    <section id="toast" className="flex flex-col gap-6">
+      <h2 className="text-h2 text-ink-heading">Toast</h2>
+      <Toaster />
+      <div className="flex flex-wrap gap-3">
+        <Button variant="outline" data-specimen="toast-default" onClick={() => toast("Report saved")}>Default</Button>
+        <Button variant="outline" data-specimen="toast-success" onClick={() => toast.success("Export ready", { description: "Q3 roadside reach.csv, 2,4 MB" })}>Success</Button>
+        <Button variant="outline" data-specimen="toast-info" onClick={() => toast.info("New data available", { description: "September figures for 25 cities." })}>Info</Button>
+        <Button variant="outline" data-specimen="toast-warning" onClick={() => toast.warning("Partial data", { description: "Medan has no figures for August." })}>Warning</Button>
+        <Button variant="outline" data-specimen="toast-error" onClick={() => toast.error("Export failed", { description: "The file is too large. Narrow the period and try again." })}>Error</Button>
+      </div>
+    </section>
+  )
+}
+
 function DialogSection() {
   return (
     <section id="dialog" className="flex flex-col gap-6">
@@ -723,6 +740,7 @@ function App() {
       <DialogSection />
       <OverlaysSection />
       <MenusSection />
+      <ToastSection />
     </main>
   )
 }
