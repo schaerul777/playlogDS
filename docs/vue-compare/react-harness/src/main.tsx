@@ -14,8 +14,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@workspace/ui/components/dialog"
+import { Checkbox } from "@workspace/ui/components/checkbox"
 import { Input } from "@workspace/ui/components/input"
 import { Label } from "@workspace/ui/components/label"
+import { RadioGroup, RadioGroupItem } from "@workspace/ui/components/radio-group"
+import { Switch } from "@workspace/ui/components/switch"
+import { Textarea } from "@workspace/ui/components/textarea"
 import { Icon } from "@workspace/ui/icons/icon"
 import "./styles.css"
 
@@ -133,6 +137,55 @@ function InputSection() {
   )
 }
 
+function FormsSection() {
+  const row = "flex items-center gap-2.5"
+  return (
+    <section id="forms" className="flex flex-col gap-6">
+      <h2 className="text-h2 text-ink-heading">Forms: Textarea, Checkbox, Switch, Radio Group</h2>
+      <div className="grid max-w-md gap-6">
+        <div className="grid gap-1.5">
+          <Label htmlFor="ta-default">Textarea</Label>
+          <Textarea id="ta-default" placeholder="Write a note" data-specimen="textarea-default" />
+        </div>
+        <div className="grid gap-1.5">
+          <Label htmlFor="ta-value">With value</Label>
+          <Textarea id="ta-value" defaultValue="Roadside reach grew in Q1." data-specimen="textarea-value" />
+        </div>
+        <div className="grid gap-1.5">
+          <Label htmlFor="ta-invalid">Invalid</Label>
+          <Textarea id="ta-invalid" aria-invalid="true" defaultValue="x" data-specimen="textarea-invalid" />
+        </div>
+        <div className="grid gap-1.5">
+          <Label htmlFor="ta-disabled">Disabled</Label>
+          <Textarea id="ta-disabled" disabled defaultValue="Cannot edit" data-specimen="textarea-disabled" />
+        </div>
+      </div>
+      <div className="flex flex-col gap-3">
+        <div className={row}><Checkbox id="cb-off" data-specimen="checkbox-off" /><Label htmlFor="cb-off">Unchecked</Label></div>
+        <div className={row}><Checkbox id="cb-on" defaultChecked data-specimen="checkbox-on" /><Label htmlFor="cb-on">Checked</Label></div>
+        <div className={row}><Checkbox id="cb-invalid" aria-invalid="true" data-specimen="checkbox-invalid" /><Label htmlFor="cb-invalid">Invalid</Label></div>
+        <div className={row}><Checkbox id="cb-invalid-on" defaultChecked aria-invalid="true" data-specimen="checkbox-invalid-on" /><Label htmlFor="cb-invalid-on">Invalid, checked</Label></div>
+        <div className={row}><Checkbox id="cb-dis" disabled data-specimen="checkbox-disabled" /><Label htmlFor="cb-dis">Disabled</Label></div>
+        <div className={row}><Checkbox id="cb-dis-on" disabled defaultChecked data-specimen="checkbox-disabled-on" /><Label htmlFor="cb-dis-on">Disabled, checked</Label></div>
+      </div>
+      <div className="flex flex-col gap-3">
+        <div className={row}><Switch id="sw-off" data-specimen="switch-off" /><Label htmlFor="sw-off">Off</Label></div>
+        <div className={row}><Switch id="sw-on" defaultChecked data-specimen="switch-on" /><Label htmlFor="sw-on">On</Label></div>
+        <div className={row}><Switch id="sw-sm-off" size="sm" data-specimen="switch-sm-off" /><Label htmlFor="sw-sm-off">Small, off</Label></div>
+        <div className={row}><Switch id="sw-sm-on" size="sm" defaultChecked data-specimen="switch-sm-on" /><Label htmlFor="sw-sm-on">Small, on</Label></div>
+        <div className={row}><Switch id="sw-invalid" aria-invalid="true" data-specimen="switch-invalid" /><Label htmlFor="sw-invalid">Invalid</Label></div>
+        <div className={row}><Switch id="sw-dis" disabled data-specimen="switch-disabled" /><Label htmlFor="sw-dis">Disabled</Label></div>
+      </div>
+      <RadioGroup defaultValue="roadside" className="max-w-md">
+        <div className={row}><RadioGroupItem id="rg-1" value="roadside" data-specimen="radio-on" /><Label htmlFor="rg-1">Roadside</Label></div>
+        <div className={row}><RadioGroupItem id="rg-2" value="transit" data-specimen="radio-off" /><Label htmlFor="rg-2">Transit</Label></div>
+        <div className={row}><RadioGroupItem id="rg-3" value="place" aria-invalid="true" data-specimen="radio-invalid" /><Label htmlFor="rg-3">Invalid</Label></div>
+        <div className={row}><RadioGroupItem id="rg-4" value="ambience" disabled data-specimen="radio-disabled" /><Label htmlFor="rg-4">Disabled</Label></div>
+      </RadioGroup>
+    </section>
+  )
+}
+
 function DialogSection() {
   return (
     <section id="dialog" className="flex flex-col gap-6">
@@ -195,6 +248,7 @@ function App() {
       </header>
       <ButtonSection />
       <InputSection />
+      <FormsSection />
       <DialogSection />
     </main>
   )

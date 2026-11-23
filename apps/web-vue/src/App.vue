@@ -2,6 +2,7 @@
 import { onMounted, ref } from "vue"
 import { Button } from "@workspace/ui-vue/components/button"
 import ButtonSection from "./sections/ButtonSection.vue"
+import FormsSection from "./sections/FormsSection.vue"
 import DialogSection from "./sections/DialogSection.vue"
 import InputSection from "./sections/InputSection.vue"
 
@@ -24,6 +25,7 @@ onMounted(() => apply(new URLSearchParams(location.search).get("theme") === "dar
     </header>
     <ButtonSection />
     <InputSection />
+    <FormsSection />
     <DialogSection />
   </main>
 </template>

@@ -61,3 +61,30 @@ pnpm --filter web exec vite --config ../../docs/vue-compare/react-harness/vite.c
 - Hover and focus-visible colors were compared by CSS values only for focus ring (2px solid, 2px offset, checked on the Vue dialog). Hover was not triggered.
 - Screen reader output (VoiceOver, NVDA) was not tested.
 - Safari and Firefox were not tested.
+
+# Batch 1 (Forms): Textarea, Checkbox, Switch, Radio Group
+
+Same method as the pilot (20 more specimens, same markup on both pages, `FormsSection.vue` and the harness `FormsSection`).
+
+## Pixel check
+
+- Textarea (4), Checkbox (6), Switch (6): **0 differences** in light and dark (position, size, 25+ computed styles, thumb position and size, check mark position and size).
+- Radio Group (4): **1 difference**, the cursor. See below.
+
+## Behavior check (keyboard, real key presses)
+
+| Behavior | React (Base UI) | Vue (Reka UI) |
+|---|---|---|
+| Space toggles Checkbox | yes | yes |
+| Space toggles Switch | yes | yes |
+| Switch focus ring | 2px solid, 2px offset | same |
+| Arrow keys in Radio Group | move focus **and select** | move focus, **do not select** (needs your decision) |
+
+## Differences found
+
+1. **Radio arrow keys (needs your decision).** In React, ArrowDown or ArrowUp selects the radio it moves to (the WAI-ARIA radio pattern). In Reka, the arrows only move focus; the selection changes on Space or click. Tested: React ArrowDown x2 from the first radio selects the third. Vue leaves the first selected, with focus on the third. Fix if you want parity: select on arrow focus (`@keydown`/`@focus` handler on `RadioGroupItem`), or accept Reka's behavior.
+2. **Radio cursor.** Vue shows the pointer cursor on radios (and the default cursor when disabled). React shows `auto`, because Base UI renders a `span` and the base rule in `globals.css` has no `[role="radio"]`. Vue follows the brand rule ("interactive controls use the pointer cursor"). React is the one that is out of line. I did not change React.
+3. **API names.** Reka uses `v-model` and `default-value` (`checked` and `defaultChecked` in React). Checkbox and Switch take a boolean model. Radio Group uses `v-model` or `default-value` with `value` on each item. Vue keeps the Reka names so templates stay idiomatic. `size="sm"` on Switch and `aria-invalid` behave as in React.
+4. **State attribute.** `data-state="checked|unchecked"` instead of `data-checked` and `data-unchecked`. No visible difference.
+5. **Invalid state.** React also styles `data-invalid` (Base UI Field). Vue styles `aria-invalid` only; there is no Field integration yet (Field is in the Forms batch 2).
+6. **Indeterminate Checkbox.** Reka supports `indeterminate`; it shows the check mark. Not in the spec, not styled, not used.
