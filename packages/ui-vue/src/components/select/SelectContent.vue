@@ -15,7 +15,7 @@ defineOptions({
 // Reka's "item-aligned" position. Use position="popper" for a menu under the trigger.
 const props = withDefaults(
   defineProps<SelectContentProps & { class?: HTMLAttributes["class"] }>(),
-  { position: "item-aligned", sideOffset: 4 },
+  { position: "item-aligned", sideOffset: 4, collisionPadding: 5 }, // Playlog: collisionPadding 5 is the Base UI default.
 )
 const emits = defineEmits<SelectContentEmits>()
 

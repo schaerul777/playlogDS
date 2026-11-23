@@ -9,7 +9,7 @@ defineOptions({ inheritAttrs: false })
 
 const props = withDefaults(
   defineProps<ComboboxContentProps & { class?: HTMLAttributes["class"] }>(),
-  { position: "popper", side: "bottom", align: "start", sideOffset: 4 },
+  { position: "popper", side: "bottom", align: "start", sideOffset: 4, collisionPadding: 5 },
 )
 const emits = defineEmits<ComboboxContentEmits>()
 

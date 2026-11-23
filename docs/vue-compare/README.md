@@ -166,3 +166,41 @@ React keyboard behavior was not re-measured (hidden Browser pane); it follows th
 - Combobox popup geometry and the `popper` position against React (only the input side was compared); long lists and scrolling; `Combobox` with object values (`by`); async items.
 - Touch dragging on Slider, RTL, screen readers.
 - React Combobox keyboard.
+
+# Batch 4 (Overlays): Alert Dialog, Sheet, Popover, Tooltip
+
+Specimens: Alert Dialog default (media, destructive action) and `sm`, Sheet on all four sides, Popover, Tooltip. For each open panel I compared every element inside it (position inside the panel, size, color, type, radius, padding, gap, shadow, display) plus the overlay (size, `--pl-scrim` color, fixed).
+
+## Pixel check
+
+- Alert Dialog default (8 elements) and `sm` (7): **0 differences**. Same position (centred, 448 and 320 wide), same overlay.
+- Sheet right, left, top, bottom (10 elements each): **0 differences**. 384 wide at the sides, full width at top and bottom, same position and overlay.
+- Popover (4 elements): **0 differences** after two fixes (below). Same 288 width and position.
+- Tooltip: opens after about 300 ms on hover (measured 291 ms after the timer started), 4 px above the trigger, 12 px type, padding 6 12, radius 4, no arrow. React's tooltip box was not measured (see not verified).
+
+## Behavior check
+
+| Behavior | React (Base UI) | Vue (Reka UI) |
+|---|---|---|
+| Alert Dialog role, labelled by title, described | `alertdialog`, yes | same |
+| First focus | Cancel | Cancel |
+| Outside click | does not close | does not close |
+| Escape | cancels, focus returns to the trigger | same |
+| Click on the action button | **stays open** (the caller closes it) | **closes** (Reka's action closes the dialog) |
+| Popover: Escape, outside click | close, focus back on the trigger | same |
+| Popover opens above the trigger when there is no room below | flips | flips |
+
+## Differences found
+
+1. **Alert Dialog action closes the dialog in Vue (needs your decision).** In React, `AlertDialogAction` is a plain Button; clicking it does nothing to the dialog, and the caller closes it (in the playground nothing closes it). In Reka, `AlertDialogAction` closes the dialog on click. Closing is what most callers want, and `v-model:open` still works for async confirms, but it is a different contract. I kept Reka's behavior.
+2. **Collision padding (fixed).** Base UI keeps overlays 5 px from the viewport edge by default; Reka uses 0. Added `collisionPadding: 5` to Popover, Tooltip, Select and Combobox so the position matches.
+3. **Popover title tag (fixed).** Base UI renders the title as `h2`; the Vue title was `h4`. Now `h2`.
+4. **Sheet and fade animations.** Base UI slides the sheet with a CSS transition driven by `data-starting-style` / `data-ending-style`; Reka needs keyframes, so Vue uses `animate-in slide-in-from-right` and `animate-out slide-out-to-right` at `--pl-duration-slow` (200 ms), and fades at `--pl-duration-fast`. Same look; timing was not measured (hidden pane).
+5. **Tooltip.** Reka's `TooltipProvider` takes `delayDuration` (set to 300 by default here), React's `delay`. The tooltip has no arrow, as in the spec. The tooltip box has no `role` of its own in Reka (the role sits on a hidden copy).
+6. **Popover parts.** Reka has no Popover title or description parts, so `PopoverTitle` and `PopoverDescription` are plain elements. `PopoverAnchor` from the CLI was removed (not in React).
+
+## Not verified
+
+- Sheet and Alert Dialog animation timing, tooltip close timing, tooltip skip-delay behavior when moving between triggers, and the React tooltip box.
+- Focus trap in Sheet and Alert Dialog (same Reka dialog as the pilot, which was checked), touch, screen readers.
+- Scroll lock layout shift with a page scrollbar.

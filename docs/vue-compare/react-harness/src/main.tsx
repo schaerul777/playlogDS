@@ -64,6 +64,21 @@ import {
 import { Slider, SliderLabel, SliderValue } from "@workspace/ui/components/slider"
 import { Toggle } from "@workspace/ui/components/toggle"
 import { ToggleGroup, ToggleGroupItem } from "@workspace/ui/components/toggle-group"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogMedia,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@workspace/ui/components/alert-dialog"
+import { Popover, PopoverContent, PopoverDescription, PopoverHeader, PopoverTitle, PopoverTrigger } from "@workspace/ui/components/popover"
+import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@workspace/ui/components/sheet"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@workspace/ui/components/tooltip"
 import { Textarea } from "@workspace/ui/components/textarea"
 import { Icon } from "@workspace/ui/icons/icon"
 import "./styles.css"
@@ -484,6 +499,75 @@ function Batch3Section() {
   )
 }
 
+function OverlaysSection() {
+  const sides = ["right", "left", "top", "bottom"] as const
+  return (
+    <section id="overlays" className="flex flex-col gap-6">
+      <h2 className="text-h2 text-ink-heading">Overlays: Alert Dialog, Sheet, Popover, Tooltip</h2>
+      <div className="flex flex-wrap items-center gap-3">
+        <AlertDialog>
+          <AlertDialogTrigger render={<Button variant="outline" data-specimen="ad-trigger-default" />}>Delete report</AlertDialogTrigger>
+          <AlertDialogContent data-specimen="ad-default">
+            <AlertDialogHeader>
+              <AlertDialogMedia><Icon name="trash" /></AlertDialogMedia>
+              <AlertDialogTitle>Delete this report?</AlertDialogTitle>
+              <AlertDialogDescription>This removes the report and its shared links. You can't undo it.</AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction variant="destructive">Delete report</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+        <AlertDialog>
+          <AlertDialogTrigger render={<Button variant="outline" data-specimen="ad-trigger-sm" />}>Small alert dialog</AlertDialogTrigger>
+          <AlertDialogContent size="sm" data-specimen="ad-sm">
+            <AlertDialogHeader>
+              <AlertDialogTitle>Discard changes?</AlertDialogTitle>
+              <AlertDialogDescription>Your edits are not saved.</AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Keep editing</AlertDialogCancel>
+              <AlertDialogAction variant="destructive">Discard</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+        {sides.map((side) => (
+          <Sheet key={side}>
+            <SheetTrigger render={<Button variant="outline" data-specimen={`sheet-trigger-${side}`} />}>Sheet {side}</SheetTrigger>
+            <SheetContent side={side} data-specimen={`sheet-${side}`}>
+              <SheetHeader>
+                <SheetTitle>Filters</SheetTitle>
+                <SheetDescription>Choose the period and the cities.</SheetDescription>
+              </SheetHeader>
+              <div className="px-6 text-body-sm">Sheet body</div>
+              <SheetFooter>
+                <Button variant="outline">Reset</Button>
+                <Button>Apply</Button>
+              </SheetFooter>
+            </SheetContent>
+          </Sheet>
+        ))}
+        <Popover>
+          <PopoverTrigger render={<Button variant="outline" data-specimen="pop-trigger" />}>Open popover</PopoverTrigger>
+          <PopoverContent data-specimen="pop">
+            <PopoverHeader>
+              <PopoverTitle>Report period</PopoverTitle>
+              <PopoverDescription>Figures cover Q1 to Q3 2025 in 25 cities.</PopoverDescription>
+            </PopoverHeader>
+          </PopoverContent>
+        </Popover>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger render={<Button variant="outline" size="icon" aria-label="Add" data-specimen="tip-trigger" />}><Icon name="plus" /></TooltipTrigger>
+            <TooltipContent data-specimen="tip">Add a report</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </div>
+    </section>
+  )
+}
+
 function DialogSection() {
   return (
     <section id="dialog" className="flex flex-col gap-6">
@@ -550,6 +634,7 @@ function App() {
       <SelectFieldSection />
       <Batch3Section />
       <DialogSection />
+      <OverlaysSection />
     </main>
   )
 }
