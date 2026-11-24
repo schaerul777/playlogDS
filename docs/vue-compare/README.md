@@ -323,14 +323,14 @@ Specimens: a Menubar with three menus (File with label, icon item, shortcut, dis
 | Open a menu with Enter, first item highlighted | yes | yes |
 | ArrowRight inside an open menu opens the next menu, first item focused | yes | yes |
 | Escape closes, focus stays in the bar | yes | yes |
-| Open with the mouse, then use the keyboard | focus moves into the menu | focus stays on the trigger (see 2) |
+| Open with the mouse, then use the keyboard | focus moves into the menu | focus moves into the menu (fixed, see 2) |
 | Command: typing filters, groups with no match hide, first match highlighted | yes | yes |
 | Command: no match shows "No results" | yes | yes |
 
 ## Differences found
 
 1. **First Command item is highlighted on load (Reka).** Reka highlights the first item as soon as the list mounts; React shows no highlight until you type or press an arrow key. Not changed (a first-item highlight is common for palettes).
-2. **Mouse-opened menubar menus keep focus on the trigger.** Reka only moves focus into the menu when it is opened from the keyboard (Enter, Space or ArrowDown on the trigger). After a mouse click, the arrow keys do not enter the menu until you press ArrowDown again from the trigger. Base UI focuses the menu after a click. Not changed.
+2. **Mouse-opened menubar menus (decided: match React, implemented).** `MenubarContent` includes a small marker component (`menubar/FocusOnOpen.vue`) that focuses the menu when it opens. Re-tested: click File, ArrowDown, ArrowRight opens View with its first item focused. Original finding: Reka only moves focus into the menu when it is opened from the keyboard (Enter, Space or ArrowDown on the trigger). After a mouse click, the arrow keys do not enter the menu until you press ArrowDown again from the trigger. Base UI focuses the menu after a click. 
 3. **Command API.** The React Command is data driven (`items`, `onSelect`, `CommandCollection`, render functions) on top of the Base UI Combobox. shadcn-vue's Command is declarative on Reka `Listbox` (`CommandGroup`, `CommandItem` as children, `@select` on an item, `heading` on a group). There is no `CommandCollection` in Vue. The Vue filter is a `contains` match on the item text.
 4. **Command search is not auto-focused** (removed `auto-focus` so an inline Command does not steal focus, as in React). Inside `CommandDialog` the dialog focuses the input.
 5. **Disabled on the trigger.** Reka puts `disabled` on `MenubarTrigger`; React puts it on `MenubarMenu`.

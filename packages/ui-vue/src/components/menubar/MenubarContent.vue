@@ -2,6 +2,7 @@
 import type { MenubarContentEmits, MenubarContentProps } from "reka-ui"
 import type { HTMLAttributes } from "vue"
 import { computed } from "vue"
+import FocusOnOpen from "./FocusOnOpen.vue"
 import { cn } from "@workspace/ui-vue/lib/utils" // Playlog: brand-aware merger
 import { MenubarContent, MenubarPortal, useForwardPropsEmits } from "reka-ui"
 
@@ -33,6 +34,8 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits)
         )
       "
     >
+      <!-- Playlog: focus the menu when opened with the mouse, as in React (see FocusOnOpen.vue). -->
+      <FocusOnOpen />
       <slot />
     </MenubarContent>
   </MenubarPortal>
