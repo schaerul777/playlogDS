@@ -261,3 +261,45 @@ Default, success, info, warning and error toasts, each measured as the front toa
 ## Not verified
 
 - The 6 second auto-dismiss, stacking and swipe behavior (the same library family as React, not re-timed), action and cancel buttons, `toast.promise`, loading state, and the dark-mode look.
+
+# Batch 6 (Navigation): Tabs, Breadcrumb, Pagination, Navigation Menu
+
+Specimens: Tabs default, line and vertical (active, idle, disabled), Breadcrumb with ellipsis, Pagination with active page and status, Navigation Menu with two panels, an active link and a plain link.
+
+## Pixel check (closed state)
+
+- Tabs lists and every trigger (default, line, vertical; active, idle, disabled), including the 2px underline: **0 differences**, light and dark.
+- Breadcrumb: **0 differences**. Pagination: **0 differences** (the status item is hidden above `sm`).
+- Navigation Menu bar and its triggers and links (idle, active): **0 differences**.
+- Only the DOM differs for the tab group and nav root: Base UI renders all panels (inactive ones hidden), Reka only the active one.
+
+## Pixel check (open Navigation Menu panel)
+
+The "Reports" panel: size 400 x 144, radius 4, shadow `--pl-shadow-overlay`, no border, link size (190 x 70 and 190 x 54), padding 8 12, radius 2, type and colors, and the open trigger fill (accent): **same**. Position:
+
+- **Left edge (fixed):** Reka centers the panel under the trigger by default; now it starts at the left edge of the bar. React aligns it to the open trigger. For the first trigger these are equal; for later triggers the Vue panel stays at the bar's start (see differences).
+- **Vertical (not matched):** React flips the panel above the bar when there is no room below; Reka always opens below (the panel can run off the screen at the bottom).
+
+## Behavior check
+
+| Behavior | React (Base UI) | Vue (Reka UI) |
+|---|---|---|
+| Arrow keys in Tabs | move focus only; Space or Enter selects | same (fixed, see 1) |
+| Focus ring on a tab | 2px solid, 2px offset | same |
+| Arrow past a disabled tab | focus **lands on** the disabled tab | focus **skips** it |
+| Navigation Menu: click trigger opens panel, Escape closes it, focus returns to the trigger | yes | yes |
+
+## Differences found
+
+1. **Tabs activation (fixed).** Reka selected a tab as soon as you arrowed to it; Base UI only moves focus. `Tabs` now defaults to `activation-mode="manual"` to match.
+2. **Disabled tab focus.** Base UI lets arrow keys focus a disabled tab; Reka skips it. Both are valid ARIA; not changed.
+3. **Pagination is presentational.** shadcn-vue's Pagination is data driven (Reka `PaginationRoot` with a page count and list). The React one is markup you assemble, so the Vue version is hand written the same way (`Pagination`, `PaginationContent`, `PaginationItem`, `PaginationLink`, `PaginationPrevious`, `PaginationNext`, `PaginationEllipsis`, `PaginationStatus`). Reka's `PaginationRoot` is not used.
+4. **Navigation Menu panel position (see above).** Base UI anchors the panel to the open trigger with collision flipping; Reka has one shared viewport under the bar with no collision handling. If the product needs the exact behavior later, the viewport would need a small positioning layer.
+5. **Navigation Menu morphing.** Base UI resizes the panel between triggers at `--pl-duration-slow`; the Vue viewport resizes with the same transition on width and height, but the movement between triggers was not checked.
+6. **Props.** Tabs use `v-model` / `default-value`; `NavigationMenuLink` takes `active`; `PaginationLink` takes `is-active`; `BreadcrumbLink` renders an `a` and takes `as-child`.
+7. **`data-specimen` on `NavigationMenuContent` is lost** in Reka (the content is teleported to the viewport); not a library difference, only a test hook.
+
+## Not verified
+
+- Panel movement between triggers, keyboard (arrow keys inside the menu, Tab order), hover opening (the menu opens on click in the test), mobile hiding below `md`.
+- Vertical Tabs arrow keys, Breadcrumb ellipsis menu, Pagination below `sm`, animation timing, screen readers.

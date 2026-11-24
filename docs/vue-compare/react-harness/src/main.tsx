@@ -107,6 +107,35 @@ import {
 } from "@workspace/ui/components/dropdown-menu"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@workspace/ui/components/hover-card"
 import { Toaster, toast } from "@workspace/ui/components/sonner"
+import {
+  Breadcrumb,
+  BreadcrumbEllipsis,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@workspace/ui/components/breadcrumb"
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from "@workspace/ui/components/navigation-menu"
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+  PaginationStatus,
+} from "@workspace/ui/components/pagination"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@workspace/ui/components/tabs"
 import { Textarea } from "@workspace/ui/components/textarea"
 import { Icon } from "@workspace/ui/icons/icon"
 import "./styles.css"
@@ -672,6 +701,106 @@ function ToastSection() {
   )
 }
 
+function NavSection() {
+  const reports = [
+    ["Reach", "Share of adults who saw the campaign."],
+    ["Frequency", "Average exposures per person."],
+    ["Impressions", "Total exposures by city."],
+    ["Audience", "Who passed the screens."],
+  ]
+  return (
+    <section id="nav" className="flex flex-col gap-6">
+      <h2 className="text-h2 text-ink-heading">Navigation: Tabs, Breadcrumb, Pagination, Navigation Menu</h2>
+      <div className="flex flex-col gap-6">
+        <Tabs defaultValue="overview" data-specimen="tabs-default">
+          <TabsList data-specimen="tabs-list-default">
+            <TabsTrigger value="overview" data-specimen="tab-default-active">Overview</TabsTrigger>
+            <TabsTrigger value="cities" data-specimen="tab-default-idle">Cities</TabsTrigger>
+            <TabsTrigger value="export" disabled data-specimen="tab-default-disabled">Export</TabsTrigger>
+          </TabsList>
+          <TabsContent value="overview">Overview panel</TabsContent>
+          <TabsContent value="cities">Cities panel</TabsContent>
+        </Tabs>
+        <Tabs defaultValue="overview">
+          <TabsList variant="line" data-specimen="tabs-list-line">
+            <TabsTrigger value="overview" data-specimen="tab-line-active">Overview</TabsTrigger>
+            <TabsTrigger value="cities" data-specimen="tab-line-idle">Cities</TabsTrigger>
+            <TabsTrigger value="export" disabled data-specimen="tab-line-disabled">Export</TabsTrigger>
+          </TabsList>
+          <TabsContent value="overview">Overview panel</TabsContent>
+          <TabsContent value="cities">Cities panel</TabsContent>
+        </Tabs>
+        <Tabs defaultValue="overview" orientation="vertical">
+          <TabsList variant="line" data-specimen="tabs-list-vertical">
+            <TabsTrigger value="overview" data-specimen="tab-vertical-active">Overview</TabsTrigger>
+            <TabsTrigger value="cities" data-specimen="tab-vertical-idle">Cities</TabsTrigger>
+          </TabsList>
+          <TabsContent value="overview">Overview panel</TabsContent>
+          <TabsContent value="cities">Cities panel</TabsContent>
+        </Tabs>
+      </div>
+      <Breadcrumb data-specimen="breadcrumb">
+        <BreadcrumbList>
+          <BreadcrumbItem><BreadcrumbLink href="#">Home</BreadcrumbLink></BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem><BreadcrumbEllipsis /></BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem><BreadcrumbLink href="#">Reports</BreadcrumbLink></BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem><BreadcrumbPage>Roadside reach</BreadcrumbPage></BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+      <Pagination data-specimen="pagination">
+        <PaginationContent>
+          <PaginationItem><PaginationPrevious href="#" /></PaginationItem>
+          <PaginationItem><PaginationLink href="#">1</PaginationLink></PaginationItem>
+          <PaginationItem><PaginationLink href="#" isActive>2</PaginationLink></PaginationItem>
+          <PaginationItem><PaginationLink href="#">3</PaginationLink></PaginationItem>
+          <PaginationItem><PaginationEllipsis /></PaginationItem>
+          <PaginationItem><PaginationLink href="#">12</PaginationLink></PaginationItem>
+          <PaginationStatus page={2} pageCount={12} />
+          <PaginationItem><PaginationNext href="#" /></PaginationItem>
+        </PaginationContent>
+      </Pagination>
+      <NavigationMenu data-specimen="navmenu">
+        <NavigationMenuList>
+          <NavigationMenuItem>
+            <NavigationMenuTrigger data-specimen="nm-trigger">Reports</NavigationMenuTrigger>
+            <NavigationMenuContent data-specimen="nm-content">
+              <ul className="grid w-96 grid-cols-2 gap-1">
+                {reports.map(([t, d]) => (
+                  <li key={t}>
+                    <NavigationMenuLink href="#">
+                      <span className="font-semibold text-ink-heading">{t}</span>
+                      <span className="text-caption text-muted-foreground">{d}</span>
+                    </NavigationMenuLink>
+                  </li>
+                ))}
+              </ul>
+            </NavigationMenuContent>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
+            <NavigationMenuTrigger>Cities</NavigationMenuTrigger>
+            <NavigationMenuContent>
+              <ul className="flex w-56 flex-col gap-1">
+                {["Jakarta", "Surabaya", "Bandung"].map((c) => (
+                  <li key={c}><NavigationMenuLink href="#">{c}</NavigationMenuLink></li>
+                ))}
+              </ul>
+            </NavigationMenuContent>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
+            <NavigationMenuLink href="#" active className={navigationMenuTriggerStyle()} data-specimen="nm-active">Dashboard</NavigationMenuLink>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
+            <NavigationMenuLink href="#" className={navigationMenuTriggerStyle()} data-specimen="nm-link">Docs</NavigationMenuLink>
+          </NavigationMenuItem>
+        </NavigationMenuList>
+      </NavigationMenu>
+    </section>
+  )
+}
+
 function DialogSection() {
   return (
     <section id="dialog" className="flex flex-col gap-6">
@@ -741,6 +870,7 @@ function App() {
       <OverlaysSection />
       <MenusSection />
       <ToastSection />
+      <NavSection />
     </main>
   )
 }
