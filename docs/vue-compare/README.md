@@ -373,3 +373,28 @@ Specimens: a static Sidebar (`collapsible="none"`, every part in flow: header wi
 ## Not verified
 
 - Floating and inset variants, right-side sidebar, RTL, the Rail drag target, screen readers, and the open and close animation timing in Vue (the React side stalls while the pane is hidden).
+
+# Batch 9 (Badge, Alert, Card, StatCard)
+
+Specimens (`DisplaySection.vue` and the harness `DisplaySection`): Badge in all 10 variants, with an icon, disabled, invalid and rendered as a link; Alert in 5 variants with icon, title and description, one without an icon and one with an action; Card default (header, title, description, action, content, footer) and `sm`; StatCard with icon and a good delta, a bad delta, a neutral delta and no footer.
+
+## Pixel check
+
+- 106 elements (every specimen and its children: position, size and 40 computed styles): **0 differences**, light and dark.
+- Dark mode needed the tab in front: React's color transitions stall in a hidden tab and gave false differences until it was fronted.
+
+## Behavior check
+
+These four are presentational. Not interactive except the Badge as a link (hover, focus ring), which was not exercised.
+
+## Differences found
+
+1. **StatCard is hand built** (no shadcn-vue source). Same prop names as React (`label`, `value`, `delta`, `trend`, `footer`). The React `icon` node is the `icon` slot in Vue; `label`, `value`, `delta` and `footer` can also be slots when they need markup.
+2. **Badge as a link** uses `as="a"` (React: `render={<a />}`). It also sets `data-variant`, like React.
+3. **Alert** gained `AlertAction` (shadcn-vue has none); `role="alert"` as in React.
+4. **Card** `size` is `default | sm`, rendered as `data-size`, as in React.
+5. **Optional icon in Badge.** React documents `data-icon="inline-start" | "inline-end"` on the icon; the Vue badge takes the icon as a plain child, same sizing rules (`[&>svg]:size-3!`).
+
+## Not verified
+
+- Badge focus ring and hover when it is a link, long text wrapping in Alert and Card, container-query behavior of `CardHeader`, and screen readers.
