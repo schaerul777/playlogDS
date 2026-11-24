@@ -339,3 +339,37 @@ Specimens: a Menubar with three menus (File with label, icon item, shortcut, dis
 ## Not verified
 
 - Hover switching between menus while one is open, Command Dialog open and close with Cmd or Ctrl K (the shortcut is app code, not in the library), keywords search, scrolling a long list, and screen readers.
+
+# Batch 8 (Sidebar, with Skeleton)
+
+Specimens: a static Sidebar (`collapsible="none"`, every part in flow: header with input, group label and action, nav items default, active with badge, with action, `sm`, `lg`, `outline`, disabled, a parent with a sub menu, separator, skeleton rows, footer) and an interactive Sidebar (`collapsible="icon"` inside a box, trigger, rail, tooltips, inset). Skeleton is installed because `SidebarMenuSkeleton` needs it; it is restyled to the React one (muted fill, radius 4, no pulse for reduced motion).
+
+## Pixel check
+
+- Static sidebar, 27 elements (container, header, input, content, group, label, action, every item variant, badge, menu action, sub menu and its buttons, separator, skeleton row, footer): **0 differences**, light and dark.
+- Interactive sidebar expanded (container, trigger, active item): **0 differences**, light and dark (30 of 30 specimens).
+- Interactive sidebar collapsed to icons (48 wide, 32 px icon buttons): **0 differences**.
+- The skeleton text bar has a random width in React and a width derived from a stable id in Vue; the row height (40) and icon size match.
+
+## Behavior check
+
+| Behavior | React (Base UI) | Vue (Reka UI) |
+|---|---|---|
+| Trigger click collapses to icons and back | yes | yes |
+| Cmd or Ctrl B toggles; the state is saved in the `sidebar_state` cookie | yes | yes |
+| Collapsed: hovering an icon shows a tooltip on the right | yes | yes |
+| Below 768 px: the sidebar becomes a left Sheet, titled "Sidebar" (hidden), no close button | yes | yes |
+| Controlled (`open` and `onOpenChange` / `v-model:open`) and uncontrolled (`defaultOpen`) | yes | yes |
+
+## Differences found
+
+1. **Mobile sheet width.** React renders the sheet at 75% of the viewport (281 px at 375) because Sheet's `data-[side=left]:w-3/4` outranks the sidebar's `w-(--sidebar-width)`, so the 248 px width in the spec is not applied on phones. Vue renders 248 px as specified. Not changed in React (`packages/ui` is out of scope); the React fix would be `data-[side=left]:w-(--sidebar-width)` on the mobile `SheetContent`.
+2. **Provider API.** `v-model:open` instead of `open` and `onOpenChange`. `useSidebar()` returns refs and a computed `state` (use `.value` in scripts). `Sidebar` does not take a `dir` prop.
+3. **Tooltip prop.** `SidebarMenuButton` takes `tooltip` as a string or a component; React also accepts the props of `TooltipContent`.
+4. **Active state.** `is-active` on `SidebarMenuButton` and `SidebarMenuSubButton`, rendered as `data-active=""` like React.
+5. **Own `useIsMobile`.** The shadcn-vue output used `@vueuse/core`; replaced with a small matchMedia composable in `sidebar/utils.ts` (no new dependency).
+6. **Tooltip provider.** `SidebarProvider` wraps its content in the library `TooltipProvider` (Reka requires one; delay 300 ms). React needs none.
+
+## Not verified
+
+- Floating and inset variants, right-side sidebar, RTL, the Rail drag target, screen readers, and the open and close animation timing in Vue (the React side stalls while the pane is hidden).

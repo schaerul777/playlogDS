@@ -11,6 +11,7 @@ import ToastSection from "./sections/ToastSection.vue"
 import NavSection from "./sections/NavSection.vue"
 import MenubarCommandSection from "./sections/MenubarCommandSection.vue"
 import DialogSection from "./sections/DialogSection.vue"
+import SidebarSection from "./sections/SidebarSection.vue"
 import InputSection from "./sections/InputSection.vue"
 
 // Dark mode is the .dark class on <html> (same as the React playground). `?theme=dark` starts dark.
@@ -41,5 +42,6 @@ onMounted(() => apply(new URLSearchParams(location.search).get("theme") === "dar
     <ToastSection />
     <NavSection />
     <MenubarCommandSection />
+    <SidebarSection />
   </main>
 </template>
