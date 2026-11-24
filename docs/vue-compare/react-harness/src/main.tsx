@@ -136,6 +136,34 @@ import {
   PaginationStatus,
 } from "@workspace/ui/components/pagination"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@workspace/ui/components/tabs"
+import {
+  Command,
+  CommandCollection,
+  CommandDialog,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandShortcut,
+} from "@workspace/ui/components/command"
+import {
+  Menubar,
+  MenubarCheckboxItem,
+  MenubarContent,
+  MenubarGroup,
+  MenubarItem,
+  MenubarLabel,
+  MenubarMenu,
+  MenubarRadioGroup,
+  MenubarRadioItem,
+  MenubarSeparator,
+  MenubarShortcut,
+  MenubarSub,
+  MenubarSubContent,
+  MenubarSubTrigger,
+  MenubarTrigger,
+} from "@workspace/ui/components/menubar"
 import { Textarea } from "@workspace/ui/components/textarea"
 import { Icon } from "@workspace/ui/icons/icon"
 import "./styles.css"
@@ -801,6 +829,97 @@ function NavSection() {
   )
 }
 
+type Cmd = { value: string; label: string; icon: "chart-line" | "bar-chart" | "download" | "trash"; shortcut?: string; disabled?: boolean }
+const COMMANDS: { value: string; items: Cmd[] }[] = [
+  { value: "Reports", items: [
+    { value: "Reach", label: "Reach", icon: "chart-line" },
+    { value: "Frequency", label: "Frequency", icon: "bar-chart", shortcut: "Cmd F" },
+  ] },
+  { value: "Actions", items: [
+    { value: "Export", label: "Export", icon: "download", shortcut: "Cmd E" },
+    { value: "Delete", label: "Delete", icon: "trash", disabled: true },
+  ] },
+]
+
+function CommandBody({ groups }: { groups: typeof COMMANDS }) {
+  return (
+    <Command items={groups} onSelect={() => {}}>
+      <CommandInput placeholder="Search commands" data-specimen="command-input" />
+      <CommandEmpty>No results</CommandEmpty>
+      <CommandList data-specimen="command-list">
+        {(group: { value: string; items: Cmd[] }) => (
+          <CommandGroup key={group.value} items={group.items} heading={group.value}>
+            <CommandCollection>
+              {(item: Cmd) => (
+                <CommandItem key={item.value} value={item} disabled={item.disabled}>
+                  <Icon name={item.icon} />
+                  {item.label}
+                  {item.shortcut && <CommandShortcut>{item.shortcut}</CommandShortcut>}
+                </CommandItem>
+              )}
+            </CommandCollection>
+          </CommandGroup>
+        )}
+      </CommandList>
+    </Command>
+  )
+}
+
+function MenubarCommandSection() {
+  const [open, setOpen] = React.useState(false)
+  return (
+    <section id="menubar-command" className="flex flex-col gap-6">
+      <h2 className="text-h2 text-ink-heading">Menubar and Command</h2>
+      <Menubar className="w-fit" data-specimen="menubar">
+        <MenubarMenu>
+          <MenubarTrigger data-specimen="mb-trigger">File</MenubarTrigger>
+          <MenubarContent data-specimen="mb-content">
+            <MenubarGroup>
+              <MenubarLabel>Report</MenubarLabel>
+              <MenubarItem><Icon name="edit" />Rename<MenubarShortcut>Cmd R</MenubarShortcut></MenubarItem>
+              <MenubarItem disabled>Archive</MenubarItem>
+            </MenubarGroup>
+            <MenubarSeparator />
+            <MenubarCheckboxItem checked>Show totals</MenubarCheckboxItem>
+            <MenubarSeparator />
+            <MenubarRadioGroup value="quarter">
+              <MenubarRadioItem value="month">Month</MenubarRadioItem>
+              <MenubarRadioItem value="quarter">Quarter</MenubarRadioItem>
+            </MenubarRadioGroup>
+            <MenubarSeparator />
+            <MenubarSub>
+              <MenubarSubTrigger>Share</MenubarSubTrigger>
+              <MenubarSubContent>
+                <MenubarItem>Email</MenubarItem>
+                <MenubarItem>Copy link</MenubarItem>
+              </MenubarSubContent>
+            </MenubarSub>
+            <MenubarSeparator />
+            <MenubarItem variant="destructive"><Icon name="trash" />Delete</MenubarItem>
+          </MenubarContent>
+        </MenubarMenu>
+        <MenubarMenu>
+          <MenubarTrigger data-specimen="mb-trigger-2">View</MenubarTrigger>
+          <MenubarContent><MenubarItem>Zoom in</MenubarItem><MenubarItem>Zoom out</MenubarItem></MenubarContent>
+        </MenubarMenu>
+        <MenubarMenu>
+          <MenubarTrigger disabled data-specimen="mb-trigger-disabled">Help</MenubarTrigger>
+          <MenubarContent><MenubarItem>Docs</MenubarItem></MenubarContent>
+        </MenubarMenu>
+      </Menubar>
+      <div className="max-w-md" data-specimen="command-wrap">
+        <CommandBody groups={COMMANDS} />
+      </div>
+      <div>
+        <Button variant="outline" data-specimen="cmd-open" onClick={() => setOpen(true)}>Open command palette</Button>
+        <CommandDialog open={open} onOpenChange={setOpen}>
+          <CommandBody groups={COMMANDS.slice(0, 1).map((g) => ({ ...g, items: g.items.slice(0, 1) }))} />
+        </CommandDialog>
+      </div>
+    </section>
+  )
+}
+
 function DialogSection() {
   return (
     <section id="dialog" className="flex flex-col gap-6">
@@ -871,6 +990,7 @@ function App() {
       <MenusSection />
       <ToastSection />
       <NavSection />
+      <MenubarCommandSection />
     </main>
   )
 }

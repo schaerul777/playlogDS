@@ -9,6 +9,7 @@ import OverlaysSection from "./sections/OverlaysSection.vue"
 import MenusSection from "./sections/MenusSection.vue"
 import ToastSection from "./sections/ToastSection.vue"
 import NavSection from "./sections/NavSection.vue"
+import MenubarCommandSection from "./sections/MenubarCommandSection.vue"
 import DialogSection from "./sections/DialogSection.vue"
 import InputSection from "./sections/InputSection.vue"
 
@@ -39,5 +40,6 @@ onMounted(() => apply(new URLSearchParams(location.search).get("theme") === "dar
     <MenusSection />
     <ToastSection />
     <NavSection />
+    <MenubarCommandSection />
   </main>
 </template>

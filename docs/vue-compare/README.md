@@ -303,3 +303,39 @@ The "Reports" panel: size 400 x 144, radius 4, shadow `--pl-shadow-overlay`, no 
 
 - Panel movement between triggers, keyboard (arrow keys inside the menu, Tab order), hover opening (the menu opens on click in the test), mobile hiding below `md`.
 - Vertical Tabs arrow keys, Breadcrumb ellipsis menu, Pagination below `sm`, animation timing, screen readers.
+
+# Batch 7 (Menubar and Command)
+
+Specimens: a Menubar with three menus (File with label, icon item, shortcut, disabled item, checkbox, radio group, submenu and a destructive item; View; a disabled Help), an inline Command with two groups, and a Command Dialog.
+
+## Pixel check
+
+- Menubar bar and its three triggers (idle, disabled): **0 differences**, light and dark.
+- Open File menu (26 elements: popup, label, items, indicators, separators, submenu trigger): **0 differences**; same position (4 px left of the trigger, 8 below) and size 144 x 296.
+- Command input row (48 high, search icon, 14/20 text): **0 differences**.
+- Command list: group headings (12/16 medium muted), 32 px items, icons, shortcuts, disabled item at 40%: same sizes and colors, total height 240. One visual difference (below).
+- "No results": 14/20 muted-foreground, centred, padding 24 12, as in React.
+
+## Behavior check
+
+| Behavior | React (Base UI) | Vue (Reka UI) |
+|---|---|---|
+| Open a menu with Enter, first item highlighted | yes | yes |
+| ArrowRight inside an open menu opens the next menu, first item focused | yes | yes |
+| Escape closes, focus stays in the bar | yes | yes |
+| Open with the mouse, then use the keyboard | focus moves into the menu | focus stays on the trigger (see 2) |
+| Command: typing filters, groups with no match hide, first match highlighted | yes | yes |
+| Command: no match shows "No results" | yes | yes |
+
+## Differences found
+
+1. **First Command item is highlighted on load (Reka).** Reka highlights the first item as soon as the list mounts; React shows no highlight until you type or press an arrow key. Not changed (a first-item highlight is common for palettes).
+2. **Mouse-opened menubar menus keep focus on the trigger.** Reka only moves focus into the menu when it is opened from the keyboard (Enter, Space or ArrowDown on the trigger). After a mouse click, the arrow keys do not enter the menu until you press ArrowDown again from the trigger. Base UI focuses the menu after a click. Not changed.
+3. **Command API.** The React Command is data driven (`items`, `onSelect`, `CommandCollection`, render functions) on top of the Base UI Combobox. shadcn-vue's Command is declarative on Reka `Listbox` (`CommandGroup`, `CommandItem` as children, `@select` on an item, `heading` on a group). There is no `CommandCollection` in Vue. The Vue filter is a `contains` match on the item text.
+4. **Command search is not auto-focused** (removed `auto-focus` so an inline Command does not steal focus, as in React). Inside `CommandDialog` the dialog focuses the input.
+5. **Disabled on the trigger.** Reka puts `disabled` on `MenubarTrigger`; React puts it on `MenubarMenu`.
+6. **`data-specimen` on `MenubarContent` is lost** in Reka (teleported); test hook only.
+
+## Not verified
+
+- Hover switching between menus while one is open, Command Dialog open and close with Cmd or Ctrl K (the shortcut is app code, not in the library), keywords search, scrolling a long list, and screen readers.
