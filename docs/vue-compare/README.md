@@ -398,3 +398,35 @@ These four are presentational. Not interactive except the Badge as a link (hover
 ## Not verified
 
 - Badge focus ring and hover when it is a link, long text wrapping in Alert and Card, container-query behavior of `CardHeader`, and screen readers.
+
+# Batch 10 (Table, Avatar, Progress, Spinner)
+
+Specimens (`Display2Section.vue` and the harness `Display2Section`): Table (caption, header with a numeric column, three body rows with one selected, footer, and a dense table); Avatar (3 sizes, with an image, 3 sizes with a status badge, a group with a count); Progress (40% with label and value, 0%, 100% without a label); Spinner (default and a larger one).
+
+## Pixel check
+
+- 126 elements shared with React (every specimen and its children: position, size and 47 computed styles, plus text and slot attributes): **0 style differences**, light and dark.
+- React renders one extra element in Progress, a 1 px hidden helper span (Base UI's value announcer); Vue has none.
+
+## Behavior check
+
+| Behavior | React (Base UI) | Vue (Reka UI) |
+|---|---|---|
+| Progress: `ProgressValue` shows "40%" | yes | yes |
+| Progress: the root is named by the label (`aria-labelledby`) | yes | yes |
+| Progress: `aria-valuetext="40%"`, value hidden from assistive tech, label `role="presentation"` | yes | yes (aligned after the first run) |
+| Avatar image shows when it loads | yes | yes |
+| Spinner: `role="status"`, name "Loading", spins | yes | yes |
+
+## Differences found
+
+1. **`value` is `model-value`.** `Progress` takes Reka's `model-value` (React: `value`). It is display only, no v-model.
+2. **Progress state attributes.** React sets `data-progressing`, `data-complete`; Reka sets `data-state="loading|complete"`, `data-value`, `data-max`. Nothing in the library styles them.
+3. **Progress root name.** Reka also sets `aria-label="40%"` on the root; with a label present `aria-labelledby` wins, without one the name is the percent. React has no accessible name there, only `aria-valuetext`.
+4. **Avatar image role.** Reka adds `role="img"` to the `<img>`; React leaves it out. Styles are identical.
+5. **Extra parts.** `AvatarBadge`, `AvatarGroup`, `AvatarGroupCount` (not in shadcn-vue) and `Spinner` are hand built. `TableEmpty`, which the CLI adds, was removed because React has no such part.
+6. **`Icon` attribute order.** `Icon.vue` now lets attributes passed by the caller override its own `role` and `aria-hidden`, as React's `{...props}` does. `Spinner` needs this (`role="status"`, `aria-hidden="false"`). No other component passed those.
+
+## Not verified
+
+- Progress with no value (indeterminate), Table row hover and selection by keyboard, sticky headers and horizontal scroll at narrow widths, a failing avatar image falling back to initials, and screen readers.

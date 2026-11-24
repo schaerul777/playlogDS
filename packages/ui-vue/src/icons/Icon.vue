@@ -55,11 +55,11 @@ const filledPaths = computed<readonly string[]>(() =>
     viewBox="0 0 24 24"
     :width="size"
     :height="size"
-    v-bind="$attrs"
     :role="title ? 'img' : undefined"
     :aria-labelledby="title ? titleId : undefined"
     :aria-hidden="title ? undefined : true"
     :focusable="title ? undefined : 'false'"
+    v-bind="$attrs"
   >
     <title v-if="title" :id="titleId">{{ title }}</title>
     <path
