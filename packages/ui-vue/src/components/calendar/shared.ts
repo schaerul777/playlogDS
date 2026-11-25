@@ -23,6 +23,13 @@ export const calendarWeekClass = "mt-1 flex w-full"
 // square middle of a range).
 export const calendarCellClass =
   "group/day relative size-(--cell-size) p-0 text-center select-none [&:first-child:has([data-selected])_button]:rounded-l-(--cell-radius)! [&:last-child:has([data-selected])_button]:rounded-r-(--cell-radius)!"
+// With a week-number column the first day is the second cell.
+export const calendarCellWithWeeksClass =
+  "group/day relative size-(--cell-size) p-0 text-center select-none [&:nth-child(2):has([data-selected])_button]:rounded-l-(--cell-radius)! [&:last-child:has([data-selected])_button]:rounded-r-(--cell-radius)!"
+// Playlog: week-number column 40 wide; the number is 12/16 muted-foreground in a 40x40 box.
+export const calendarWeekNumberHeaderClass = "w-(--cell-size) select-none"
+export const calendarWeekNumberClass = "text-caption text-muted-foreground select-none"
+export const calendarWeekNumberBoxClass = "flex size-(--cell-size) items-center justify-center text-center"
 // Playlog: 14/20 regular foreground (not the Button's ink-heading); the cell fills the 40x40 button. Outside days are
 // muted-foreground; disabled and unavailable days are 40% with no pointer events; an unavailable (booked) day is also struck through.
 export const calendarDayClass = cn(
@@ -72,4 +79,36 @@ export function clampPlaceholder(placeholder: DateValue, months: number, min?: D
   if (max && idx(p) + months - 1 > idx(max)) p = p.subtract({ months: idx(p) + months - 1 - idx(max) })
   if (min && idx(p) < idx(min)) p = p.add({ months: idx(min) - idx(p) })
   return p
+}
+
+// Playlog: the week number as react-day-picker writes it: date-fns `getWeek` (the week that holds 1 January is week 1, the week
+// starts on `weekStartsOn`), two digits ("01"), not ISO 8601.
+export function weekNumber(day: DateValue, weekStartsOn = 1) {
+  const start = (d: Date) => {
+    const x = new Date(d.getFullYear(), d.getMonth(), d.getDate())
+    x.setDate(x.getDate() - ((x.getDay() - weekStartsOn + 7) % 7))
+    return x
+  }
+  const date = new Date(day.year, day.month - 1, day.day)
+  const thisWeek = start(date)
+  const year = date.getFullYear()
+  const firstNext = start(new Date(year + 1, 0, 1))
+  const firstThis = start(new Date(year, 0, 1))
+  const weekYear = date >= firstNext ? year + 1 : date >= firstThis ? year : year - 1
+  const yearStart = start(new Date(weekYear, 0, 1))
+  const n = Math.round((thisWeek.getTime() - yearStart.getTime()) / (7 * 24 * 3600 * 1000)) + 1
+  return n < 10 ? `0${n}` : String(n)
+}
+
+// Playlog: custom day states (react-day-picker `modifiers` and `modifiersClassNames`): `modifiers` maps a name to a test on the
+// day, `modifiersClassNames` maps the name to classes put on the day button (a struck-through booked day: `line-through`).
+export function modifierClasses(
+  day: DateValue,
+  modifiers?: Record<string, (day: DateValue) => boolean>,
+  classNames?: Record<string, string>,
+) {
+  if (!modifiers || !classNames) return undefined
+  return Object.entries(modifiers)
+    .filter(([name, test]) => classNames[name] && test(day))
+    .map(([name]) => classNames[name])
 }

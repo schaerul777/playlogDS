@@ -22,6 +22,7 @@ import { computed, nextTick, onMounted, ref, toRef } from "vue"
 import CalendarCaption from "./CalendarCaption.vue"
 import {
   calendarCellClass,
+  calendarCellWithWeeksClass,
   calendarDayClass,
   calendarGridClass,
   calendarMonthClass,
@@ -32,12 +33,17 @@ import {
   calendarSelectedClass,
   calendarTodayClass,
   calendarWeekClass,
+  calendarWeekNumberBoxClass,
+  calendarWeekNumberClass,
+  calendarWeekNumberHeaderClass,
   calendarWeekdayClass,
   clampPlaceholder,
   focusInitialDay,
   isHiddenDay,
   isTodayValue,
+  modifierClasses,
   shortWeekday,
+  weekNumber,
 } from "./shared"
 
 // Playlog: the single-date Calendar (React `Calendar mode="single"`). Values are `@internationalized/date` DateValues (CalendarDate).
@@ -48,6 +54,12 @@ const props = withDefaults(
       captionLayout?: "label" | "dropdown" | "dropdown-months" | "dropdown-years"
       /** Fixes the day that is marked as today (Reka always uses the real date). */
       today?: DateValue
+      /** Shows a column of week numbers. */
+      showWeekNumber?: boolean
+      /** Custom day states: a test per name, used with `modifiersClassNames`. */
+      modifiers?: Record<string, (day: DateValue) => boolean>
+      /** Classes put on the day button for each modifier that is true. */
+      modifiersClassNames?: Record<string, string>
       /** Accessible names of the month arrows. */
       labels?: { previous?: string; next?: string }
     }
@@ -57,6 +69,7 @@ const props = withDefaults(
     weekStartsOn: 1, // Playlog: Monday (agreed).
     weekdayFormat: "short",
     captionLayout: "label",
+    showWeekNumber: false,
     numberOfMonths: 1,
     fixedWeeks: undefined,
   },
@@ -64,7 +77,7 @@ const props = withDefaults(
 const emits = defineEmits<CalendarRootEmits>()
 
 const delegatedProps = computed(() => {
-  const { class: _class, captionLayout: _layout, today: _today, labels: _labels, placeholder: _placeholder, initialFocus: _focus, ...delegated } = props
+  const { class: _class, captionLayout: _layout, today: _today, labels: _labels, showWeekNumber: _weeks, modifiers: _modifiers, modifiersClassNames: _modifierClasses, placeholder: _placeholder, initialFocus: _focus, ...delegated } = props
   return delegated
 })
 const forwarded = useForwardPropsEmits(delegatedProps, emits)
@@ -117,12 +130,21 @@ const placeholder = computed<DateValue>({
         <CalendarGrid :class="calendarGridClass">
           <CalendarGridHead>
             <CalendarGridRow class="flex">
+              <CalendarHeadCell v-if="showWeekNumber" aria-label="Week Number" scope="col" :class="calendarWeekNumberHeaderClass" />
               <CalendarHeadCell v-for="day in weekDays" :key="day" :class="calendarWeekdayClass">{{ shortWeekday(day, locale) }}</CalendarHeadCell>
             </CalendarGridRow>
           </CalendarGridHead>
           <CalendarGridBody>
             <CalendarGridRow v-for="(weekDates, index) in month.rows" :key="`week-${index}`" :class="calendarWeekClass">
-              <CalendarCell v-for="weekDate in weekDates" :key="weekDate.toString()" :date="weekDate" :class="calendarCellClass">
+              <td v-if="showWeekNumber" :class="calendarWeekNumberClass">
+                <div :class="calendarWeekNumberBoxClass">{{ weekNumber(weekDates[0], weekStartsOn) }}</div>
+              </td>
+              <CalendarCell
+                v-for="weekDate in weekDates"
+                :key="weekDate.toString()"
+                :date="weekDate"
+                :class="showWeekNumber ? calendarCellWithWeeksClass : calendarCellClass"
+              >
                 <CalendarCellTrigger
                   v-if="!isHiddenDay(weekDate, minValue as DateValue | undefined, maxValue as DateValue | undefined)"
                   :data-pl-today="isTodayValue(weekDate, today) ? '' : undefined"
@@ -130,7 +152,7 @@ const placeholder = computed<DateValue>({
                   :month="month.value"
                   as="button"
                   data-slot="calendar-day"
-                  :class="cn(calendarDayClass, calendarSelectedClass, isTodayValue(weekDate, today) && calendarTodayClass)"
+                  :class="cn(calendarDayClass, calendarSelectedClass, isTodayValue(weekDate, today) && calendarTodayClass, modifierClasses(weekDate, modifiers, modifiersClassNames))"
                 />
               </CalendarCell>
             </CalendarGridRow>

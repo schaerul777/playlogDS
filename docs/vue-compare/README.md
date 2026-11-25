@@ -577,7 +577,7 @@ Specimens: Drawer with a form (Field, Input, Slider), long content (scrolling bo
 
 # Batch 15: Calendar, Range Calendar, Date Picker, Date Range Picker
 
-Specimens: five Calendars (single, range, disabled weekends with booked days, month and year dropdowns, Indonesian), six Date Pickers (launch date with `minDate`, small and clearable, booked days, invalid, disabled, Indonesian) and two Date Range Pickers (with presets and `maxDate`, empty). Code Connect templates: `Calendar`, `DatePicker`, `DateRangePicker` in `code-connect-vue/` (parsed, not published). Not built: the "Calendar in a Drawer" recipe specimen.
+Specimens: seven Calendars (single, range, disabled weekends with booked days, week numbers with booked days, week numbers in a range across the year end, month and year dropdowns, Indonesian), six Date Pickers (launch date with `minDate`, small and clearable, booked days, invalid, disabled, Indonesian) and two Date Range Pickers (with presets and `maxDate`, empty). Code Connect templates: `Calendar`, `DatePicker`, `DateRangePicker` in `code-connect-vue/` (parsed, not published). Not built: the "Calendar in a Drawer" recipe specimen.
 
 ## Dependency
 
@@ -587,7 +587,7 @@ Specimens: five Calendars (single, range, disabled weekends with booked days, mo
 
 Collected for every button, weekday cell, caption and select in each calendar (position, size and 29 computed styles, sorted by position), light and dark, with transitions off:
 
-- **Single, range and Indonesian: identical to React.** Same for the single and range calendars in dark.
+- **Single, range, Indonesian, week numbers and week numbers in a range: identical to React**, cells (`td`) included, light and dark.
 - **Disabled/booked and dropdown: identical except the two items below** (booked strike-through; a hidden 1x1 live-region span).
 - **All 8 closed pickers: identical** (trigger, value text, clear button, calendar icon), light; in dark the six pickers I had not clicked are identical.
 - **Open popovers (Launch date, Report period):** same box (312x376 and 768x376), same 46 and 93 elements, same groups of cells, same focused day. Styles are identical except `cursor` on disabled days and arrows (React shows `default` on days and `pointer` on the disabled arrow, Vue the reverse; neither is visible, both have `pointer-events: none`).
@@ -606,13 +606,15 @@ Collected for every button, weekday cell, caption and select in each calendar (p
 | Presets close the popover and set the range | yes | yes |
 | Clear button empties the value and disappears | yes | yes |
 | Month and year dropdowns, Indonesian names and arrow labels | yes | yes |
+| Week-number column (44 to 49 in Nov 2026; "01" for the 28 Dec 2026 week) | yes | yes |
+| `modifiers` on a picker: booked days styled, others not | yes | yes |
 
 ## Differences found
 
-1. **API.** React has one `Calendar mode="single" | "range"`; Vue has `Calendar` (one date) and `RangeCalendar` (a range), the two Reka roots. Both take `@internationalized/date` DateValues (`CalendarDate`), `v-model`, `default-placeholder` (React `defaultMonth`), `min-value` / `max-value` (React `startMonth` / `endMonth` plus `disabled`), `is-date-disabled`, `is-date-unavailable`, `number-of-months`, `week-starts-on` (default 1, Monday), `locale` as a BCP 47 string (`id-ID`; React takes a react-day-picker `Locale` object), `caption-layout` (`label`, `dropdown`, `dropdown-months`, `dropdown-years`), `labels` (`{ previous, next }`), and `today` (fixes the highlighted day; Reka always uses the real date, so the playground uses it to compare with React).
+1. **API.** `show-week-number`, `modifiers` and `modifiers-class-names` are built (see 4). React has one `Calendar mode="single" | "range"`; Vue has `Calendar` (one date) and `RangeCalendar` (a range), the two Reka roots. Both take `@internationalized/date` DateValues (`CalendarDate`), `v-model`, `default-placeholder` (React `defaultMonth`), `min-value` / `max-value` (React `startMonth` / `endMonth` plus `disabled`), `is-date-disabled`, `is-date-unavailable`, `number-of-months`, `week-starts-on` (default 1, Monday), `locale` as a BCP 47 string (`id-ID`; React takes a react-day-picker `Locale` object), `caption-layout` (`label`, `dropdown`, `dropdown-months`, `dropdown-years`), `labels` (`{ previous, next }`), and `today` (fixes the highlighted day; Reka always uses the real date, so the playground uses it to compare with React).
 2. **Pickers.** `DatePicker` and `DateRangePicker` take plain `Date`s (`v-model`, `{ from, to }` for the range), as React does. `locale` is a string; `disabled-dates` is a `Date[]` or a function (React: any react-day-picker matcher); the rest (`min-date`, `max-date`, `clearable`, `size`, `invalid`, `disabled`, `placeholder`, `format-date`, `presets`, `calendar-props`) match. Names are kebab-case in templates.
 3. **Booked days (React finding).** The spec says a booked day is struck through. In the React playground the `line-through` class lands on the table cell, and the inline-flex day button does not inherit it, so React shows booked days only dimmed. Vue strikes them through (`is-date-unavailable`, shown with 40% and `line-through` on the button). Not changed in React.
-4. **Not supported by Reka, not built:** `showWeekNumber` (week numbers) and react-day-picker `modifiers` with `modifiersClassNames` (use `is-date-unavailable` for struck-through days). `CalendarDayButton` is not exported (no Code Connect for it).
+4. **Week numbers and modifiers (built in the wrapper; Reka has neither).** `show-week-number` adds the column (header cell named "Week Number", 40 wide, numbers 12/16 `muted-foreground`). Numbers are written as react-day-picker writes them: date-fns `getWeek` (the week with 1 January is week 1, the week starts on `week-starts-on`), two digits, not ISO 8601, so 28 Dec 2026 is "01". `modifiers` maps a name to a test on the day (`(day: DateValue) => boolean`) and `modifiers-class-names` maps it to classes put on the day button; React takes Date arrays and puts the classes on the table cell. `CalendarDayButton` is not exported (no Code Connect for it).
 5. **Hidden days.** react-day-picker draws no button for the part of a neighbouring month before `minDate`'s month or after `maxDate`'s month. Vue does the same (`isHiddenDay`).
 6. **Month window.** With `maxDate`, react-day-picker keeps the last shown month at the `maxDate` month. Reka would show November and December for a range ending in November, so the first month is moved back (`clampPlaceholder`). This is applied when the calendar opens.
 7. **Weekday names.** react-day-picker writes two letters in English ("Mo") and the locale's short name otherwise ("Sen"). Reka has no two-letter width, so English gets the first two letters of "Mon" and other locales the Intl short name.
@@ -622,4 +624,4 @@ Collected for every button, weekday cell, caption and select in each calendar (p
 
 ## Not verified
 
-- Touch use, RTL (arrows flip with `rtl:rotate-180`, not tried), other locales, week-start values other than Monday, `v-model:placeholder`, a `min-value` combined with the dropdowns, the one-month range picker on a phone width, screen readers, the dark popovers, and the Drawer recipe (not built).
+- Touch use, week numbers with a week start other than Monday, RTL (arrows flip with `rtl:rotate-180`, not tried), other locales, week-start values other than Monday, `v-model:placeholder`, a `min-value` combined with the dropdowns, the one-month range picker on a phone width, screen readers, the dark popovers, and the Drawer recipe (not built).

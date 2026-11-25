@@ -52,6 +52,32 @@ const card = "w-fit rounded-lg border-(length:--pl-border-width) border-border b
         </div>
       </div>
       <div class="flex flex-col gap-2">
+        <p class="text-caption text-muted-foreground">Week numbers, booked days struck through</p>
+        <div :class="card">
+          <Calendar
+            :default-placeholder="TODAY"
+            :today="TODAY"
+            show-week-number
+            :is-date-disabled="isWeekendOrBookedValue"
+            :modifiers="{ booked: isBookedValue }"
+            :modifiers-class-names="{ booked: 'line-through' }"
+            data-specimen="cal-weeks"
+          />
+        </div>
+      </div>
+      <div class="flex flex-col gap-2">
+        <p class="text-caption text-muted-foreground">Week numbers, range, January</p>
+        <div :class="card">
+          <RangeCalendar
+            :default-placeholder="new CalendarDate(2027, 1, 1)"
+            :default-value="{ start: new CalendarDate(2027, 1, 5), end: new CalendarDate(2027, 1, 12) }"
+            :today="TODAY"
+            show-week-number
+            data-specimen="cal-weeks-range"
+          />
+        </div>
+      </div>
+      <div class="flex flex-col gap-2">
         <p class="text-caption text-muted-foreground">Month and year dropdowns</p>
         <div :class="card">
           <Calendar
@@ -92,7 +118,7 @@ const card = "w-fit rounded-lg border-(length:--pl-border-width) border-border b
           id="dp-booked"
           :min-date="TODAY_DATE"
           :disabled-dates="isWeekendOrBooked"
-          :calendar-props="{ today: TODAY, isDateUnavailable: isBookedValue }"
+          :calendar-props="{ today: TODAY, modifiers: { booked: isBookedValue }, modifiersClassNames: { booked: 'line-through' } }"
           data-specimen="pick-booked"
         />
         <FieldDescription>Weekends and 24 to 26 Nov are not available.</FieldDescription>

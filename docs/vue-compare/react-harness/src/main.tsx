@@ -1630,6 +1630,18 @@ function DateSection() {
         </div>
       </div>
       <div className="flex flex-col gap-2">
+        <p className="text-caption text-muted-foreground">Week numbers, booked days struck through</p>
+        <div className={dateCard}>
+          <Calendar mode="single" defaultMonth={TODAY} today={TODAY} showWeekNumber disabled={[isWeekend, ...BOOKED]} modifiers={{ booked: BOOKED }} modifiersClassNames={{ booked: "line-through" }} data-specimen="cal-weeks" />
+        </div>
+      </div>
+      <div className="flex flex-col gap-2">
+        <p className="text-caption text-muted-foreground">Week numbers, range, January</p>
+        <div className={dateCard}>
+          <Calendar mode="range" defaultMonth={new Date(2027, 0)} today={TODAY} showWeekNumber selected={{ from: new Date(2027, 0, 5), to: new Date(2027, 0, 12) }} data-specimen="cal-weeks-range" />
+        </div>
+      </div>
+      <div className="flex flex-col gap-2">
         <p className="text-caption text-muted-foreground">Month and year dropdowns</p>
         <div className={dateCard}>
           <Calendar mode="single" defaultMonth={TODAY} today={TODAY} captionLayout="dropdown" startMonth={new Date(2024, 0)} endMonth={new Date(2028, 11)} data-specimen="cal-dropdown" />

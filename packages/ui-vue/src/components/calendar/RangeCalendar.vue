@@ -22,6 +22,7 @@ import { computed, nextTick, onMounted, ref, toRef } from "vue"
 import CalendarCaption from "./CalendarCaption.vue"
 import {
   calendarCellClass,
+  calendarCellWithWeeksClass,
   calendarDayClass,
   calendarGridClass,
   calendarMonthClass,
@@ -31,12 +32,17 @@ import {
   calendarRootClass,
   calendarTodayClass,
   calendarWeekClass,
+  calendarWeekNumberBoxClass,
+  calendarWeekNumberClass,
+  calendarWeekNumberHeaderClass,
   calendarWeekdayClass,
   clampPlaceholder,
   focusInitialDay,
   isHiddenDay,
   isTodayValue,
+  modifierClasses,
   shortWeekday,
+  weekNumber,
 } from "./shared"
 
 // Playlog: the range Calendar (React `Calendar mode="range"`). Value is `{ start, end }` of `@internationalized/date` DateValues.
@@ -47,6 +53,12 @@ const props = withDefaults(
       captionLayout?: "label" | "dropdown" | "dropdown-months" | "dropdown-years"
       /** Fixes the day that is marked as today (Reka always uses the real date). */
       today?: DateValue
+      /** Shows a column of week numbers. */
+      showWeekNumber?: boolean
+      /** Custom day states: a test per name, used with `modifiersClassNames`. */
+      modifiers?: Record<string, (day: DateValue) => boolean>
+      /** Classes put on the day button for each modifier that is true. */
+      modifiersClassNames?: Record<string, string>
       /** Accessible names of the month arrows. */
       labels?: { previous?: string; next?: string }
     }
@@ -56,6 +68,7 @@ const props = withDefaults(
     weekStartsOn: 1, // Playlog: Monday (agreed).
     weekdayFormat: "short",
     captionLayout: "label",
+    showWeekNumber: false,
     numberOfMonths: 1,
     fixedWeeks: undefined,
   },
@@ -63,7 +76,7 @@ const props = withDefaults(
 const emits = defineEmits<RangeCalendarRootEmits>()
 
 const delegatedProps = computed(() => {
-  const { class: _class, captionLayout: _layout, today: _today, labels: _labels, placeholder: _placeholder, initialFocus: _focus, ...delegated } = props
+  const { class: _class, captionLayout: _layout, today: _today, labels: _labels, showWeekNumber: _weeks, modifiers: _modifiers, modifiersClassNames: _modifierClasses, placeholder: _placeholder, initialFocus: _focus, ...delegated } = props
   return delegated
 })
 const forwarded = useForwardPropsEmits(delegatedProps, emits)
@@ -120,12 +133,27 @@ const placeholder = computed<DateValue>({
         <RangeCalendarGrid :class="calendarGridClass">
           <RangeCalendarGridHead>
             <RangeCalendarGridRow class="flex">
+              <RangeCalendarHeadCell v-if="showWeekNumber" aria-label="Week Number" scope="col" :class="calendarWeekNumberHeaderClass" />
               <RangeCalendarHeadCell v-for="day in weekDays" :key="day" :class="calendarWeekdayClass">{{ shortWeekday(day, locale) }}</RangeCalendarHeadCell>
             </RangeCalendarGridRow>
           </RangeCalendarGridHead>
           <RangeCalendarGridBody>
             <RangeCalendarGridRow v-for="(weekDates, index) in month.rows" :key="`week-${index}`" :class="calendarWeekClass">
-              <RangeCalendarCell v-for="weekDate in weekDates" :key="weekDate.toString()" :date="weekDate" :class="calendarCellClass">
+              <td v-if="showWeekNumber" :class="calendarWeekNumberClass">
+                <div :class="calendarWeekNumberBoxClass">{{ weekNumber(weekDates[0], weekStartsOn) }}</div>
+              </td>
+              <RangeCalendarCell
+                v-for="weekDate in weekDates"
+                :key="weekDate.toString()"
+                :date="weekDate"
+                :class="
+                  cn(
+                    showWeekNumber ? calendarCellWithWeeksClass : calendarCellClass,
+                    // Playlog: the range ends sit above the band (react-day-picker `range_start` / `range_end`: relative isolate z-0).
+                    'has-[[data-selection-start]]:isolate has-[[data-selection-start]]:z-0 has-[[data-selection-end]]:isolate has-[[data-selection-end]]:z-0',
+                  )
+                "
+              >
                 <RangeCalendarCellTrigger
                   v-if="!isHiddenDay(weekDate, minValue as DateValue | undefined, maxValue as DateValue | undefined)"
                   :data-pl-today="isTodayValue(weekDate, today) ? '' : undefined"
@@ -142,6 +170,7 @@ const placeholder = computed<DateValue>({
                       'data-[selection-end]:rounded-l-none data-[selection-end]:rounded-r-(--cell-radius) data-[selection-end]:bg-primary data-[selection-end]:text-primary-foreground data-[selection-end]:hover:bg-primary-hover data-[selection-end]:hover:text-primary-foreground',
                       'not-data-[selection-start]:not-data-[selection-end]:data-[selected]:rounded-none not-data-[selection-start]:not-data-[selection-end]:data-[selected]:bg-surface-selected not-data-[selection-start]:not-data-[selection-end]:data-[selected]:text-ink-heading not-data-[selection-start]:not-data-[selection-end]:data-[selected]:hover:bg-surface-selected not-data-[selection-start]:not-data-[selection-end]:data-[selected]:hover:text-ink-heading',
                       isTodayValue(weekDate, today) && calendarTodayClass,
+                      modifierClasses(weekDate, modifiers, modifiersClassNames),
                     )
                   "
                 />
