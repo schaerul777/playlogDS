@@ -47,6 +47,18 @@ function onBeforeInput(event: InputEvent) {
   transfer.setData("text", filtered)
   event.target?.dispatchEvent(new ClipboardEvent("paste", { clipboardData: transfer, bubbles: true, cancelable: true }))
 }
+
+// Playlog: Backspace on a filled slot clears it and moves focus back one slot, like React. Reka clears and stays; the move runs
+// after Reka's own handler so the value is already cleared. Backspace on an empty slot is left to Reka (it moves back and clears).
+function onKeydown(event: KeyboardEvent) {
+  if (event.key !== "Backspace") return
+  const el = event.currentTarget as HTMLInputElement | null
+  if (!el || !el.value) return
+  const slots = Array.from(el.closest("[data-slot=input-otp]")?.querySelectorAll<HTMLInputElement>("[data-slot=input-otp-slot]") ?? [])
+  const previous = slots[slots.indexOf(el) - 1]
+  if (!previous) return
+  setTimeout(() => previous.focus(), 0)
+}
 </script>
 
 <template>
@@ -70,5 +82,6 @@ function onBeforeInput(event: InputEvent) {
       props.class,
     )"
     @beforeinput="onBeforeInput"
+    @keydown="onKeydown"
   />
 </template>

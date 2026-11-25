@@ -518,14 +518,14 @@ Specimens (`OtpSection.vue` and the harness `OtpSection`): a 3 + 3 grouped field
 | A letter typed in the numeric field is rejected, the next digits still fill | yes | yes |
 | `onValueComplete` / `@value-complete` fires with the full string ("123456") | yes | yes |
 | Backspace clears the last filled slot | yes | yes |
-| Backspace: focus afterwards | moves back one slot | stays on the cleared slot (see 1) |
+| Backspace: focus afterwards | moves back one slot | moves back one slot (matched in the wrapper, see 1) |
 | ArrowLeft moves one slot, Home goes to the first | yes | yes |
 | Numeric keyboard (`inputmode="numeric"`), `autocomplete="one-time-code"`, masked slots are `type="password"` | yes | yes |
 | `invalid` sets `aria-invalid` and the danger border, `aria-describedby` reaches every slot | yes | yes |
 
 ## Differences found
 
-1. **Backspace focus (open question).** In React, Backspace on a filled slot clears it and moves focus to the previous slot. Reka clears it and stays; the next Backspace on the now empty slot moves back and clears that one too. The final values are the same, only where the cursor sits differs.
+1. **Backspace focus (decided: match React).** In React, Backspace on a filled slot clears it and moves focus to the previous slot. Reka clears it and stays. `InputOTPSlot` now moves focus back one slot after Reka clears a filled slot; Backspace on an empty slot is still Reka's (moves back and clears). Checked with real keys: type 123, focus slot 2, Backspace gives 1 and focus on slot 1.
 2. **API.** `length`, `validation-type` (`numeric` default, `alpha`, `alphanumeric`, `none`), `mask`, `disabled`, `invalid`, `id`, `name`, `required`; `v-model` and `default-value` are strings; `@value-complete` and `update:modelValue` events. `length` is informational: the slots you render set the real count (it only feeds each slot's accessible name). Slot `index` is its order inside the field, read from the DOM after mount.
 3. **Label.** `id` goes on the first slot so `<Label for="...">` names the field. Reka names every slot "pin input N of M"; the Vue slots drop that on the first slot (so the label wins) and say "Character N of M" on the others. React names only the first slot.
 4. **`maxlength`.** React sets `maxlength` on every slot; Vue does not.
