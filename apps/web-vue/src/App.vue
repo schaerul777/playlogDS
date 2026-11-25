@@ -14,6 +14,7 @@ import DialogSection from "./sections/DialogSection.vue"
 import SidebarSection from "./sections/SidebarSection.vue"
 import DisplaySection from "./sections/DisplaySection.vue"
 import Display2Section from "./sections/Display2Section.vue"
+import Display3Section from "./sections/Display3Section.vue"
 import InputSection from "./sections/InputSection.vue"
 
 // Dark mode is the .dark class on <html> (same as the React playground). `?theme=dark` starts dark.
@@ -47,5 +48,6 @@ onMounted(() => apply(new URLSearchParams(location.search).get("theme") === "dar
     <SidebarSection />
     <DisplaySection />
     <Display2Section />
+    <Display3Section />
   </main>
 </template>

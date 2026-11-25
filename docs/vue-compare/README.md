@@ -430,3 +430,38 @@ Specimens (`Display2Section.vue` and the harness `Display2Section`): Table (capt
 ## Not verified
 
 - Progress with no value (indeterminate), Table row hover and selection by keyboard, sticky headers and horizontal scroll at narrow widths, a failing avatar image falling back to initials, and screen readers.
+
+# Batch 11 (Accordion, Collapsible, Empty, Item)
+
+Specimens (`Display3Section.vue` and the harness `Display3Section`): Accordion (three items, the first open by default, one disabled); Collapsible (open by default, Button trigger); Empty (icon media, title, description, two buttons, inside a bordered box); Item in 3 variants x 3 sizes with icon media, title, description and an action, plus an Item as a link with image media, a selected link, a disabled button, a separator, and an Item with header and footer.
+
+## Pixel check
+
+- 61 specimen groups (every specimen and its children: position, size and 41 computed styles): **0 differences**, light and dark, once the fields that differ by design are set aside (below). The `accordion` root group itself is not compared as a whole, because Reka keeps closed panels in the DOM; its items, triggers and panels are compared one by one.
+- Fields set aside: `transition-*` on the Accordion and Collapsible panels (React animates `height` with a transition; Reka uses keyframes, same duration and easing), `role` of the Item separator, and `aria-expanded`.
+
+## Behavior check
+
+| Behavior | React (Base UI) | Vue (Reka UI) |
+|---|---|---|
+| Accordion: click opens an item and closes the other (single) | yes | yes |
+| Accordion: click an open item closes it | yes | yes |
+| Accordion: ArrowUp moves focus to the previous trigger | yes | yes |
+| Accordion: ArrowDown past the last enabled trigger | stays on it | wraps to the first (see 2) |
+| Collapsible: trigger toggles, `aria-expanded` follows | yes | yes |
+| Accordion and Collapsible panel animation: 0.15 s, ease-out | yes | yes (set in CSS; timing not measured, the pane throttles animations) |
+
+## Differences found
+
+1. **Accordion props.** Reka: `type="single" | "multiple"`, `collapsible`, `default-value` (a string, or an array for `multiple`), and each item needs a `value`. Base UI: `multiple`, `defaultValue` (an array), item `value` optional. The Vue `Accordion` defaults to `type="single"` and `collapsible` so a click behaves like React.
+2. **Arrow keys with a disabled last item.** Base UI's disabled trigger is a native `disabled` button; ArrowDown from the last enabled trigger stays put. Reka skips disabled triggers and wraps to the first. Only matters when the last item is disabled.
+3. **Panel markup.** Reka keeps a closed panel in the DOM with `hidden`; Base UI removes it. The accordion trigger carries `data-state`, not `data-open`.
+4. **Extra attributes go to the button.** `AccordionTrigger` forwards `id`, `data-*` and the like to the button (as React does) instead of the heading wrapper.
+5. **Item separator role.** `ItemSeparator` is the library `Separator`, decorative by default (`role="none"`); React's has `role="separator"`.
+6. **Item as link or button.** `as="a" href="..."` or `as="button"` (React: `render={<a />}`). `data-selected="true"` and `aria-disabled` work as in React.
+7. **`EmptyMedia` slot name.** Its `data-slot` is `empty-icon` in both (kept to match React).
+8. **No Collapsible template.** React has no Code Connect template for Collapsible, so there is none for Vue.
+
+## Not verified
+
+- Accordion with `multiple`, keyboard Home and End, Collapsible with the `disabled` prop, Empty inside a table body, a focus ring on Item links, long text clamping (`line-clamp`) on Item titles and descriptions, and screen readers.
