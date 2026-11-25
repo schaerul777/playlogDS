@@ -498,3 +498,40 @@ Specimens (`Display4Section.vue` and the harness `Display4Section`): Kbd (single
 ## Not verified
 
 - Keyboard scrolling (arrow keys, Page Up and Down) in the viewport, dragging the thumb, scroll area with `type="always"`, RTL, an Input Group inside a Button Group, a Select as the last child, and screen readers.
+
+# Batch 13 (Input OTP)
+
+`input-otp` has no shadcn-vue source, so the CLI's `pin-input` (Reka PinInput) was installed, read, and replaced by an `input-otp` component with the Base UI API of the React one. No new dependency (Reka already ships PinInput).
+
+Specimens (`OtpSection.vue` and the harness `OtpSection`): a 3 + 3 grouped field with a label, a separator and a default value of "123"; an invalid field with `aria-describedby`; a disabled field; a masked field.
+
+## Pixel check
+
+- 11 element groups (root, groups, slots, separator, in every specimen): **0 differences in position, size and 32 computed styles**, light and dark.
+- Vue has one extra element per field: Reka's hidden form input.
+
+## Behavior check
+
+| Behavior | React (Base UI) | Vue (Reka UI) |
+|---|---|---|
+| Click an empty slot, type digits: slots fill in order, focus follows | yes | yes |
+| A letter typed in the numeric field is rejected, the next digits still fill | yes | yes |
+| `onValueComplete` / `@value-complete` fires with the full string ("123456") | yes | yes |
+| Backspace clears the last filled slot | yes | yes |
+| Backspace: focus afterwards | moves back one slot | stays on the cleared slot (see 1) |
+| ArrowLeft moves one slot, Home goes to the first | yes | yes |
+| Numeric keyboard (`inputmode="numeric"`), `autocomplete="one-time-code"`, masked slots are `type="password"` | yes | yes |
+| `invalid` sets `aria-invalid` and the danger border, `aria-describedby` reaches every slot | yes | yes |
+
+## Differences found
+
+1. **Backspace focus (open question).** In React, Backspace on a filled slot clears it and moves focus to the previous slot. Reka clears it and stays; the next Backspace on the now empty slot moves back and clears that one too. The final values are the same, only where the cursor sits differs.
+2. **API.** `length`, `validation-type` (`numeric` default, `alpha`, `alphanumeric`, `none`), `mask`, `disabled`, `invalid`, `id`, `name`, `required`; `v-model` and `default-value` are strings; `@value-complete` and `update:modelValue` events. `length` is informational: the slots you render set the real count (it only feeds each slot's accessible name). Slot `index` is its order inside the field, read from the DOM after mount.
+3. **Label.** `id` goes on the first slot so `<Label for="...">` names the field. Reka names every slot "pin input N of M"; the Vue slots drop that on the first slot (so the label wins) and say "Character N of M" on the others. React names only the first slot.
+4. **`maxlength`.** React sets `maxlength` on every slot; Vue does not.
+5. **Character validation.** Reka's own filtering leaves a gap when a multi-character insert (autofill, fast typing, an IME) has a bad character in the middle. `InputOTPSlot` blocks a single bad character before Reka sees it and sends a multi-character insert, filtered, through Reka's paste handling. Pasting through the real paste event is not filtered for `alpha` and `alphanumeric` (it is for `numeric`).
+6. **Values.** `numeric` uses Reka's number mode, so the model is converted to and from a string.
+
+## Not verified
+
+- A real clipboard paste, Delete and End keys, one-time-code autofill on a phone, `alpha` and `alphanumeric` modes typed by hand, forms (`name` with a native submit), RTL, and screen readers.

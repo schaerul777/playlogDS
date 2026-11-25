@@ -165,6 +165,7 @@ import {
   MenubarTrigger,
 } from "@workspace/ui/components/menubar"
 import { Textarea } from "@workspace/ui/components/textarea"
+import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "@workspace/ui/components/input-otp"
 import { AspectRatio } from "@workspace/ui/components/aspect-ratio"
 import { ButtonGroup, ButtonGroupSeparator, ButtonGroupText } from "@workspace/ui/components/button-group"
 import { Kbd, KbdGroup } from "@workspace/ui/components/kbd"
@@ -1440,6 +1441,52 @@ function Display4Section() {
   )
 }
 
+function OtpSection() {
+  const [done, setDone] = React.useState("")
+  return (
+
+  <section id="otp" className="flex flex-col gap-6">
+    <h2 className="text-h2 text-ink-heading">Input OTP</h2>
+
+    <div className="flex flex-col gap-2">
+      <Label htmlFor="otp-main">Verification code</Label>
+      <InputOTP id="otp-main" length={6} defaultValue="123" data-specimen="otp" onValueComplete={(value) => setDone(String(value))}>
+        <InputOTPGroup data-specimen="otp-group">
+          <InputOTPSlot data-specimen="otp-slot-filled" /><InputOTPSlot /><InputOTPSlot />
+        </InputOTPGroup>
+        <InputOTPSeparator data-specimen="otp-separator" />
+        <InputOTPGroup>
+          <InputOTPSlot data-specimen="otp-slot-empty" /><InputOTPSlot /><InputOTPSlot />
+        </InputOTPGroup>
+      </InputOTP>
+      <p className="text-caption text-muted-foreground" data-specimen="otp-done">Complete: {done}</p>
+    </div>
+
+    <div className="flex flex-col gap-2">
+      <Label htmlFor="otp-invalid">Invalid</Label>
+      <InputOTP id="otp-invalid" length={4} invalid aria-describedby="otp-err" defaultValue="12" data-specimen="otp-invalid">
+        <InputOTPGroup><InputOTPSlot data-specimen="otp-slot-invalid" /><InputOTPSlot /><InputOTPSlot /><InputOTPSlot /></InputOTPGroup>
+      </InputOTP>
+      <p id="otp-err" className="text-caption text-danger-text">The code is not right.</p>
+    </div>
+
+    <div className="flex flex-col gap-2">
+      <Label htmlFor="otp-disabled">Disabled</Label>
+      <InputOTP id="otp-disabled" length={4} disabled defaultValue="12" data-specimen="otp-disabled">
+        <InputOTPGroup><InputOTPSlot data-specimen="otp-slot-disabled" /><InputOTPSlot /><InputOTPSlot /><InputOTPSlot /></InputOTPGroup>
+      </InputOTP>
+    </div>
+
+    <div className="flex flex-col gap-2">
+      <Label htmlFor="otp-mask">Masked</Label>
+      <InputOTP id="otp-mask" length={4} mask defaultValue="42" data-specimen="otp-mask">
+        <InputOTPGroup><InputOTPSlot data-specimen="otp-slot-mask" /><InputOTPSlot /><InputOTPSlot /><InputOTPSlot /></InputOTPGroup>
+      </InputOTP>
+    </div>
+  </section>
+  )
+}
+
 function App() {
   const [dark, setDark] = React.useState(false)
   const apply = (value: boolean) => {
@@ -1473,6 +1520,7 @@ function App() {
       <Display2Section />
       <Display3Section />
       <Display4Section />
+      <OtpSection />
     </main>
   )
 }
