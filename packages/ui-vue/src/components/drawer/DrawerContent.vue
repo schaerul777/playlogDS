@@ -25,6 +25,14 @@ const delegatedProps = computed(() => {
   return delegated
 })
 const forwarded = useForwardPropsEmits(delegatedProps, emits)
+
+// Playlog: on open the popup itself takes focus, like the React Drawer (Reka would focus the first control and select its text).
+// Pass @open-auto-focus and call preventDefault() to choose another element.
+function onOpenAutoFocus(event: Event) {
+  if (event.defaultPrevented) return // the forwarded emit already ran, so a user handler could have prevented it
+  event.preventDefault()
+  ;(event.target as HTMLElement | null)?.focus({ preventScroll: true })
+}
 </script>
 
 <template>
@@ -36,6 +44,8 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits)
         data-slot="drawer-popup"
         :data-snap-points="ctx.hasSnapPoints() ? '' : undefined"
         v-bind="{ ...$attrs, ...forwarded }"
+        tabindex="-1"
+        @open-auto-focus="onOpenAutoFocus"
         :class="
           cn(
             // Playlog: surface as Sheet (popover fill, overlay shadow, no border); radius 8 on the top corners; full width,

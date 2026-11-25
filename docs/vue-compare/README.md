@@ -554,7 +554,7 @@ Specimens: Drawer with a form (Field, Input, Slider), long content (scrolling bo
 
 | Behavior | React (Base UI) | Vue (Reka UI) |
 |---|---|---|
-| Opens from the trigger; Escape closes; focus returns to the trigger | yes | yes |
+| Opens from the trigger with focus on the popup; Escape closes; focus returns to the trigger | yes | yes |
 | Scrim click closes | yes | yes |
 | Focus is trapped (8 Tab presses stay inside); the page behind is inert | yes | yes |
 | Handle and close button can be turned off (`showSwipeHandle`, `showCloseButton`) | yes | yes (`show-swipe-handle`, `show-close-button`) |
@@ -564,7 +564,7 @@ Specimens: Drawer with a form (Field, Input, Slider), long content (scrolling bo
 
 ## Differences found
 
-1. **Initial focus (open question).** React focuses the popup itself. Reka focuses the first focusable control and selects its text (in the form drawer, the campaign name; in the long one, the close button). This is the same Reka behavior as Dialog, which you chose to keep. It can be turned off per drawer with `:initial-focus="false"`.
+1. **Initial focus (decided: match React).** React focuses the popup itself; Reka focuses the first control and selects its text. `DrawerContent` now focuses the popup on open (`tabindex="-1"`, in `@open-auto-focus`), so the first Tab goes to the first control. A user handler can still call `preventDefault()` on `@open-auto-focus` to pick another element. Checked: the popup is focused, nothing is selected, Tab reaches the input, Escape returns focus to the trigger.
 2. **Motion.** Reka has no `data-starting-style` / `data-ending-style`, so the slide and the scrim fade use `animate-in` / `animate-out` keyframes at the same durations. A swipe that ends in a dismissal is closed by the keyframe from the resting position, not from where the finger left it; React continues from the release point at a speed set by the swipe.
 3. **Swipe.** The drag, its threshold and the release logic are Reka's. Not comparable with the tools here: React ignored two-step mouse drags and scripted pointer events, so there is no React baseline. In Vue a 200 px mouse drag dismissed the drawer. A single-step 30 px drag left the panel offset 36 px until it closed a moment later. Real touch swiping has not been tried.
 4. **API.** Same names as React: `Drawer`, `DrawerTrigger`, `DrawerClose`, `DrawerContent` (`showCloseButton`), `DrawerHeader`, `DrawerBody`, `DrawerFooter`, `DrawerTitle`, `DrawerDescription`, `DrawerOverlay`, `DrawerPortal`, `DrawerSwipeHandle`. `Drawer` takes `showSwipeHandle`, `modal`, `snapPoints`; `swipeDirection` is fixed to `down`. Triggers and closes use `as-child` instead of `render`.
