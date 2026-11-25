@@ -207,6 +207,17 @@ import {
   SidebarSeparator,
   SidebarTrigger,
 } from "@workspace/ui/components/sidebar"
+import {
+  Drawer,
+  DrawerBody,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@workspace/ui/components/drawer"
 import { Icon } from "@workspace/ui/icons/icon"
 import "./styles.css"
 
@@ -1487,6 +1498,98 @@ function OtpSection() {
   )
 }
 
+function DrawerSection() {
+  const [saved, setSaved] = React.useState(false)
+  const [open, setOpen] = React.useState(false)
+  return (
+  <section id="drawer" className="flex flex-col gap-6">
+    <h2 className="text-h2 text-ink-heading">Drawer</h2>
+    <p className="text-caption text-muted-foreground">
+      A bottom panel for small screens: swipe down, press Escape, tap the scrim or use the close button. Focus stays inside and returns to the trigger.
+    </p>
+    <div className="flex flex-wrap items-center gap-3">
+      <Drawer>
+        <DrawerTrigger render={<Button variant="outline" data-specimen="drawer-trigger" />}>Edit campaign</DrawerTrigger>
+        <DrawerContent data-specimen="drawer-edit">
+          <DrawerHeader data-specimen="drawer-header">
+            <DrawerTitle data-specimen="drawer-title">Edit campaign</DrawerTitle>
+            <DrawerDescription data-specimen="drawer-description">Change the name and the daily budget. Reach is recounted overnight.</DrawerDescription>
+          </DrawerHeader>
+          <DrawerBody data-specimen="drawer-body">
+            <div className="flex flex-col gap-4 pb-1">
+              <Field>
+                <FieldLabel htmlFor="drawer-name">Campaign name</FieldLabel>
+                <Input id="drawer-name" defaultValue="Rail network, Q3 2025" />
+              </Field>
+              <Slider defaultValue={[40]}>
+                <SliderLabel>Daily budget</SliderLabel>
+                <SliderValue />
+              </Slider>
+            </div>
+          </DrawerBody>
+          <DrawerFooter data-specimen="drawer-footer">
+            <DrawerClose render={<Button variant="outline" />}>Cancel</DrawerClose>
+            <DrawerClose render={<Button onClick={() => setSaved(true)} />}>Save changes</DrawerClose>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
+
+      <Drawer>
+        <DrawerTrigger render={<Button variant="outline" data-specimen="drawer-trigger-long" />}>Long content</DrawerTrigger>
+        <DrawerContent data-specimen="drawer-long">
+          <DrawerHeader>
+            <DrawerTitle>Screens in this campaign</DrawerTitle>
+            <DrawerDescription>The list scrolls inside the drawer; the header and footer stay put.</DrawerDescription>
+          </DrawerHeader>
+          <DrawerBody data-specimen="drawer-body-long">
+            <ul className="flex flex-col gap-2 text-body-sm">
+              {Array.from({ length: 24 }, (_, i) => (
+                <li key={i} className="flex justify-between border-b-(length:--pl-border-width) border-border py-2">
+                  <span>Screen SCR-{1001 + i}</span>
+                  <span className="text-caption text-muted-foreground">Live</span>
+                </li>
+              ))}
+            </ul>
+          </DrawerBody>
+          <DrawerFooter>
+            <DrawerClose render={<Button variant="outline" />}>Close</DrawerClose>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
+
+      <Drawer showSwipeHandle={false}>
+        <DrawerTrigger render={<Button variant="outline" data-specimen="drawer-trigger-bare" />}>No handle</DrawerTrigger>
+        <DrawerContent showCloseButton={false} data-specimen="drawer-bare">
+          <DrawerHeader>
+            <DrawerTitle>Discard changes?</DrawerTitle>
+            <DrawerDescription>Without a handle or a close button; swipe, Escape or the buttons close it.</DrawerDescription>
+          </DrawerHeader>
+          <DrawerFooter>
+            <DrawerClose render={<Button variant="outline" />}>Keep editing</DrawerClose>
+            <DrawerClose render={<Button variant="destructive" />}>Discard</DrawerClose>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
+
+      <Drawer open={open} onOpenChange={setOpen}>
+        <DrawerTrigger render={<Button variant="outline" data-specimen="drawer-trigger-controlled" />}>Controlled</DrawerTrigger>
+        <DrawerContent>
+          <DrawerHeader>
+            <DrawerTitle>Controlled drawer</DrawerTitle>
+            <DrawerDescription>Opened and closed with v-model:open.</DrawerDescription>
+          </DrawerHeader>
+          <DrawerFooter>
+            <Button data-specimen="drawer-controlled-close" onClick={() => setOpen(false)}>Close</Button>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
+      <span className="text-caption text-muted-foreground" data-specimen="drawer-state">open: {String(open)}</span>
+      {saved && <span className="text-caption text-muted-foreground">Saved</span>}
+    </div>
+  </section>
+  )
+}
+
 function App() {
   const [dark, setDark] = React.useState(false)
   const apply = (value: boolean) => {
@@ -1521,6 +1624,7 @@ function App() {
       <Display3Section />
       <Display4Section />
       <OtpSection />
+      <DrawerSection />
     </main>
   )
 }

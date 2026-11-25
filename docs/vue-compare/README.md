@@ -535,3 +535,42 @@ Specimens (`OtpSection.vue` and the harness `OtpSection`): a 3 + 3 grouped field
 ## Not verified
 
 - A real clipboard paste, Delete and End keys, one-time-code autofill on a phone, `alpha` and `alphanumeric` modes typed by hand, forms (`name` with a native submit), RTL, and screen readers.
+
+# Batch 14: Drawer
+
+Specimens: Drawer with a form (Field, Input, Slider), long content (scrolling body), no handle and no close button, and a controlled one (`v-model:open`). Code Connect template: `code-connect-vue/DrawerContent.figma.ts` (parsed, not published).
+
+## Dependency
+
+**No new dependency.** The shadcn-vue `drawer` item imports from `reka-ui`: Reka 2.11 has its own Drawer (`DrawerRoot`, `DrawerContent`, `DrawerOverlay`, `DrawerViewport`, `DrawerHandle`), built like the Base UI one. `vaul-vue` (0.4.1, 76 KB unpacked, depends on `@vueuse/core` 10) was approved but is not needed and is not installed. As on every install, the CLI re-added `@lucide/vue` and `@vueuse/core` to `package.json`; both were reverted.
+
+## Pixel check
+
+- Popup, header, title, description, body (up to the Slider), footer, handle and close button: **0 differences in position, size and 34 computed styles** with the React Drawer, light and dark. The scrim and the viewport layer also match (colour, opacity, size, z-index).
+- Long content: popup 1066 high (viewport 1114 minus 48), body 898 high, scroll height 1072 in both.
+- The Slider inside the form differs only as noted in batch 3 (hidden `input`, `span` instead of `div`).
+
+## Behavior check
+
+| Behavior | React (Base UI) | Vue (Reka UI) |
+|---|---|---|
+| Opens from the trigger; Escape closes; focus returns to the trigger | yes | yes |
+| Scrim click closes | yes | yes |
+| Focus is trapped (8 Tab presses stay inside); the page behind is inert | yes | yes |
+| Handle and close button can be turned off (`showSwipeHandle`, `showCloseButton`) | yes | yes (`show-swipe-handle`, `show-close-button`) |
+| Controlled: `open` / `onOpenChange` | yes | `v-model:open` works |
+| Long body scrolls under a fixed header and footer | yes | yes |
+| Handle is hidden from screen readers (`aria-hidden`) | yes | yes |
+
+## Differences found
+
+1. **Initial focus (open question).** React focuses the popup itself. Reka focuses the first focusable control and selects its text (in the form drawer, the campaign name; in the long one, the close button). This is the same Reka behavior as Dialog, which you chose to keep. It can be turned off per drawer with `:initial-focus="false"`.
+2. **Motion.** Reka has no `data-starting-style` / `data-ending-style`, so the slide and the scrim fade use `animate-in` / `animate-out` keyframes at the same durations. A swipe that ends in a dismissal is closed by the keyframe from the resting position, not from where the finger left it; React continues from the release point at a speed set by the swipe.
+3. **Swipe.** The drag, its threshold and the release logic are Reka's. Not comparable with the tools here: React ignored two-step mouse drags and scripted pointer events, so there is no React baseline. In Vue a 200 px mouse drag dismissed the drawer. A single-step 30 px drag left the panel offset 36 px until it closed a moment later. Real touch swiping has not been tried.
+4. **API.** Same names as React: `Drawer`, `DrawerTrigger`, `DrawerClose`, `DrawerContent` (`showCloseButton`), `DrawerHeader`, `DrawerBody`, `DrawerFooter`, `DrawerTitle`, `DrawerDescription`, `DrawerOverlay`, `DrawerPortal`, `DrawerSwipeHandle`. `Drawer` takes `showSwipeHandle`, `modal`, `snapPoints`; `swipeDirection` is fixed to `down`. Triggers and closes use `as-child` instead of `render`.
+5. **Snap points.** Passed through to Reka (off by default). Not exercised.
+6. **Nested drawers.** The scale and brightness effect is dropped, as in React.
+
+## Not verified
+
+- Touch swiping on a device, the release animation after a swipe, snap points, nested drawers, a virtual keyboard (`DrawerVirtualKeyboardProvider`), RTL, and screen readers.
