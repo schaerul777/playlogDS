@@ -574,3 +574,52 @@ Specimens: Drawer with a form (Field, Input, Slider), long content (scrolling bo
 ## Not verified
 
 - Touch swiping on a device, the release animation after a swipe, snap points, nested drawers, a virtual keyboard (`DrawerVirtualKeyboardProvider`), RTL, and screen readers.
+
+# Batch 15: Calendar, Range Calendar, Date Picker, Date Range Picker
+
+Specimens: five Calendars (single, range, disabled weekends with booked days, month and year dropdowns, Indonesian), six Date Pickers (launch date with `minDate`, small and clearable, booked days, invalid, disabled, Indonesian) and two Date Range Pickers (with presets and `maxDate`, empty). Code Connect templates: `Calendar`, `DatePicker`, `DateRangePicker` in `code-connect-vue/` (parsed, not published). Not built: the "Calendar in a Drawer" recipe specimen.
+
+## Dependency
+
+**`@internationalized/date` 3.12.4** (approved): Apache-2.0, 1.2 MB unpacked (tree-shaken in a bundle), one dependency of its own (`@swc/helpers`). It was already installed: Reka UI depends on it. It is now a direct dependency of `packages/ui-vue` (the Calendar takes its `DateValue`s) and of `apps/web-vue` (the playground builds `CalendarDate`s). No new package in `node_modules`; the lockfile gains the two direct links. The CLI again added `@lucide/vue` and `@vueuse/core`; both were reverted, and its 25 generated part files were replaced by `Calendar`, `RangeCalendar` and one caption component.
+
+## Pixel check
+
+Collected for every button, weekday cell, caption and select in each calendar (position, size and 29 computed styles, sorted by position), light and dark, with transitions off:
+
+- **Single, range and Indonesian: identical to React.** Same for the single and range calendars in dark.
+- **Disabled/booked and dropdown: identical except the two items below** (booked strike-through; a hidden 1x1 live-region span).
+- **All 8 closed pickers: identical** (trigger, value text, clear button, calendar icon), light; in dark the six pickers I had not clicked are identical.
+- **Open popovers (Launch date, Report period):** same box (312x376 and 768x376), same 46 and 93 elements, same groups of cells, same focused day. Styles are identical except `cursor` on disabled days and arrows (React shows `default` on days and `pointer` on the disabled arrow, Vue the reverse; neither is visible, both have `pointer-events: none`).
+
+## Behavior check
+
+| Behavior | React (react-day-picker) | Vue (Reka UI) |
+|---|---|---|
+| Click a day: value set, popover closes, focus returns to the trigger | yes | yes |
+| Enter opens; the selected day (else today) is focused; arrows, Up and Down move by day and week and cross months | yes | yes |
+| Escape closes, value kept, focus returns | yes | yes |
+| `minDate`: earlier days disabled, arrow back disabled, no days drawn for the month before it | yes | yes (matched, see 5) |
+| `maxDate` with two months: the last month shown is the `maxDate` month (Oct + Nov) | yes | yes (matched, see 6) |
+| Weekends and booked days cannot be picked | yes | yes |
+| Range: first click shows one date, second click closes and sets both | yes | yes |
+| Presets close the popover and set the range | yes | yes |
+| Clear button empties the value and disappears | yes | yes |
+| Month and year dropdowns, Indonesian names and arrow labels | yes | yes |
+
+## Differences found
+
+1. **API.** React has one `Calendar mode="single" | "range"`; Vue has `Calendar` (one date) and `RangeCalendar` (a range), the two Reka roots. Both take `@internationalized/date` DateValues (`CalendarDate`), `v-model`, `default-placeholder` (React `defaultMonth`), `min-value` / `max-value` (React `startMonth` / `endMonth` plus `disabled`), `is-date-disabled`, `is-date-unavailable`, `number-of-months`, `week-starts-on` (default 1, Monday), `locale` as a BCP 47 string (`id-ID`; React takes a react-day-picker `Locale` object), `caption-layout` (`label`, `dropdown`, `dropdown-months`, `dropdown-years`), `labels` (`{ previous, next }`), and `today` (fixes the highlighted day; Reka always uses the real date, so the playground uses it to compare with React).
+2. **Pickers.** `DatePicker` and `DateRangePicker` take plain `Date`s (`v-model`, `{ from, to }` for the range), as React does. `locale` is a string; `disabled-dates` is a `Date[]` or a function (React: any react-day-picker matcher); the rest (`min-date`, `max-date`, `clearable`, `size`, `invalid`, `disabled`, `placeholder`, `format-date`, `presets`, `calendar-props`) match. Names are kebab-case in templates.
+3. **Booked days (React finding).** The spec says a booked day is struck through. In the React playground the `line-through` class lands on the table cell, and the inline-flex day button does not inherit it, so React shows booked days only dimmed. Vue strikes them through (`is-date-unavailable`, shown with 40% and `line-through` on the button). Not changed in React.
+4. **Not supported by Reka, not built:** `showWeekNumber` (week numbers) and react-day-picker `modifiers` with `modifiersClassNames` (use `is-date-unavailable` for struck-through days). `CalendarDayButton` is not exported (no Code Connect for it).
+5. **Hidden days.** react-day-picker draws no button for the part of a neighbouring month before `minDate`'s month or after `maxDate`'s month. Vue does the same (`isHiddenDay`).
+6. **Month window.** With `maxDate`, react-day-picker keeps the last shown month at the `maxDate` month. Reka would show November and December for a range ending in November, so the first month is moved back (`clampPlaceholder`). This is applied when the calendar opens.
+7. **Weekday names.** react-day-picker writes two letters in English ("Mo") and the locale's short name otherwise ("Sen"). Reka has no two-letter width, so English gets the first two letters of "Mon" and other locales the Intl short name.
+8. **Initial focus.** Reka's own `initial-focus` looks for the real today. The Calendar does it itself (selected day, else `today`, else the first enabled day), so a fixed `today` is respected.
+9. **Dropdowns.** Month and year dropdowns apply to a single month; with two months the captions are labels. Years run from `min-value` to `max-value` (default 10 years either way; React needs `startMonth` and `endMonth`). The visible parts and positions match; React also has a hidden live-region caption, which Vue now has too (its hidden span differs in a few styles).
+10. **Ranges are partial while open.** The Vue range picker reports `{ from }` after the first click (the trigger then shows one date) and closes when `to` is set, as React does.
+
+## Not verified
+
+- Touch use, RTL (arrows flip with `rtl:rotate-180`, not tried), other locales, week-start values other than Monday, `v-model:placeholder`, a `min-value` combined with the dropdowns, the one-month range picker on a phone width, screen readers, the dark popovers, and the Drawer recipe (not built).

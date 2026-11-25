@@ -18,6 +18,7 @@ import Display3Section from "./sections/Display3Section.vue"
 import Display4Section from "./sections/Display4Section.vue"
 import OtpSection from "./sections/OtpSection.vue"
 import DrawerSection from "./sections/DrawerSection.vue"
+import DateSection from "./sections/DateSection.vue"
 import InputSection from "./sections/InputSection.vue"
 
 // Dark mode is the .dark class on <html> (same as the React playground). `?theme=dark` starts dark.
@@ -55,5 +56,6 @@ onMounted(() => apply(new URLSearchParams(location.search).get("theme") === "dar
     <Display4Section />
     <OtpSection />
     <DrawerSection />
+    <DateSection />
   </main>
 </template>

@@ -22,6 +22,7 @@ export default defineConfig({
     alias: [
       { find: /^@workspace\/ui\//, replacement: resolve(repo, "packages/ui/src") + "/" },
       { find: /^react(\/.*)?$/, replacement: resolve(repo, "packages/ui/node_modules/react") + "$1" },
+      { find: /^react-day-picker(\/.*)?$/, replacement: resolve(repo, "packages/ui/node_modules/react-day-picker") + "$1" },
       { find: /^react-dom(\/.*)?$/, replacement: resolve(repo, "packages/ui/node_modules/react-dom") + "$1" },
     ],
   },

@@ -81,6 +81,9 @@ importers:
 
   apps/web-vue:
     dependencies:
+      '@internationalized/date':
+        specifier: ^3.12.4
+        version: 3.12.4
       '@workspace/ui-vue':
         specifier: workspace:*
         version: link:../../packages/ui-vue
@@ -217,6 +220,9 @@ importers:
 
   packages/ui-vue:
     dependencies:
+      '@internationalized/date':
+        specifier: ^3.12.4
+        version: 3.12.4
       '@workspace/tokens':
         specifier: workspace:*
         version: link:../tokens

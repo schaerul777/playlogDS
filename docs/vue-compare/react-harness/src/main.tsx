@@ -218,6 +218,9 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@workspace/ui/components/drawer"
+import { id as idLocale } from "react-day-picker/locale"
+import { Calendar } from "@workspace/ui/components/calendar"
+import { DatePicker, DateRangePicker, getDefaultDateRangePresets, type DateRange } from "@workspace/ui/components/date-picker"
 import { Icon } from "@workspace/ui/icons/icon"
 import "./styles.css"
 
@@ -1590,6 +1593,107 @@ function DrawerSection() {
   )
 }
 
+const TODAY = new Date(2026, 10, 19)
+const BOOKED = [new Date(2026, 10, 24), new Date(2026, 10, 25), new Date(2026, 10, 26)]
+const isWeekend = { dayOfWeek: [0, 6] }
+const dateCard = "w-fit rounded-lg border-(length:--pl-border-width) border-border bg-card"
+const idLabels = { labelPrevious: () => "Bulan sebelumnya", labelNext: () => "Bulan berikutnya" }
+
+function DateSection() {
+  const [single, setSingle] = React.useState<Date | undefined>(new Date(2026, 10, 12))
+  const [range, setRange] = React.useState<DateRange | undefined>({ from: new Date(2026, 10, 10), to: new Date(2026, 10, 17) })
+  const [date, setDate] = React.useState<Date | undefined>()
+  const [reportRange, setReportRange] = React.useState<DateRange | undefined>({ from: new Date(2026, 10, 13), to: new Date(2026, 10, 19) })
+  const [invalidDate, setInvalidDate] = React.useState<Date | undefined>()
+  const presets = React.useMemo(() => getDefaultDateRangePresets(TODAY), [])
+  return (
+  <section id="date" className="flex flex-col gap-4">
+    <p className="text-caption font-medium tracking-wide text-muted-foreground uppercase">Date</p>
+    <h2 className="text-h3 font-bold text-ink-heading">Calendar</h2>
+    <p className="text-caption text-muted-foreground">
+      The month grid. Monday first. Selected is Primary; today has a 1px Primary border; range ends are Primary and the days between use the selected surface;
+      days from the next or previous month are muted; disabled days are 40%.
+    </p>
+    <div className="flex flex-wrap items-start gap-6">
+      <div className="flex flex-col gap-2">
+        <p className="text-caption text-muted-foreground">Single, today is 19 Nov</p>
+        <div className={dateCard}><Calendar mode="single" selected={single} onSelect={setSingle} defaultMonth={TODAY} today={TODAY} data-specimen="cal-single" /></div>
+      </div>
+      <div className="flex flex-col gap-2">
+        <p className="text-caption text-muted-foreground">Range</p>
+        <div className={dateCard}><Calendar mode="range" selected={range} onSelect={setRange} defaultMonth={new Date(2026, 10)} today={TODAY} data-specimen="cal-range" /></div>
+      </div>
+      <div className="flex flex-col gap-2">
+        <p className="text-caption text-muted-foreground">Disabled weekends, booked days struck through</p>
+        <div className={dateCard}>
+          <Calendar mode="single" defaultMonth={TODAY} today={TODAY} disabled={[isWeekend, ...BOOKED]} modifiers={{ booked: BOOKED }} modifiersClassNames={{ booked: "line-through" }} data-specimen="cal-disabled" />
+        </div>
+      </div>
+      <div className="flex flex-col gap-2">
+        <p className="text-caption text-muted-foreground">Month and year dropdowns</p>
+        <div className={dateCard}>
+          <Calendar mode="single" defaultMonth={TODAY} today={TODAY} captionLayout="dropdown" startMonth={new Date(2024, 0)} endMonth={new Date(2028, 11)} data-specimen="cal-dropdown" />
+        </div>
+      </div>
+      <div className="flex flex-col gap-2">
+        <p className="text-caption text-muted-foreground">Indonesian (id-ID)</p>
+        <div className={dateCard}>
+          <Calendar mode="single" defaultMonth={TODAY} today={TODAY} locale={idLocale} labels={idLabels} data-specimen="cal-id" />
+        </div>
+      </div>
+    </div>
+
+    <h2 className="text-h3 font-bold text-ink-heading">Date Picker</h2>
+    <p className="text-caption text-muted-foreground">
+      A button that looks like an Input, with a Popover and the Calendar. Selecting a date closes the popover; Escape closes it too and returns focus to the field.
+    </p>
+    <div className="grid max-w-3xl gap-6 md:grid-cols-2">
+      <Field>
+        <FieldLabel htmlFor="dp-launch">Launch date</FieldLabel>
+        <DatePicker id="dp-launch" value={date} onValueChange={setDate} minDate={TODAY} calendarProps={{ today: TODAY }} data-specimen="pick-launch" />
+        <FieldDescription>The campaign goes live at 00:00 on this day.</FieldDescription>
+      </Field>
+      <Field>
+        <FieldLabel htmlFor="dp-sm">Small, clearable</FieldLabel>
+        <DatePicker id="dp-sm" size="sm" clearable defaultValue={new Date(2026, 10, 19)} calendarProps={{ today: TODAY }} data-specimen="pick-sm" />
+      </Field>
+      <Field>
+        <FieldLabel htmlFor="dp-booked">Pick-up day</FieldLabel>
+        <DatePicker id="dp-booked" minDate={TODAY} disabledDates={[isWeekend, ...BOOKED]} calendarProps={{ today: TODAY, modifiers: { booked: BOOKED }, modifiersClassNames: { booked: "line-through" } }} data-specimen="pick-booked" />
+        <FieldDescription>Weekends and 24 to 26 Nov are not available.</FieldDescription>
+      </Field>
+      <Field data-invalid>
+        <FieldLabel htmlFor="dp-invalid">Report date</FieldLabel>
+        <DatePicker id="dp-invalid" invalid={!invalidDate} aria-describedby="dp-invalid-error" value={invalidDate} onValueChange={setInvalidDate} calendarProps={{ today: TODAY }} data-specimen="pick-invalid" />
+        {!invalidDate ? <FieldError id="dp-invalid-error">Choose a report date.</FieldError> : null}
+      </Field>
+      <Field>
+        <FieldLabel htmlFor="dp-disabled">Disabled</FieldLabel>
+        <DatePicker id="dp-disabled" disabled defaultValue={new Date(2026, 10, 19)} data-specimen="pick-disabled" />
+      </Field>
+      <Field>
+        <FieldLabel htmlFor="dp-id">Tanggal (id-ID)</FieldLabel>
+        <DatePicker id="dp-id" locale={idLocale} placeholder="Pilih tanggal" defaultValue={new Date(2026, 10, 19)} calendarProps={{ today: TODAY, labels: idLabels }} data-specimen="pick-id" />
+      </Field>
+    </div>
+
+    <h2 className="mt-4 text-h4 font-bold text-ink-heading">Date Range Picker</h2>
+    <p className="text-caption text-muted-foreground">Two months on wide screens, one on narrow ones. The popover closes when both ends are chosen.</p>
+    <div className="grid max-w-3xl gap-6 md:grid-cols-2">
+      <Field>
+        <FieldLabel htmlFor="dr-report">Report period</FieldLabel>
+        <DateRangePicker id="dr-report" value={reportRange} onValueChange={setReportRange} presets={presets} clearable maxDate={TODAY} calendarProps={{ today: TODAY }} data-specimen="range-report" />
+        <FieldDescription>Reports cover up to today.</FieldDescription>
+      </Field>
+      <Field>
+        <FieldLabel htmlFor="dr-empty">Empty</FieldLabel>
+        <DateRangePicker id="dr-empty" calendarProps={{ today: TODAY }} data-specimen="range-empty" />
+      </Field>
+    </div>
+  </section>
+  )
+}
+
 function App() {
   const [dark, setDark] = React.useState(false)
   const apply = (value: boolean) => {
@@ -1625,6 +1729,7 @@ function App() {
       <Display4Section />
       <OtpSection />
       <DrawerSection />
+      <DateSection />
     </main>
   )
 }
