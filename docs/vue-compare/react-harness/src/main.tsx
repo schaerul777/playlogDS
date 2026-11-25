@@ -165,6 +165,10 @@ import {
   MenubarTrigger,
 } from "@workspace/ui/components/menubar"
 import { Textarea } from "@workspace/ui/components/textarea"
+import { AspectRatio } from "@workspace/ui/components/aspect-ratio"
+import { ButtonGroup, ButtonGroupSeparator, ButtonGroupText } from "@workspace/ui/components/button-group"
+import { Kbd, KbdGroup } from "@workspace/ui/components/kbd"
+import { ScrollArea, ScrollBar } from "@workspace/ui/components/scroll-area"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@workspace/ui/components/accordion"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@workspace/ui/components/collapsible"
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@workspace/ui/components/empty"
@@ -1369,6 +1373,73 @@ function Display3Section() {
   )
 }
 
+const scrollRows = Array.from({ length: 20 }, (_, i) => `Report ${i + 1}`)
+
+function Display4Section() {
+  const rows = scrollRows
+  return (
+
+  <section id="display4" className="flex flex-col gap-6">
+    <h2 className="text-h2 text-ink-heading">Display: Kbd, Scroll Area, Aspect Ratio, Button Group</h2>
+
+    <div className="flex flex-wrap items-center gap-4">
+      <Kbd data-specimen="kbd">K</Kbd>
+      <KbdGroup data-specimen="kbd-group"><Kbd data-specimen="kbd-in-group">Ctrl</Kbd><Kbd>B</Kbd></KbdGroup>
+      <Kbd data-specimen="kbd-icon"><Icon name="search" />Search</Kbd>
+    </div>
+
+    <div className="flex flex-wrap items-start gap-6">
+      <ScrollArea className="h-48 w-56 rounded-md border border-border" data-specimen="scroll-area">
+        <div className="p-3" data-specimen="scroll-content">
+          {rows.map((row) => (
+            <p key={row} className="py-1 text-body-sm">{row}</p>
+          ))}
+        </div>
+      </ScrollArea>
+      <ScrollArea className="h-24 w-56 rounded-md border border-border" data-specimen="scroll-area-h">
+        <div className="w-[480px] p-3 text-body-sm whitespace-nowrap">A wide line of content that overflows the box sideways.</div>
+        <ScrollBar orientation="horizontal" />
+      </ScrollArea>
+      <ScrollArea className="h-24 w-56 rounded-md border border-border" data-specimen="scroll-area-short">
+        <div className="p-3 text-body-sm">Fits, no bar.</div>
+      </ScrollArea>
+    </div>
+
+    <div className="flex flex-wrap items-start gap-4">
+      <AspectRatio ratio={16 / 9} className="w-64 bg-muted" data-specimen="aspect-wide"><span className="p-2 text-body-sm">16:9</span></AspectRatio>
+      <AspectRatio ratio={1} className="w-32 bg-muted" data-specimen="aspect-square"><span className="p-2 text-body-sm">1:1</span></AspectRatio>
+    </div>
+
+    <div className="flex flex-wrap items-start gap-6">
+      <ButtonGroup data-specimen="bg-outline">
+        <Button variant="outline" data-specimen="bg-outline-first">Day</Button>
+        <Button variant="outline">Week</Button>
+        <Button variant="outline" data-specimen="bg-outline-last">Month</Button>
+      </ButtonGroup>
+      <ButtonGroup orientation="vertical" data-specimen="bg-vertical">
+        <Button variant="outline">Day</Button>
+        <Button variant="outline">Week</Button>
+        <Button variant="outline">Month</Button>
+      </ButtonGroup>
+      <ButtonGroup data-specimen="bg-filled">
+        <Button>Save</Button>
+        <ButtonGroupSeparator data-specimen="bg-separator" />
+        <Button>Save as</Button>
+      </ButtonGroup>
+      <ButtonGroup data-specimen="bg-text">
+        <ButtonGroupText data-specimen="bg-text-label">https://</ButtonGroupText>
+        <Input placeholder="playlog.com" data-specimen="bg-input" />
+        <Button variant="outline">Go</Button>
+      </ButtonGroup>
+      <ButtonGroup data-specimen="bg-nested">
+        <ButtonGroup><Button variant="outline">A</Button><Button variant="outline">B</Button></ButtonGroup>
+        <ButtonGroup><Button variant="outline">C</Button></ButtonGroup>
+      </ButtonGroup>
+    </div>
+  </section>
+  )
+}
+
 function App() {
   const [dark, setDark] = React.useState(false)
   const apply = (value: boolean) => {
@@ -1401,6 +1472,7 @@ function App() {
       <DisplaySection />
       <Display2Section />
       <Display3Section />
+      <Display4Section />
     </main>
   )
 }

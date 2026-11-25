@@ -465,3 +465,36 @@ Specimens (`Display3Section.vue` and the harness `Display3Section`): Accordion (
 ## Not verified
 
 - Accordion with `multiple`, keyboard Home and End, Collapsible with the `disabled` prop, Empty inside a table body, a focus ring on Item links, long text clamping (`line-clamp`) on Item titles and descriptions, and screen readers.
+
+# Batch 12 (Kbd, Scroll Area, Aspect Ratio, Button Group)
+
+Specimens (`Display4Section.vue` and the harness `Display4Section`): Kbd (single key, a group, one with an icon); Scroll Area (vertical with 20 rows, horizontal with an added `ScrollBar`, and a short one with no overflow); Aspect Ratio (16:9 and 1:1); Button Group (outline horizontal, vertical, filled with a separator, with a text label and an Input, and a nested group).
+
+## Pixel check
+
+- Kbd (3 specimens), Aspect Ratio (2), Button Group (all 9, children included, with a text label and an Input): **0 differences**, light and dark.
+- Scroll Area root, scroll bar and thumb (vertical and horizontal): **0 differences**, light and dark (37 groups in dark).
+- Scroll Area viewport: identical except one computed style (below).
+
+## Behavior check
+
+| Behavior | React (Base UI) | Vue (Reka UI) |
+|---|---|---|
+| Hovering the area shows the bar (fades in) | yes | yes (opacity 1) |
+| Wheel scrolls, the thumb moves, the bar shows while scrolling and the flag clears afterwards | yes | yes |
+| Viewport is focusable (`tabindex="0"`) only while it overflows, `-1` otherwise | yes | yes (set from code, see 2) |
+| No bar when the content fits | yes | yes |
+| Scroll bar is `aria-hidden` | yes | yes |
+
+## Differences found
+
+1. **Viewport `overflow-x`.** With only a vertical bar, React's viewport computes `overflow-x: scroll`, Reka's `hidden`. There is nothing to scroll sideways, so nothing visible changes.
+2. **Two Base UI behaviors added in `ScrollArea.vue`.** Reka has no `data-scrolling` flag and always sets `tabindex="0"` on the viewport (after the attributes you pass, so they cannot override it). The wrapper sets `data-scrolling` for 500 ms after a scroll and writes the tabindex from a ResizeObserver overflow check.
+3. **Bar visibility** uses `group-hover` on the root plus `data-scrolling` and focus, instead of Base UI's `data-hovering` and `data-scrolling` on the bar itself. The scroll area uses `type="auto"` (Reka's default is `hover`), so the bar exists only while the content overflows.
+4. **Button inside a group has no `tabindex`.** React's Base UI Button renders `tabindex="0"`; the Vue Button does not. Same focus order.
+5. **Aspect Ratio is hand built** (React's is a plain div with `--ratio`, not Reka's `AspectRatio`). Prop `ratio` is required, same as React.
+6. **Kbd inside a Tooltip.** The shadcn-vue inversion classes were dropped; the Playlog Tooltip is the popover surface, as in React.
+
+## Not verified
+
+- Keyboard scrolling (arrow keys, Page Up and Down) in the viewport, dragging the thumb, scroll area with `type="always"`, RTL, an Input Group inside a Button Group, a Select as the last child, and screen readers.
