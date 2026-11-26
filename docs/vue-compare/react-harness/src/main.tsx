@@ -221,12 +221,150 @@ import {
 import { id as idLocale } from "react-day-picker/locale"
 import { Calendar } from "@workspace/ui/components/calendar"
 import { DatePicker, DateRangePicker, getDefaultDateRangePresets, type DateRange } from "@workspace/ui/components/date-picker"
+import { BarChart } from "@workspace/ui/components/bar-chart"
+import { ChartPanel, type ChartPanelColumn } from "@workspace/ui/components/chart-panel"
+import { idCompact, idNumber } from "@workspace/ui/lib/chart-format"
 import { Icon } from "@workspace/ui/icons/icon"
 import "./styles.css"
 
 const variants = ["default", "outline", "secondary", "ghost", "destructive", "link"] as const
 const sizes = ["xs", "sm", "default", "lg"] as const
 const iconSizes = ["icon-xs", "icon-sm", "icon", "icon-lg"] as const
+
+// Charts (Batch 16, step 1): the same data as apps/web-vue ChartsSection. Static example data, no network.
+const CH_WEEKS = ["W1", "W2", "W3", "W4", "W5", "W6", "W7", "W8", "W9", "W10", "W11", "W12"]
+const CH_STARTED = [310, 342, 365, 351, 398, 412, 405, 440, 462, 451, 489, 503]
+const CH_COMPLETED = [248, 270, 301, 289, 322, 341, 338, 372, 391, 380, 418, 433]
+const CH_SURVEYS_PER_WEEK = CH_WEEKS.slice(-6).map((week, i) => ({ week, completions: CH_COMPLETED.slice(-6)[i]! }))
+const CH_SURVEY_TREND = CH_WEEKS.map((week, i) => ({ week, started: CH_STARTED[i]!, completed: CH_COMPLETED[i]! }))
+const CH_WEEK_COLUMNS: ChartPanelColumn[] = [
+  { key: "week", label: "Week" },
+  { key: "completions", label: "Completions", format: idNumber },
+]
+const CH_TREND_COLUMNS: ChartPanelColumn[] = [
+  { key: "week", label: "Week" },
+  { key: "started", label: "Started", format: idNumber },
+  { key: "completed", label: "Completed", format: idNumber },
+]
+
+const CH_CITIES = [
+  { city: "Jakarta", roadside: 4800, urban: 3100 },
+  { city: "Bandung", roadside: 3200, urban: 2500 },
+  { city: "Surabaya", roadside: 2900, urban: 1800 },
+  { city: "Medan", roadside: 2100, urban: 1500 },
+]
+const CH_CITY_CONFIG = { roadside: { label: "Roadside" }, urban: { label: "Urban" } }
+const CH_CITY_COLUMNS: ChartPanelColumn[] = [
+  { key: "city", label: "City" },
+  { key: "roadside", label: "Roadside", format: idNumber },
+  { key: "urban", label: "Urban", format: idNumber },
+]
+
+function ChartsSection() {
+  const [retries, setRetries] = React.useState(0)
+  return (
+    <>
+      <p className="text-caption font-medium tracking-wide text-muted-foreground uppercase">Charts</p>
+      <section className="flex flex-col gap-4">
+        <h2 className="text-h3 font-bold text-ink-heading">Bar</h2>
+        <p className="text-caption text-muted-foreground">
+          The Bar chart with a 2px corner radius on the data end, 4px between bars and 16% between categories.
+        </p>
+        <div className="grid gap-4 lg:grid-cols-2">
+          <div data-specimen="bar-single">
+            <ChartPanel
+              title="Survey completions per week"
+              description="Completed surveys · last 6 weeks"
+              summary="Completions rose from 341 in week 7 to 433 in week 12."
+              columns={CH_WEEK_COLUMNS}
+              rows={CH_SURVEYS_PER_WEEK}
+            >
+              <BarChart
+                className="aspect-auto h-64"
+                data={CH_SURVEYS_PER_WEEK}
+                categoryKey="week"
+                config={{ completions: { label: "Completions" } }}
+                valueFormatter={idNumber}
+                aria-label="Bar chart of survey completions per week"
+              />
+            </ChartPanel>
+          </div>
+          <div data-specimen="bar-grouped">
+            <ChartPanel
+              title="Started and completed"
+              description="Surveys · last 6 weeks · grouped"
+              summary="Completed surveys trail started surveys by about 80 each week."
+              columns={CH_TREND_COLUMNS}
+              rows={CH_SURVEY_TREND.slice(-6)}
+            >
+              <BarChart
+                className="aspect-auto h-64"
+                data={CH_SURVEY_TREND.slice(-6)}
+                categoryKey="week"
+                config={{ started: { label: "Started" }, completed: { label: "Completed" } }}
+                valueFormatter={idNumber}
+              />
+            </ChartPanel>
+          </div>
+        </div>
+        <div className="grid gap-4 lg:grid-cols-2">
+          <div data-specimen="bar-horizontal">
+            <ChartPanel
+              title="Impressions by city"
+              description="Horizontal bars · compact axis"
+              summary="Jakarta has the most impressions, 4.800, then Bandung with 3.200."
+              columns={CH_CITY_COLUMNS}
+              rows={CH_CITIES}
+            >
+              <BarChart className="aspect-auto h-64" data={CH_CITIES} categoryKey="city" layout="vertical" config={CH_CITY_CONFIG} valueFormatter={idNumber} axisFormatter={idCompact} />
+            </ChartPanel>
+          </div>
+          <div data-specimen="bar-stacked">
+            <ChartPanel
+              title="Impressions by city, stacked"
+              description="Stacked · square joins"
+              summary="Roadside and urban impressions are stacked per city."
+              columns={CH_CITY_COLUMNS}
+              rows={CH_CITIES}
+            >
+              <BarChart className="aspect-auto h-64" data={CH_CITIES} categoryKey="city" stacked config={CH_CITY_CONFIG} valueFormatter={idNumber} axisFormatter={idCompact} />
+            </ChartPanel>
+          </div>
+        </div>
+      </section>
+      <section className="flex flex-col gap-4">
+        <h2 className="text-h3 font-bold text-ink-heading">States</h2>
+        <p className="text-caption text-muted-foreground">Loading, empty and error replace the plot; the card, title and header stay.</p>
+        <div className="grid gap-4 lg:grid-cols-3">
+          <div data-specimen="state-loading">
+            <ChartPanel title="Loading" description="Skeleton, aria-busy" summary="Loading" state="loading">
+              <div />
+            </ChartPanel>
+          </div>
+          <div data-specimen="state-empty">
+            <ChartPanel title="Empty" description="No data" summary="No data" state="empty">
+              <div />
+            </ChartPanel>
+          </div>
+          <div data-specimen="state-error">
+            <ChartPanel
+              title="Error"
+              description={retries ? `Retried ${retries} time${retries > 1 ? "s" : ""}` : "With a retry"}
+              summary="Error"
+              state="error"
+              onRetry={() => setRetries((n) => n + 1)}
+            >
+              <div />
+            </ChartPanel>
+          </div>
+        </div>
+        <p className="text-caption text-muted-foreground">
+          Axis ticks in the compact Indonesian form: {idCompact(1_200_000)}, {idCompact(950)}, {idCompact(3_400_000_000)}.
+        </p>
+      </section>
+    </>
+  )
+}
 
 function ButtonSection() {
   return (
@@ -1742,6 +1880,7 @@ function App() {
       <OtpSection />
       <DrawerSection />
       <DateSection />
+      <ChartsSection />
     </main>
   )
 }

@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@internationalized/date": "^3.12.4",
+    "@unovis/ts": "1.8.1",
+    "@unovis/vue": "1.8.1",
     "@workspace/tokens": "workspace:*",
     "class-variance-authority": "^0.7.1",
     "cn": "^0.5.2",

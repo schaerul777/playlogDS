@@ -625,3 +625,58 @@ Collected for every button, weekday cell, caption and select in each calendar (p
 ## Not verified
 
 - Touch use, week numbers with a week start other than Monday, RTL (arrows flip with `rtl:rotate-180`, not tried), other locales, week-start values other than Monday, `v-model:placeholder`, a `min-value` combined with the dropdowns, the one-month range picker on a phone width, screen readers, the dark popovers, and the Drawer recipe (not built).
+
+# Batch 16: Charts (step 1 of 2: Bar chart, Chart Panel, states, number formats)
+
+Step 2 is Line, Area, Pie and Donut. The two steps share `useChartInteraction`, `ChartLegend`, `ChartTooltip` and the Chart Panel, which are built here.
+
+## Dependency (approved: Unovis)
+
+Recharts has no Vue build. Approved on 2026-11-26: **`@unovis/vue` 1.8.1** (1.3 MB on disk) and its peer **`@unovis/ts` 1.8.1** (13 MB on disk, 61 dependencies, Apache-2.0), added to `packages/ui-vue` only, pinned exactly. The lock file grows by 83 packages (685 lines): mostly d3 modules, plus `three`, `leaflet`, `elkjs`, `maplibre-gl` and others that Unovis lists for its map, graph and 3D components.
+
+- **Import from the per-component entry points** (`@unovis/vue/components/axis`, `.../grouped-bar`, `.../stacked-bar`, `@unovis/vue/containers/xy-container`), as `BarChart.vue` does. Importing from `@unovis/vue` itself pulled `maplibre-gl` into the build (an extra 485 KB chunk). Keep this rule for the other charts.
+- **Bundle (playground, `pnpm --filter web-vue build`):** 856.98 KB (211.43 KB gzip) before charts, 1,010.42 KB (261.56 KB gzip) with the Bar chart: **+153 KB, +50 KB gzip**. Line, Area and Donut will add a little more; not measured yet.
+- As on every install, the shadcn-vue CLI (`add chart`) re-added `@lucide/vue` and `@vueuse/core`, which were reverted. Its generated files (Unovis-specific `ChartContainer`, `ChartTooltipContent`, `ChartLegendContent`) were not kept: they have none of the spec (interactive legend, `id-ID`, keyboard layer, Chart | Table), so the Vue chart is written directly on Unovis.
+
+## Built (`packages/ui-vue/src/components/chart`, `src/lib/chart-format.ts`)
+
+- `BarChart` (same props as React: `data`, `config`, `categoryKey`, `layout`, `stacked`, `showLegend`, `showLabels`, `showTooltip`, `interactiveLegend`, `valueFormatter`, `axisFormatter`; `aria-label` and `class` go to the plot / frame). Grouped, stacked, horizontal (`layout="vertical"`, Recharts naming), single series with value labels.
+- `ChartPanel` (props `title`, `description`, `summary`, `state`, `columns`, `rows`, `retryable`, `emptyMessage`, `errorMessage`; slot `actions`; event `retry`). The Chart | Table toggle, loading, empty and error states, `aria-busy`, `summary` linked with `aria-describedby`. React `onRetry` becomes `retryable` + `@retry`.
+- `ChartLegend` (interactive: hover dims the others to 30%, press hides, the last visible series cannot be hidden, hidden = 40% with the name struck through), `ChartTooltip` (popover surface, min width 144, padding 8 12 / 6 12, header, swatch rows, `font-semibold` tabular values), `idNumber`, `idRupiah`, `idPercent`, `idCompact` (same output as React).
+- The value axis follows Recharts' rounding (0 to a "nice" top, 5 ticks: 0, 150, 300, 450, 600 for a maximum of 503), done in `niceTicks`.
+- Specimens: `ChartsSection.vue` and the harness `ChartsSection` (single, grouped, horizontal, stacked, loading, empty, error).
+
+## Pixel check (Bar, light and dark)
+
+Collected for the grouped chart in both apps (tick text, grid lines, bars, legend, swatches):
+
+- **Dark and light colours are identical:** tick text `muted-foreground`, grid `chart-grid` 1px, bars `chart-1` and `chart-2`, legend text and swatches, 12px / 500 Reddit Sans ticks.
+- **Value axis identical:** same tick values (0 to 600 by 150; 0 to 6 rb by 1,5 rb; 0 to 8 rb stacked) and grid lines at the same heights to within 1px; x labels 12px below the baseline in both.
+- **Layout:** plot left edge 90 and width 728 in both; bar tops match to within 1px.
+
+## Behavior check
+
+| Behavior | React (Recharts) | Vue (Unovis) |
+|---|---|---|
+| Hover a category: tooltip with header and one row per series, `muted` band behind the bars | yes | yes |
+| Focus the plot, ArrowRight twice: third category active, tooltip and band follow | yes | yes (same index) |
+| Visible focus ring 2px / 2px offset on the plot | yes (around the plot and its legend) | yes (around the plot) |
+| Legend hover dims the other series to 30% | yes | yes |
+| Legend press hides a series (`aria-pressed` false, 40%, struck through); the last one stays | yes | yes |
+| Chart | Table toggle: same rows and `id-ID` formatting | yes | yes |
+| Loading, empty, error (with Try again) | yes | yes |
+
+## Differences found
+
+1. **Bars.** Unovis draws bars of 37.4px where Recharts draws 39px in a group of two (same 4px gap, same 16% each side); a single series is the same width. The group sits about 2px to the left.
+2. **Focus ring.** Recharts puts `role="application"` and the ring on the whole SVG, which includes its legend. Vue puts both on the plot area; the legend is a separate group of buttons above it.
+3. **Keyboard.** Arrow keys (Left/Right, or Up/Down for horizontal bars), Home, End and Escape move or clear the active category. The accessible layer is hand-built, since Unovis has none: the SVG is `aria-hidden`, the description is `summary` and the Table view.
+4. **Tooltip position.** React follows the pointer with its own offset; Vue places the tooltip 12px right of and below the pointer (at the category top for the keyboard). The tooltip is HTML, not drawn by Unovis.
+5. **Value labels.** Recharts draws them as SVG text; Vue draws them as positioned HTML (12/16 medium, `foreground`).
+6. **Hidden helper nodes.** Unovis leaves five empty `<text>` ticks in the SVG for measuring; they are invisible and the SVG is `aria-hidden`.
+7. **Dimming** uses `fill-opacity` through a small `<style>` element, like React's `fillOpacity` on the bars.
+8. **Left axis width.** Recharts fixes it at 60px; Unovis sizes it to its labels. A measured margin makes the plot start at the same place.
+
+## Not verified
+
+- Touch hover, screen readers, `prefers-reduced-motion` (marks do not animate: `duration` is 0), very long category names, negative values, 20+ categories, resizing the card after load (a `ResizeObserver` re-measures; checked only by reloading), and the Line, Area, Pie and Donut charts (step 2).
