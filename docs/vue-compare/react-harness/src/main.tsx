@@ -242,6 +242,9 @@ import { ModelSelector, type ModelProvider } from "@workspace/ui/components/ai-e
 import { Plan, type PlanStep } from "@workspace/ui/components/ai-elements/plan"
 import { Queue, type QueueTodo } from "@workspace/ui/components/ai-elements/queue"
 import { Subagent } from "@workspace/ui/components/ai-elements/subagent"
+import { Tool } from "@workspace/ui/components/ai-elements/tool"
+import { CodeBlock, CodeBlockActions, CodeBlockContent, CodeBlockCopyButton, CodeBlockFooter, CodeBlockHeader, CodeBlockLine, CodeBlockTitle } from "@workspace/ui/components/code-block"
+import { useHighlightedCode } from "@workspace/ui/hooks/use-highlighted-code"
 import { Task, TaskStep } from "@workspace/ui/components/ai-elements/task"
 import { Confirmation } from "@workspace/ui/components/ai-elements/confirmation"
 import { InlineCitation } from "@workspace/ui/components/ai-elements/inline-citation"
@@ -684,6 +687,30 @@ function AiLiveChat() {
     </Chat>
   )
 }
+const QUERY = `SELECT city, SUM(impressions) AS impressions, MAX(reach) AS reach
+FROM city_report
+WHERE period = 'Q3 2025'
+GROUP BY city
+ORDER BY reach DESC
+LIMIT 3;`
+const DIFF = `const periods = ["Q1 2025", "Q2 2025"]
+const periods = ["Q1 2025", "Q2 2025", "Q3 2025"]
+const label = (p: string) => p.toUpperCase()`
+function HighlightedCode({ code, language, title, lineNumbers, variants, size, wrap, variant }: { code: string; language: string; title?: string; lineNumbers?: boolean; variants?: Record<number, "added" | "removed" | "highlighted">; size?: "default" | "sm"; wrap?: boolean; variant?: "default" | "destructive" }) {
+  const lines = useHighlightedCode(code, language)
+  return (
+    <CodeBlock size={size} variant={variant}>
+      {title ? (
+        <CodeBlockHeader><CodeBlockTitle>{title}</CodeBlockTitle><CodeBlockActions><CodeBlockCopyButton value={code} /></CodeBlockActions></CodeBlockHeader>
+      ) : (
+        <CodeBlockActions><CodeBlockCopyButton value={code} /></CodeBlockActions>
+      )}
+      <CodeBlockContent lineNumbers={lineNumbers} wrap={wrap}>
+        {lines.map((line, index) => (<CodeBlockLine key={index} variant={variants?.[index + 1]}>{line}</CodeBlockLine>))}
+      </CodeBlockContent>
+    </CodeBlock>
+  )
+}
 function AiSection() {
   const [picked, setPicked] = React.useState("")
   const [sent, setSent] = React.useState("")
@@ -728,8 +755,32 @@ function AiSection() {
         </div>
       </section>
       <section className="flex flex-col gap-4">
+        <h2 className="text-h3 font-bold text-ink-heading">Tool and Code Block</h2>
+        <div className="grid gap-6 md:grid-cols-2">
+          <div className="flex flex-col gap-3" data-specimen="tool">
+            <p className="text-caption text-muted-foreground">Tool: running, done, failed (open), denied, pending.</p>
+            <Trace>
+              <Tool state="running" command="pnpm test" />
+              <Tool state="done" command="git status --short" output={" M apps/web/src/App.tsx\n M packages/ui/package.json"} />
+              <Tool state="error" command="pnpm build" output="Command timed out after 120 seconds." />
+              <Tool state="denied" command="rm -rf dist" />
+              <Tool state="pending" command="pnpm lint" />
+            </Trace>
+          </div>
+          <div className="grid gap-4 md:col-span-2 md:grid-cols-2" data-specimen="code">
+            <HighlightedCode code={QUERY} language="sql" title="reach-by-city.sql" lineNumbers />
+            <HighlightedCode code={DIFF} language="typescript" title="periods.ts" lineNumbers variants={{ 1: "removed", 2: "added", 3: "highlighted" }} />
+            <HighlightedCode code={"pnpm build\npnpm: command not found"} language="bash" size="sm" variant="destructive" title="Failed" />
+            <CodeBlock size="sm">
+              <CodeBlockContent wrap>{"Plain output with no language, wrapped. A long line wraps instead of scrolling: the quick brown fox jumps over the lazy dog."}</CodeBlockContent>
+              <CodeBlockFooter><span className="text-caption">Footer text</span></CodeBlockFooter>
+            </CodeBlock>
+          </div>
+        </div>
+      </section>
+      <section className="flex flex-col gap-4">
         <h2 className="text-h3 font-bold text-ink-heading">Chat</h2>
-        <p className="text-caption text-muted-foreground">Static thread (no Tool or Code Block yet): turns, reasoning, citations, sources, a pending approval and a status marker.</p>
+        <p className="text-caption text-muted-foreground">Static thread: turns, reasoning, citations, sources, a pending approval and a status marker.</p>
         <div className="h-160 overflow-hidden rounded-lg border-(length:--pl-border-width) border-border bg-background" data-specimen="chat-static">
           <Chat>
             <ChatHeader title="Q3 reach review" description="Static mock conversation, no model." />
@@ -749,6 +800,7 @@ function AiSection() {
                     <li>Jakarta Selatan: 1,28 M reach from 4,2 M impressions.</li>
                     <li>Surabaya: 902 K reach from 3,1 M impressions.</li>
                   </ul>
+                  <HighlightedCode code={QUERY} language="sql" title="reach-by-city.sql" size="sm" />
                   <Sources sources={AI_SOURCES} />
                 </AssistantMessage>
               </ChatTurn>
@@ -886,19 +938,23 @@ function AgentSection() {
       </section>
       <section className="flex flex-col gap-4">
         <h2 className="text-h3 font-bold text-ink-heading">Subagent</h2>
-        <p className="text-caption text-muted-foreground">Without Tool lines and the error part (they come with Code Block).</p>
         <div className="flex flex-wrap items-start gap-6" data-specimen="subagent">
           <AgPanel label="Running"><Message><MessageContent className="gap-3"><Trace>
             <Subagent name="research agent" state="running">
-              <TraceLine><TraceStatusIcon icon="terminal" /><TraceTitle>Ran grep -rn cacheKey scripts</TraceTitle></TraceLine>
-              <TraceLine status="running"><TraceStatusIcon status="running" /><TraceTitle>Running cat next.config.ts</TraceTitle></TraceLine>
+              <Tool state="done" command="grep -rn cacheKey scripts" />
+              <Tool state="running" command="cat next.config.ts" />
             </Subagent>
           </Trace></MessageContent></Message></AgPanel>
           <AgPanel label="Done (open) with its result"><Message><MessageContent className="gap-3"><Trace>
             <Subagent name="research agent" state="done" defaultOpen result={<p>The cache is keyed on the commit SHA. Key it on the image directory instead.</p>}>
-              <TraceLine><TraceStatusIcon icon="terminal" /><TraceTitle>Ran grep -rn cacheKey scripts</TraceTitle></TraceLine>
+              <Tool state="done" command="grep -rn cacheKey scripts" />
             </Subagent>
           </Trace></MessageContent></Message></AgPanel>
+          <AgPanel label="Failed"><Trace>
+            <Subagent name="review agent" state="error" error={"Error: the agent stopped after 3 tool calls (limit reached)."}>
+              <Tool state="done" command="pnpm lint" />
+            </Subagent>
+          </Trace></AgPanel>
         </div>
       </section>
       <section className="flex flex-col gap-4">

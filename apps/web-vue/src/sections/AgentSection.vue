@@ -3,8 +3,8 @@ import { ref } from "vue"
 import { Bubble, BubbleContent } from "@workspace/ui-vue/components/bubble"
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupTextarea } from "@workspace/ui-vue/components/input-group"
 import { Message, MessageContent } from "@workspace/ui-vue/components/message"
-import { Trace, TraceLine, TraceStatusIcon, TraceTitle } from "@workspace/ui-vue/components/trace"
-import { ChainOfThought, ChainOfThoughtBadges, ChainOfThoughtStep, Checkpoint, Context, ModelSelector, Plan, Queue, Subagent, Task, TaskStep, type ModelProvider, type PlanStep, type QueueTodo } from "@workspace/ui-vue/components/ai-elements"
+import { Trace } from "@workspace/ui-vue/components/trace"
+import { ChainOfThought, ChainOfThoughtBadges, ChainOfThoughtStep, Checkpoint, Context, ModelSelector, Plan, Queue, Subagent, Task, TaskStep, Tool, type ModelProvider, type PlanStep, type QueueTodo } from "@workspace/ui-vue/components/ai-elements"
 import { Icon } from "@workspace/ui-vue/icons"
 
 // Static mock data. Nothing here calls a model, a provider or a network.
@@ -123,22 +123,27 @@ const restored = ref(false)
 
   <section class="flex flex-col gap-4">
     <h2 class="text-h3 font-bold text-ink-heading">Subagent</h2>
-    <p class="text-caption text-muted-foreground">Without Tool lines and the error part (they come with Code Block).</p>
     <div class="flex flex-wrap items-start gap-6" data-specimen="subagent">
       <div class="flex w-full max-w-sm flex-col gap-2"><p class="text-caption text-muted-foreground">Running</p>
         <div class="rounded-lg border-(length:--pl-border-width) border-border bg-card p-4 text-body-sm"><Message><MessageContent class="gap-3"><Trace>
           <Subagent name="research agent" state="running">
-            <TraceLine><TraceStatusIcon icon="terminal" /><TraceTitle>Ran grep -rn cacheKey scripts</TraceTitle></TraceLine>
-            <TraceLine status="running"><TraceStatusIcon status="running" /><TraceTitle>Running cat next.config.ts</TraceTitle></TraceLine>
+            <Tool state="done" command="grep -rn cacheKey scripts" />
+            <Tool state="running" command="cat next.config.ts" />
           </Subagent>
         </Trace></MessageContent></Message></div></div>
       <div class="flex w-full max-w-sm flex-col gap-2"><p class="text-caption text-muted-foreground">Done (open) with its result</p>
         <div class="rounded-lg border-(length:--pl-border-width) border-border bg-card p-4 text-body-sm"><Message><MessageContent class="gap-3"><Trace>
           <Subagent name="research agent" state="done" default-open>
-            <TraceLine><TraceStatusIcon icon="terminal" /><TraceTitle>Ran grep -rn cacheKey scripts</TraceTitle></TraceLine>
+            <Tool state="done" command="grep -rn cacheKey scripts" />
             <template #result><p>The cache is keyed on the commit SHA. Key it on the image directory instead.</p></template>
           </Subagent>
         </Trace></MessageContent></Message></div></div>
+      <div class="flex w-full max-w-sm flex-col gap-2"><p class="text-caption text-muted-foreground">Failed</p>
+        <div class="rounded-lg border-(length:--pl-border-width) border-border bg-card p-4 text-body-sm"><Trace>
+          <Subagent name="review agent" state="error" error="Error: the agent stopped after 3 tool calls (limit reached).">
+            <Tool state="done" command="pnpm lint" />
+          </Subagent>
+        </Trace></div></div>
     </div>
   </section>
 

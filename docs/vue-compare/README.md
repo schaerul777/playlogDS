@@ -867,3 +867,40 @@ Checkpoint: Restore opens the confirm (focus on Cancel), Cancel closes it and re
 ### Not verified
 
 - Context with every level in React, the dark popups, Plan and Task open and closed after toggling, Queue descriptions opening, Model Selector with the mouse and typeahead, the effort menu, Escape returning focus, and a screen reader on Checkpoint.
+
+## Batch 19: Code Block, Tool and the Subagent error part
+
+One new dependency, approved: `shiki` ^4.6.0 in `packages/ui-vue` (MIT, same version as `packages/ui`; the 7 `@shikijs/*` packages were already in the lockfile). The playground bundle goes from 1,063 KB to 1,332 KB raw (350 KB gzip, was 275 KB); the 13 grammars load on first use as separate chunks (`typescript` 181 KB, `jsx` 178 KB, `sql` and `shellscript` smaller). Playground section "Tool and Code Block" (`data-specimen` `tool` and `code`), plus the Code Block in the static Chat thread and `Tool` lines in "Subagent" (a "Failed" panel with the `error` part).
+
+### Built
+
+- `code-block/`: `CodeBlock` (`variant` default | destructive, `size` default | sm), `CodeBlockHeader`, `CodeBlockTitle`, `CodeBlockActions`, `CodeBlockCopyButton` (`value`; clipboard icon, then `check` for 2 s, `aria-label` Copy/Copied, `aria-live` region), `CodeBlockContent` (`wrap`, `line-numbers`, `start-line`; focusable `pre`, `dir="ltr"`), `CodeBlockLine` (`variant` default | added | removed | highlighted; `+` and `−` markers), `CodeBlockFooter`. Classes are the React classes.
+- `lib/highlighter.ts` and `composables/useHighlightedCode.ts`: a port of `lib/highlighter.tsx` and `use-highlighted-code.ts`. Same shiki setup (JavaScript regex engine, `createCssVariablesTheme` with the `--shiki-` prefix, lazy languages, aliases), so the colours come from the four `--pl-syntax-*` tokens. `useHighlightedCode(value, language)` takes a string, ref or getter and returns a `computed` list of lines (a string per line until the language loads, then token arrays `{ content, color }`). While the code streams only new complete lines are tokenized, from the grammar state of the last one.
+- `ai-elements/Tool.vue` (`state` running | done | error | denied | pending, `command`, `output`, `icon`, `default-open`) and `Subagent` `error` (destructive `sm` Code Block, wrapped, max height 256, before the result).
+- Code Connect (parsed, not published): `CodeBlock`, `Tool` and `Subagent` in `code-connect-vue/`, like the React templates (Vue syntax: `:output`, `default-open`, `#result`).
+
+### Pixel check
+
+Every element (position, size, 23 computed styles, role, label), transitions off, 1100 px wide, hidden closed content left out. Tool (44 nodes), Code Block (136: line numbers, diff variants, destructive, plain wrapped with footer, syntax colours), the static Chat thread (172), Subagent (81) and the Reasoning specimen (64): **0 differences from React in light and in dark.**
+
+### Behavior check (Vue)
+
+- Copy: the label goes Copy, Copied (`data-copied`, live region "Copied"), back after 2 s; the clipboard got the full code (clipboard stubbed in the page).
+- Focus: Tab from the copy button reaches the code viewport; the block takes a 2px solid ring with 2px offset (`--ring`). The floating actions are visible while focus is inside.
+- Tool: failed is open, done is closed, a click on the trigger opens it; the output block is `sm`, max height 256.
+- Streaming (Node, the real composable): typing the SQL sample one character at a time gives the same tokens as one pass and as `loadHighlighter().highlight()`, including a multi-line comment. A trailing newline adds no empty line, an unlisted language stays plain, and a language change re-highlights.
+
+### Found and fixed in this batch
+
+1. **Slot content that changes.** A helper that rendered `slots.default()` inside its own functional component did not re-render when the slot changed (colours never appeared). The slot is now read in the component's own render.
+2. **`Reasoning` lost `whitespace-pre-wrap`.** The absent `class` prop was cast to `false` (the Boolean-casting pitfall), so the default class was dropped; `class: undefined` is the default now. Found by this comparison; it also applies to the earlier Reasoning specimens.
+
+### Differences found
+
+1. **API.** The composable takes refs or getters and returns a `computed`; React returns an array. `CodeBlockContent` splits a string into numbered lines only when its slot is a single text node.
+2. **Measurement.** React's `content-visibility: auto` makes the last off-screen thread item report 0x0 for the first 1.5 s; after that it matches Vue. Compare after a short wait.
+
+### Not verified
+
+- The copy button with the real clipboard permission (stubbed), touch (`pointer-coarse` shows the actions), a screen reader on the live region, the `ansi` language, and streaming drawn in the browser (the hidden pane stalls timers; checked in Node).
+- Console: Vue warns "Extraneous non-props attributes (data-slot)" for `DrawerRoot` and `DrawerPortal` (from batch 14, not this batch).

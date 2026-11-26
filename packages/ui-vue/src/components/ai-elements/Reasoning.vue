@@ -14,7 +14,7 @@ const props = withDefaults(
     defaultOpen?: boolean
     class?: HTMLAttributes["class"]
   }>(),
-  { running: false, defaultOpen: undefined, duration: undefined },
+  { running: false, defaultOpen: undefined, duration: undefined, class: undefined },
 )
 const slots = useSlots()
 const open = ref<boolean | undefined>(props.defaultOpen)

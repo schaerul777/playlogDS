@@ -1,12 +1,23 @@
 <script setup lang="ts">
 import { ref } from "vue"
-import { AssistantMessage, AssistantMessageActions, Chat, ChatEmpty, ChatFooter, ChatHeader, ChatThread, ChatTurn, Confirmation, InlineCitation, PromptInput, Reasoning, Sources, Suggestion, Suggestions, UserMessage, UserMessageActions } from "@workspace/ui-vue/components/ai-elements"
+import { AssistantMessage, AssistantMessageActions, Chat, ChatEmpty, ChatFooter, ChatHeader, ChatThread, ChatTurn, Confirmation, InlineCitation, PromptInput, Reasoning, Sources, Suggestion, Suggestions, Tool, UserMessage, UserMessageActions } from "@workspace/ui-vue/components/ai-elements"
 import { Button } from "@workspace/ui-vue/components/button"
+import { CodeBlock, CodeBlockContent, CodeBlockFooter } from "@workspace/ui-vue/components/code-block"
 import { Marker, MarkerContent, MarkerIcon } from "@workspace/ui-vue/components/marker"
 import { Spinner } from "@workspace/ui-vue/components/spinner"
 import { Trace } from "@workspace/ui-vue/components/trace"
 import { Icon } from "@workspace/ui-vue/icons"
+import HighlightedCode from "./HighlightedCode.vue"
 
+const QUERY = `SELECT city, SUM(impressions) AS impressions, MAX(reach) AS reach
+FROM city_report
+WHERE period = 'Q3 2025'
+GROUP BY city
+ORDER BY reach DESC
+LIMIT 3;`
+const DIFF = `const periods = ["Q1 2025", "Q2 2025"]
+const periods = ["Q1 2025", "Q2 2025", "Q3 2025"]
+const label = (p: string) => p.toUpperCase()`
 const picked = ref("")
 const sent = ref("")
 const answer = ref("")
@@ -92,8 +103,33 @@ function send(text: string) {
   </section>
 
   <section class="flex flex-col gap-4">
+    <h2 class="text-h3 font-bold text-ink-heading">Tool and Code Block</h2>
+    <div class="grid gap-6 md:grid-cols-2">
+      <div class="flex flex-col gap-3" data-specimen="tool">
+        <p class="text-caption text-muted-foreground">Tool: running, done, failed (open), denied, pending.</p>
+        <Trace>
+          <Tool state="running" command="pnpm test" />
+          <Tool state="done" command="git status --short" :output="' M apps/web/src/App.tsx\n M packages/ui/package.json'" />
+          <Tool state="error" command="pnpm build" output="Command timed out after 120 seconds." />
+          <Tool state="denied" command="rm -rf dist" />
+          <Tool state="pending" command="pnpm lint" />
+        </Trace>
+      </div>
+      <div class="grid gap-4 md:col-span-2 md:grid-cols-2" data-specimen="code">
+        <HighlightedCode :code="QUERY" language="sql" title="reach-by-city.sql" line-numbers />
+        <HighlightedCode :code="DIFF" language="typescript" title="periods.ts" line-numbers :variants="{ 1: 'removed', 2: 'added', 3: 'highlighted' }" />
+        <HighlightedCode :code="'pnpm build\npnpm: command not found'" language="bash" size="sm" variant="destructive" title="Failed" />
+        <CodeBlock size="sm">
+          <CodeBlockContent wrap>Plain output with no language, wrapped. A long line wraps instead of scrolling: the quick brown fox jumps over the lazy dog.</CodeBlockContent>
+          <CodeBlockFooter><span class="text-caption">Footer text</span></CodeBlockFooter>
+        </CodeBlock>
+      </div>
+    </div>
+  </section>
+
+  <section class="flex flex-col gap-4">
     <h2 class="text-h3 font-bold text-ink-heading">Chat</h2>
-    <p class="text-caption text-muted-foreground">Static thread (no Tool or Code Block yet): turns, reasoning, citations, sources, a pending approval and a status marker.</p>
+    <p class="text-caption text-muted-foreground">Static thread: turns, reasoning, citations, sources, a pending approval and a status marker.</p>
     <div class="h-160 overflow-hidden rounded-lg border-(length:--pl-border-width) border-border bg-background" data-specimen="chat-static">
       <Chat>
         <ChatHeader title="Q3 reach review" description="Static mock conversation, no model." />
@@ -114,6 +150,7 @@ function send(text: string) {
                 <li>Jakarta Selatan: 1,28 M reach from 4,2 M impressions.</li>
                 <li>Surabaya: 902 K reach from 3,1 M impressions.</li>
               </ul>
+              <HighlightedCode :code="QUERY" language="sql" title="reach-by-city.sql" size="sm" />
               <Sources :sources="SOURCES" />
               <template #actions><AssistantMessageActions text="Jakarta Selatan, Surabaya and Bandung led reach in Q3 2025." :on-retry="() => {}" /></template>
             </AssistantMessage>
