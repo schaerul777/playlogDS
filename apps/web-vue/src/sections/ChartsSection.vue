@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue"
-import { BarChart, ChartPanel, type ChartPanelColumn } from "@workspace/ui-vue/components/chart"
-import { idCompact, idNumber } from "@workspace/ui-vue/lib/chart-format"
+import { AreaChart, BarChart, ChartPanel, LineChart, PieChart, type ChartPanelColumn } from "@workspace/ui-vue/components/chart"
+import { idCompact, idNumber, idRupiah } from "@workspace/ui-vue/lib/chart-format"
 
 // Static example data. Nothing here calls a network. Same values as the React playground.
 const WEEKS = ["W1", "W2", "W3", "W4", "W5", "W6", "W7", "W8", "W9", "W10", "W11", "W12"]
@@ -26,6 +26,41 @@ const CITIES = [
   { city: "Medan", roadside: 2100, urban: 1500 },
 ]
 const CITY_CONFIG = { roadside: { label: "Roadside" }, urban: { label: "Urban" } }
+const REVENUE = ["Jun", "Jul", "Aug", "Sep", "Oct", "Nov"].map((month, i) => ({
+  month,
+  revenue: [182_000_000, 205_500_000, 198_250_000, 231_000_000, 247_800_000, 262_400_000][i]!,
+}))
+const BY_CHANNEL = WEEKS.slice(-8).map((week, i) => ({
+  week,
+  panel: [150, 160, 158, 171, 180, 177, 190, 198][i]!,
+  streetIntercept: [60, 64, 70, 66, 75, 78, 80, 83][i]!,
+  qr: [38, 48, 50, 63, 65, 83, 100, 152][i]!,
+}))
+const BILLBOARD_STATUS = [
+  { name: "Active", value: 612 },
+  { name: "Scheduled", value: 141 },
+  { name: "Maintenance", value: 88 },
+  { name: "Offline", value: 47 },
+  { name: "Draft", value: 31 },
+  { name: "Pending approval", value: 18 },
+  { name: "Archived", value: 9 },
+]
+const CITY_SHARE = [
+  { name: "Jakarta", value: 4.8 },
+  { name: "Surabaya", value: 2.8 },
+  { name: "Bandung", value: 2.3 },
+  { name: "Medan", value: 1.9 },
+]
+const REVENUE_COLUMNS: ChartPanelColumn[] = [
+  { key: "month", label: "Month" },
+  { key: "revenue", label: "Revenue", format: idRupiah },
+]
+const CHANNEL_COLUMNS: ChartPanelColumn[] = [
+  { key: "week", label: "Week" },
+  { key: "panel", label: "Panel", format: idNumber },
+  { key: "streetIntercept", label: "Street intercept", format: idNumber },
+  { key: "qr", label: "QR code", format: idNumber },
+]
 const retries = ref(0)
 </script>
 
@@ -91,6 +126,45 @@ const retries = ref(0)
         data-specimen="bar-stacked"
       >
         <BarChart class="aspect-auto h-64" :data="CITIES" category-key="city" stacked :config="CITY_CONFIG" :value-formatter="idNumber" :axis-formatter="idCompact" />
+      </ChartPanel>
+    </div>
+  </section>
+
+  <section class="flex flex-col gap-4">
+    <h2 class="text-h3 font-bold text-ink-heading">Line</h2>
+    <p class="text-caption text-muted-foreground">2px straight segments; points appear on hover or keyboard focus (arrow keys). Two series differ by shape as well as colour.</p>
+    <div class="grid gap-4 lg:grid-cols-2">
+      <ChartPanel title="Completion trend" description="Surveys · 12 weeks" summary="Started and completed surveys both grew steadily over 12 weeks, from 310 to 503 started and 248 to 433 completed." :columns="TREND_COLUMNS" :rows="SURVEY_TREND" data-specimen="line-two">
+        <LineChart class="aspect-auto h-64" :data="SURVEY_TREND" category-key="week" :config="{ started: { label: 'Started' }, completed: { label: 'Completed' } }" :value-formatter="idNumber" />
+      </ChartPanel>
+      <ChartPanel title="Monthly revenue" description="Rupiah · Jun–Nov 2026 · one series, Indonesian format" summary="Revenue grew from Rp 182 million in June to Rp 262 million in November." :columns="REVENUE_COLUMNS" :rows="REVENUE" data-specimen="line-one">
+        <LineChart class="aspect-auto h-64" :data="REVENUE" category-key="month" :config="{ revenue: { label: 'Revenue', color: 'var(--chart-1)' } }" :value-formatter="idRupiah" :axis-formatter="(v: number) => `Rp ${idCompact(v)}`" />
+      </ChartPanel>
+    </div>
+  </section>
+
+  <section class="flex flex-col gap-4">
+    <h2 class="text-h3 font-bold text-ink-heading">Area</h2>
+    <p class="text-caption text-muted-foreground">Flat 20% fill with a 2px line on top; stacked layers use 40% fill. No gradient.</p>
+    <div class="grid gap-4 lg:grid-cols-2">
+      <ChartPanel title="Completed surveys" description="Surveys · 12 weeks · single series" summary="Completed surveys grew from 248 to 433 over 12 weeks." :columns="TREND_COLUMNS.filter((c) => c.key !== 'started')" :rows="SURVEY_TREND" data-specimen="area-one">
+        <AreaChart class="aspect-auto h-64" :data="SURVEY_TREND" category-key="week" :config="{ completed: { label: 'Completed' } }" :value-formatter="idNumber" />
+      </ChartPanel>
+      <ChartPanel title="Respondents by channel" description="Respondents · last 8 weeks · stacked" summary="QR code respondents grew fastest, from 38 to 152 a week, while panel stayed the largest channel." :columns="CHANNEL_COLUMNS" :rows="BY_CHANNEL" data-specimen="area-stacked">
+        <AreaChart class="aspect-auto h-64" :data="BY_CHANNEL" category-key="week" stacked :config="{ panel: { label: 'Panel' }, streetIntercept: { label: 'Street intercept' }, qr: { label: 'QR code' } }" :value-formatter="idNumber" />
+      </ChartPanel>
+    </div>
+  </section>
+
+  <section class="flex flex-col gap-4">
+    <h2 class="text-h3 font-bold text-ink-heading">Donut and Pie</h2>
+    <p class="text-caption text-muted-foreground">Largest slice first from 12 o'clock, 2px gaps, at most 5 slices then "Other". The legend carries name, value and percent.</p>
+    <div class="grid gap-4 lg:grid-cols-2">
+      <ChartPanel title="Billboard status" description="Billboards · 7 statuses, 5 shown plus Other" summary="Of 946 billboards, 612 are active, 141 scheduled and 88 under maintenance." :columns="[{ key: 'name', label: 'Status' }, { key: 'value', label: 'Billboards', format: idNumber }]" :rows="BILLBOARD_STATUS" data-specimen="pie-donut">
+        <PieChart :data="BILLBOARD_STATUS" center-caption="Billboards" :value-formatter="idNumber" aria-label="Donut chart of billboard status" />
+      </ChartPanel>
+      <ChartPanel title="Share by city" description="Millions of impressions · Pie" summary="Jakarta has 40,7% of impressions, Surabaya 23,7%, Bandung 19,5% and Medan 16,1%." data-specimen="pie-pie">
+        <PieChart :data="CITY_SHARE" :donut="false" :value-formatter="idNumber" />
       </ChartPanel>
     </div>
   </section>

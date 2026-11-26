@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import type { HTMLAttributes } from "vue"
 import { cn } from "@workspace/ui-vue/lib/utils" // Playlog: brand-aware merger
+import ChartSwatch from "./ChartSwatch.vue"
 import type { SeriesVisibility } from "./utils"
 
 defineProps<{
-  items: { key: string; label: string; color: string }[]
+  items: { key: string; label: string; color: string; shape?: "circle" | "square" | "diamond" }[]
   visibility?: SeriesVisibility
   class?: HTMLAttributes["class"]
 }>()
@@ -37,11 +38,11 @@ defineProps<{
         @blur="visibility.setActive(null)"
       >
         <!-- Playlog: 10px swatch, 2px radius, 6px to its label. -->
-        <span class="size-2.5 shrink-0 rounded-sm" :style="{ backgroundColor: item.color }" aria-hidden="true" />
+        <ChartSwatch :color="item.color" :shape="item.shape" />
         <span :class="cn(visibility.isHidden(item.key) && 'line-through')">{{ item.label }}</span>
       </button>
       <div v-else class="flex items-center gap-1.5">
-        <span class="size-2.5 shrink-0 rounded-sm" :style="{ backgroundColor: item.color }" aria-hidden="true" />
+        <ChartSwatch :color="item.color" :shape="item.shape" />
         {{ item.label }}
       </div>
     </template>

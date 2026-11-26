@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import type { HTMLAttributes } from "vue"
+import ChartSwatch from "./ChartSwatch.vue"
 import { cn } from "@workspace/ui-vue/lib/utils" // Playlog: brand-aware merger
 
 defineProps<{
   label?: string
-  rows: { key: string; label: string; color: string; value: string }[]
+  rows: { key: string; label: string; color: string; value: string; shape?: "circle" | "square" | "diamond" }[]
   class?: HTMLAttributes["class"]
 }>()
 </script>
@@ -25,7 +26,8 @@ defineProps<{
     <div v-if="label" class="font-medium">{{ label }}</div>
     <div class="grid gap-1.5">
       <div v-for="row in rows" :key="row.key" class="flex w-full flex-wrap items-center gap-2">
-        <div class="h-2.5 w-2.5 shrink-0 rounded-sm" :style="{ backgroundColor: row.color }" />
+        <ChartSwatch v-if="row.shape" :color="row.color" :shape="row.shape" />
+        <div v-else class="h-2.5 w-2.5 shrink-0 rounded-sm" :style="{ backgroundColor: row.color }" />
         <div class="flex flex-1 items-center justify-between leading-none">
           <span class="text-muted-foreground">{{ row.label }}</span>
           <span class="font-semibold text-popover-foreground tabular-nums">{{ row.value }}</span>

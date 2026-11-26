@@ -680,3 +680,40 @@ Collected for the grouped chart in both apps (tick text, grid lines, bars, legen
 ## Not verified
 
 - Touch hover, screen readers, `prefers-reduced-motion` (marks do not animate: `duration` is 0), very long category names, negative values, 20+ categories, resizing the card after load (a `ResizeObserver` re-measures; checked only by reloading), and the Line, Area, Pie and Donut charts (step 2).
+
+# Batch 16, step 2: Line, Area, Pie and Donut
+
+No new dependency. Line and Area use the same Unovis entry points (`.../components/line`, `.../components/area`); Pie and Donut are plain SVG (a pie needs no charting library). Bundle (playground): 1,063.42 KB (274.82 KB gzip) with all four, +53 KB (+13 KB gzip) over step 1.
+
+## Built
+
+- `LineChart` and `AreaChart` (same props as React; `AreaChart` also takes `stacked`), both thin wrappers over an internal `CartesianChart`. 2px straight lines, flat 20% fill (40% stacked), horizontal grid, 1px `border` cursor, a 6px active point (HTML, series shape, 2px `card` ring) on hover or keyboard focus, shapes (circle, square, diamond) in the legend, the active point and the tooltip when there is more than one series.
+- `PieChart` (`donut` by default, `donut={false}` for a pie; `maxSlices`, `centerCaption`, `valueFormatter`, `showTooltip`, `interactiveLegend`). Outer radius 100, inner 64, 2px `card` gap, first slice at 12 o'clock, clockwise, largest first, "Other" in `chart-8`, total in the centre, legend rows with name, value and percent that dim, hide and show slices.
+- Specimens: Line (two series, one series in rupiah), Area (single, stacked), Donut and Pie, in `ChartsSection.vue` and the harness. React has no Code Connect for these three, so there are no new templates.
+
+## Pixel check
+
+- **Donut: identical to React** (slice boxes, fills, 2px `card` stroke, legend rows and text, centre total 24px bold), light.
+- **Line:** gridlines within 1px vertically; the plot is 720px wide where React's is 722; x labels 1px higher; tick values the same (0 to 600 by 150).
+- Colours come from the same tokens as Bar, which were identical in light and dark.
+
+## Behavior check
+
+| Behavior | React | Vue |
+|---|---|---|
+| Focus the plot, arrow keys move the active point; tooltip, cursor and points follow | yes | yes |
+| Two series: shape in legend, point and tooltip | yes | yes |
+| Stacked area adds the series up; the top tick follows the stack | yes | yes |
+| Pie and donut: hover shows a tooltip with the slice; legend press hides a slice and the total and percentages follow | yes | yes |
+
+## Differences found
+
+1. **Left axis labels.** Recharts wraps a long label ("Rp 280 jt") onto two lines inside its 60px axis; Vue keeps it on one line and widens the margin.
+2. **Dimming.** A dimmed Line or Area series is drawn with its colour mixed to 30% (`color-mix`), where React sets `strokeOpacity` and `fillOpacity`; the result looks the same.
+3. **Point.** The active point is an HTML element (8px box with a 2px `card` border), not an SVG shape.
+4. **Plot width.** Unovis keeps room for the last x label, so the plot is about 2px narrower than React's; a negative right margin makes up most of it.
+5. **Donut tooltip and keyboard.** Same as Bar: HTML tooltip at a fixed offset; arrows, Home, End and Escape move between slices (React's accessibility layer was not checked for the pie).
+
+## Not verified
+
+- Dark mode for Line, Area and Pie (colours are the same tokens as Bar), touch, screen readers, a single data point, negative values, very long category names, and a pie with every slice hidden but one at narrow widths.

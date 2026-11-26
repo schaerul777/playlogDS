@@ -175,7 +175,7 @@ const dimCss = computed(() => {
     >
       <div v-if="band" class="pointer-events-none absolute z-0 bg-muted" :style="{ left: `${band.left}px`, top: `${band.top}px`, width: `${band.width}px`, height: `${band.height}px` }" />
       <div class="relative z-[1] h-full w-full [&_.tick_text]:font-medium [&_.tick_tspan]:font-[family-name:var(--font-sans)]">
-        <VisXYContainer :data="data" :margin="{ top: -8, right: 5, bottom: 15, left: leftMargin }" :x-domain="xDomain" :y-domain="yDomain" :duration="0">
+        <VisXYContainer :data="data" :margin="{ top: legend ? -8 : -3, right: 5, bottom: 15, left: leftMargin }" :x-domain="xDomain" :y-domain="yDomain" :duration="0">
           <component
             :is="stacked ? VisStackedBar : VisGroupedBar"
             :x="x"

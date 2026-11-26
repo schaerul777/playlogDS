@@ -6,7 +6,7 @@ export type Plot = { left: number; top: number; width: number; height: number }
 // Playlog: pointer and keyboard interaction shared by Bar, Line and Area. Unovis draws the marks; this owns "which category is
 // active" so hover and the arrow keys (the React `accessibilityLayer`) show the same tooltip and cursor.
 // `getAnchors` returns one point per category in root coordinates; `axis` is the axis the categories run along.
-export function useChartInteraction(root: Ref<HTMLElement | null>, getAnchors: () => Point[], axis: Ref<"x" | "y">) {
+export function useChartInteraction(root: Ref<HTMLElement | null>, getAnchors: (plot: Plot) => Point[], axis: Ref<"x" | "y">) {
   const anchors = ref<Point[]>([])
   const plot = ref<Plot>({ left: 0, top: 0, width: 0, height: 0 })
   const active = ref<number | null>(null)
@@ -17,7 +17,6 @@ export function useChartInteraction(root: Ref<HTMLElement | null>, getAnchors: (
   function measure() {
     const el = root.value
     if (!el) return
-    anchors.value = getAnchors()
     const svg = el.querySelector("svg")
     const comp = svg?.querySelector<SVGGElement>("g[class*='-component']:not([axis-type])")
     const clip = svg?.querySelector("clipPath rect")
@@ -37,6 +36,7 @@ export function useChartInteraction(root: Ref<HTMLElement | null>, getAnchors: (
       width: Number(clip.getAttribute("width")) - 4,
       height: Number(clip.getAttribute("height")) - 4,
     }
+    anchors.value = getAnchors(plot.value)
   }
   function scheduleMeasure() {
     void nextTick(() => requestAnimationFrame(measure))
