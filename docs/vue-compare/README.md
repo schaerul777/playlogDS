@@ -774,3 +774,36 @@ Same scenario in both apps (fronted tabs, real timers): initial position, send, 
 ### Not verified
 
 - Prepending older messages (`preserve-scroll-on-prepend`), `scroll-to-message`, `default-scroll-position` other than `last-anchor`, two anchors added at once, touch scrolling, keyboard scrolling with the viewport focused, resizing the panel while streaming, `useMessageScrollerVisibility`, reduced motion.
+
+# Batch 18 (step 1): AI Elements: Suggestion, Prompt Input, Reasoning, Sources, Inline Citation, Confirmation
+
+No new dependency. All six are compositions of components already ported (Button, Input Group, Attachment, Trace, Hover Card, Item). They live in `packages/ui-vue/src/components/ai-elements` and are imported from `@workspace/ui-vue/components/ai-elements` (one folder, one `index.ts`; React has one file each). Playground and harness: `AiSection`.
+
+Plan for the rest of AI Elements: step 2 `Message` (AssistantMessage, UserMessage) and `Chat`; step 3 the Phase 2 set (Chain of Thought, Plan, Task, Queue, Context, Checkpoint, Subagent, Model Selector); `Tool` and the error part of `Subagent` wait for the Code Block batch (they render a Code Block, which needs a syntax highlighter).
+
+## Built
+
+- `Suggestions`, `Suggestion` (`suggestion`; event `suggestion-click` with the prompt; a slot replaces the label).
+- `PromptInput` (`status`: `ready | streaming | disabled`, `placeholder`, `default-text`, `default-files`; events `submit` with `{ text, files }` and `stop`; the default slot is the toolbar between attach and send, for the Model Selector). Enter sends, Shift+Enter adds a line, Escape stops a running reply; Stop replaces Send while streaming; attached files are Attachment `sm` chips with a remove button.
+- `Reasoning` (`running`, `duration`, `default-open`; the slot is the thinking text; open while running, closed after, reopenable).
+- `Sources` (`sources`: `{ url, title? }[]`), `InlineCitation` (`source`: `{ url, title, description? }`; 150ms open and close), `Confirmation` (`title`, `description`, `icon`, `deny-label`, `approve-label`, `disabled`; events `deny`, `approve`).
+
+## Pixel check
+
+Every element of the three specimens (position, size, 27 computed styles, role, label, `aria-expanded`, disabled), transitions off, light and dark:
+
+- **Suggestion (3 buttons), Prompt Input (empty, prefilled with a file chip, streaming, disabled; 49 nodes) and the Reasoning, Sources, Citation and Confirmation block (53 nodes): identical to React**, light and dark. Closed Trace content nodes (hidden by Reka, removed by Base UI) were left out of the comparison.
+
+## Behavior check (Vue)
+
+Suggestion click sends its label; Enter in the field submits `hello there` and clears it; Send is disabled while empty; Approve emits once; Sources opens to three links with `target="_blank"` and "(opens in a new tab)"; hovering the citation opens a 256px Hover Card with title, description and link.
+
+## Differences found
+
+1. **Events.** React callback props become emits: `onSuggestionClick` becomes `suggestion-click`, `onSubmit` / `onStop` / `onApprove` / `onDeny` stay `submit` / `stop` / `approve` / `deny`.
+2. **Reasoning.** `className` becomes `class` (default `whitespace-pre-wrap`); with no slot it renders the line only, as React does without children.
+3. **Closed content.** As in Trace: Reka keeps closed content in the DOM, hidden.
+
+## Not verified
+
+- Shift+Enter, Escape while streaming, IME composition, attaching a real file with the picker, the Reasoning open state after toggling and then finishing, hover card keyboard focus, and a screen reader on Confirmation.

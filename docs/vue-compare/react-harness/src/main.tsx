@@ -233,6 +233,12 @@ import { Marker, MarkerContent, MarkerIcon } from "@workspace/ui/components/mark
 import { Message, MessageContent, MessageFooter, MessageHeader } from "@workspace/ui/components/message"
 import { Trace, TraceCollapsible, TraceCollapsibleContent, TraceCollapsibleTrigger, TraceDescription, TraceLine, TraceStatusIcon, TraceTitle } from "@workspace/ui/components/trace"
 import { MessageScroller, MessageScrollerButton, MessageScrollerContent, MessageScrollerItem, MessageScrollerProvider, MessageScrollerViewport } from "@workspace/ui/components/message-scroller"
+import { Confirmation } from "@workspace/ui/components/ai-elements/confirmation"
+import { InlineCitation } from "@workspace/ui/components/ai-elements/inline-citation"
+import { PromptInput } from "@workspace/ui/components/ai-elements/prompt-input"
+import { Reasoning } from "@workspace/ui/components/ai-elements/reasoning"
+import { Sources } from "@workspace/ui/components/ai-elements/sources"
+import { Suggestion, Suggestions } from "@workspace/ui/components/ai-elements/suggestion"
 import { Icon } from "@workspace/ui/icons/icon"
 import "./styles.css"
 
@@ -590,6 +596,60 @@ function ChatSection() {
               <Attachment key={n} orientation="vertical"><AttachmentMedia><Icon name="sticky-note" /></AttachmentMedia><AttachmentContent><AttachmentTitle>file-{n}.png</AttachmentTitle></AttachmentContent></Attachment>
             ))}
           </AttachmentGroup>
+        </div>
+      </section>
+    </>
+  )
+}
+
+const AI_SOURCES = [
+  { url: "https://docs.playlog.example/reach-methodology", title: "Reach methodology" },
+  { url: "https://www.playlog.example/city-report", title: "City report, Q3 2025" },
+  { url: "https://docs.playlog.example/screen-audit" },
+]
+const AI_CITATION = { url: "https://docs.playlog.example/reach-methodology", title: "Reach methodology", description: "How reach is counted per screen and per period." }
+const AI_FILE = new File(["x"], "city-report.csv")
+function AiSection() {
+  const [picked, setPicked] = React.useState("")
+  const [sent, setSent] = React.useState("")
+  const [answer, setAnswer] = React.useState("")
+  return (
+    <>
+      <p className="text-caption font-medium tracking-wide text-muted-foreground uppercase">AI elements</p>
+      <section className="flex max-w-xl flex-col gap-4">
+        <h2 className="text-h3 font-bold text-ink-heading">Suggestion</h2>
+        <Suggestions data-specimen="suggestions">
+          {["Which cities lead on reach?", "Summarise Q3", "Compare Jakarta and Bandung"].map((s) => (
+            <Suggestion key={s} suggestion={s} onSuggestionClick={setPicked} />
+          ))}
+        </Suggestions>
+        <p className="text-caption text-muted-foreground" data-testid="picked">{picked ? `Sent: ${picked}` : "Nothing sent yet"}</p>
+      </section>
+      <section className="flex max-w-xl flex-col gap-4">
+        <h2 className="text-h3 font-bold text-ink-heading">Prompt Input</h2>
+        <div className="flex flex-col gap-4" data-specimen="prompt">
+          <PromptInput onSubmit={(m) => setSent(m.text)} />
+          <PromptInput defaultText="Which cities lead on reach in Q3?" defaultFiles={[AI_FILE]} />
+          <PromptInput status="streaming" defaultText="A message being answered" />
+          <PromptInput status="disabled" />
+        </div>
+        <p className="text-caption text-muted-foreground" data-testid="sent">{sent ? `Submitted: ${sent}` : "Nothing submitted yet"}</p>
+      </section>
+      <section className="flex max-w-xl flex-col gap-4">
+        <h2 className="text-h3 font-bold text-ink-heading">Reasoning, Sources, Inline Citation, Confirmation</h2>
+        <div className="flex flex-col gap-4" data-specimen="agent">
+          <Trace>
+            <Reasoning running>Checking the city report first, then the screen audit.</Reasoning>
+            <Reasoning duration={5}>Checked the city report, then the screen audit.</Reasoning>
+            <Reasoning duration={3} />
+            <Sources sources={AI_SOURCES} />
+          </Trace>
+          <p className="text-body-sm">
+            Jakarta leads on reach in Q3<InlineCitation source={AI_CITATION} />, ahead of Surabaya and Bandung.
+          </p>
+          <Confirmation title="Run pnpm build?" description="Builds every package in the repo." onApprove={() => setAnswer("Approved")} onDeny={() => setAnswer("Denied")} />
+          <Confirmation title="Delete the cache?" description="Frees 1.2 GB." disabled />
+          <p className="text-caption text-muted-foreground" data-testid="answer">{answer || "No answer yet"}</p>
         </div>
       </section>
     </>
@@ -2112,6 +2172,7 @@ function App() {
       <DateSection />
       <ChartsSection />
       <ChatSection />
+      <AiSection />
     </main>
   )
 }
