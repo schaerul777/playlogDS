@@ -232,6 +232,7 @@ import { Bubble, BubbleContent, BubbleGroup, BubbleReactions } from "@workspace/
 import { Marker, MarkerContent, MarkerIcon } from "@workspace/ui/components/marker"
 import { Message, MessageContent, MessageFooter, MessageHeader } from "@workspace/ui/components/message"
 import { Trace, TraceCollapsible, TraceCollapsibleContent, TraceCollapsibleTrigger, TraceDescription, TraceLine, TraceStatusIcon, TraceTitle } from "@workspace/ui/components/trace"
+import { MessageScroller, MessageScrollerButton, MessageScrollerContent, MessageScrollerItem, MessageScrollerProvider, MessageScrollerViewport } from "@workspace/ui/components/message-scroller"
 import { Icon } from "@workspace/ui/icons/icon"
 import "./styles.css"
 
@@ -459,8 +460,32 @@ function ChartsSection() {
 }
 
 const CHAT_VARIANTS = ["default", "secondary", "muted", "tinted", "outline", "ghost", "destructive"] as const
+type ChatTurn = { id: number; who: "me" | "bot"; text: string }
+const CHAT_SEED: ChatTurn[] = Array.from({ length: 6 }, (_, i) => ({ id: i, who: i % 2 === 0 ? "me" : "bot", text: i % 2 === 0 ? `Question ${i / 2 + 1}` : "An answer that takes a couple of lines so the thread has some height to scroll through." }))
+const CHAT_WORDS = "Jakarta leads with 612 active billboards, followed by Surabaya and Bandung. Maintenance is highest in Medan, where 88 units are under repair. Offline units are mostly in smaller cities and are being reviewed this week. A full table is available in the report.".split(" ")
 function ChatSection() {
   const [open, setOpen] = React.useState(false)
+  const [turns, setTurns] = React.useState<ChatTurn[]>(CHAT_SEED)
+  const busy = React.useRef(false)
+  const nextId = React.useRef(100)
+  function send() {
+    if (busy.current) return
+    busy.current = true
+    const replyId = nextId.current + 1
+    setTurns((t) => [...t, { id: nextId.current, who: "me", text: "Summarise billboard status by city" }, { id: replyId, who: "bot", text: "" }])
+    nextId.current += 2
+    let i = 0
+    const timer = setInterval(() => {
+      const word = CHAT_WORDS[i]!
+      const first = i === 0
+      setTurns((t) => t.map((x) => (x.id === replyId ? { ...x, text: x.text + (first ? "" : " ") + word } : x)))
+      i++
+      if (i >= CHAT_WORDS.length) {
+        clearInterval(timer)
+        busy.current = false
+      }
+    }, 60)
+  }
   return (
     <>
       <p className="text-caption font-medium tracking-wide text-muted-foreground uppercase">Chat pieces</p>
@@ -522,6 +547,33 @@ function ChatSection() {
               <TraceCollapsibleContent>Checking the status counts first, then the city filter.</TraceCollapsibleContent>
             </TraceCollapsible>
           </Trace>
+        </div>
+      </section>
+      <section className="flex flex-col gap-4">
+        <h2 className="text-h3 font-bold text-ink-heading">Message Scroller</h2>
+        <div className="flex gap-2">
+          <Button variant="outline" size="sm" data-testid="send" onClick={send}>Send</Button>
+          <Button variant="outline" size="sm" data-testid="reset" onClick={() => setTurns(CHAT_SEED)}>Reset</Button>
+        </div>
+        <div className="relative h-80 max-w-xl overflow-hidden rounded-lg border-(length:--pl-border-width) border-border" data-specimen="scroller">
+          <MessageScrollerProvider autoScroll defaultScrollPosition="last-anchor">
+            <MessageScroller>
+              <MessageScrollerViewport>
+                <MessageScrollerContent className="py-6">
+                  {turns.map((t) => (
+                    <MessageScrollerItem key={t.id} messageId={String(t.id)} scrollAnchor={t.who === "me"}>
+                      <Message align={t.who === "me" ? "end" : "start"}>
+                        <MessageContent>
+                          <Bubble variant={t.who === "me" ? "secondary" : "ghost"}><BubbleContent>{t.text}</BubbleContent></Bubble>
+                        </MessageContent>
+                      </Message>
+                    </MessageScrollerItem>
+                  ))}
+                </MessageScrollerContent>
+              </MessageScrollerViewport>
+              <MessageScrollerButton />
+            </MessageScroller>
+          </MessageScrollerProvider>
         </div>
       </section>
       <section className="flex flex-col gap-4">

@@ -748,6 +748,29 @@ Collected for every element of each specimen (position, size and 29 computed sty
 
 - Keyboard focus ring on `BubbleContent` as a button, `AttachmentTrigger` and the Trace trigger (same classes as React), hover colours, reduced motion, long titles that truncate, and a screen reader on the Trace status words.
 
-## Open decision: Message Scroller
+## Batch 17, step 2: Message Scroller (hand port)
 
-The React one is `@shadcn/react/message-scroller` (MIT, 19 KB minified, React only): a scroll state machine with a hidden spacer, `scrollAnchor` items, auto-scroll while following the end, prepend restore, visibility tracking and an observable end/start state for the button. There is no Vue build. Options: (a) port it by hand to Vue (no dependency, about 400 lines, full behavior), (b) a smaller hand-built version of the spec only (anchor the person's message at the top, follow the end until the person scrolls up, a button when not at the end), or (c) a package. See the batch report.
+Approved: a full hand port of `@shadcn/react/message-scroller` 0.3.1 (MIT, React only) to Vue. **No dependency added.** The scroll state machine is in `message-scroller/scroller.ts` (about 400 lines, same names as the React source: modes `following-bottom`, `free-scrolling`, `settling-jump`, `anchored-to-message`; spacer; anchors; prepend restore; visibility; default position); the components are thin.
+
+### Built
+
+- `MessageScrollerProvider` (renderless; props `auto-scroll`, `default-scroll-position` `start | end | last-anchor`, `scroll-edge-threshold` 8, `scroll-previous-item-peek` 64, `scroll-margin`), `MessageScroller`, `MessageScrollerViewport` (`role="region"`, `aria-label="Messages"`, focusable; `preserve-scroll-on-prepend`), `MessageScrollerContent` (`role="log"`, `aria-relevant="additions"`, hidden spacer; `spacer-class`), `MessageScrollerItem` (`message-id`, `scroll-anchor`), `MessageScrollerButton` (`direction`, `behavior`, `variant`, `size`; inert and faded when there is nothing to scroll to).
+- Composables: `useMessageScroller()` (`scrollToEnd`, `scrollToMessage`, `scrollToStart`), `useMessageScrollerScrollable()` and `useMessageScrollerVisibility()` (both return refs).
+- Specimen: a 320px panel with six turns, a Send button (adds a person message, the anchor, and a reply that streams in word by word) and Reset, in both playgrounds.
+
+### Check
+
+Same scenario in both apps (fronted tabs, real timers): initial position, send, end of the stream, scroll up with a wheel event, press the button, reset. Compared scroll position, scroll height, spacer height, the anchor's top, the button's `data-active` and the viewport's `data-scrollable`:
+
+- **Identical** at the start (192 / 510 / spacer 102 / anchor 88), at the end of the stream (320 / 638 / 62 / 88), after scrolling up (0 / 638 / 62 / 408, button active), after the button (258 / 576 / 0 / 150) and after Reset (90 / 408 / 0 / 190).
+- **Every element** of the initial panel (37 nodes: position, size, 19 styles, role, label, tabindex, inert): identical.
+
+### Differences found
+
+1. **Timing, not result.** 300 ms after Send, React is a few frames behind Vue (React batches the state update); both reach the same position.
+2. **API.** React hooks return values; the Vue composables return refs. `render` on the button becomes the Button props; `spacerClassName` becomes `spacer-class`.
+3. **Ref order.** The spacer's row gap is read when the height is set (the element is not attached when Vue sets the ref).
+
+### Not verified
+
+- Prepending older messages (`preserve-scroll-on-prepend`), `scroll-to-message`, `default-scroll-position` other than `last-anchor`, two anchors added at once, touch scrolling, keyboard scrolling with the viewport focused, resizing the panel while streaming, `useMessageScrollerVisibility`, reduced motion.

@@ -8,9 +8,38 @@ import { Message, MessageContent, MessageFooter, MessageHeader } from "@workspac
 import { Spinner } from "@workspace/ui-vue/components/spinner"
 import { Trace, TraceCollapsible, TraceCollapsibleContent, TraceCollapsibleTrigger, TraceDescription, TraceLine, TraceStatusIcon, TraceTitle } from "@workspace/ui-vue/components/trace"
 import { Icon } from "@workspace/ui-vue/icons"
+import { MessageScroller, MessageScrollerButton, MessageScrollerContent, MessageScrollerItem, MessageScrollerProvider, MessageScrollerViewport } from "@workspace/ui-vue/components/message-scroller"
 
 const variants = ["default", "secondary", "muted", "tinted", "outline", "ghost", "destructive"] as const
 const open = ref(false)
+
+// Message Scroller demo: six earlier turns; "Send" adds a person message (the scroll anchor) and a reply that streams in.
+type Turn = { id: number; who: "me" | "bot"; text: string }
+const seed: Turn[] = Array.from({ length: 6 }, (_, i) => ({ id: i, who: i % 2 === 0 ? "me" : "bot", text: i % 2 === 0 ? `Question ${i / 2 + 1}` : "An answer that takes a couple of lines so the thread has some height to scroll through." }))
+const turns = ref<Turn[]>([...seed])
+const busy = ref(false)
+let nextId = 100
+function send() {
+  if (busy.value) return
+  busy.value = true
+  turns.value.push({ id: nextId++, who: "me", text: "Summarise billboard status by city" })
+  const reply: Turn = { id: nextId++, who: "bot", text: "" }
+  turns.value.push(reply)
+  const words = "Jakarta leads with 612 active billboards, followed by Surabaya and Bandung. Maintenance is highest in Medan, where 88 units are under repair. Offline units are mostly in smaller cities and are being reviewed this week. A full table is available in the report.".split(" ")
+  let i = 0
+  const timer = setInterval(() => {
+    const last = turns.value[turns.value.length - 1]!
+    last.text += (i ? " " : "") + words[i]
+    i++
+    if (i >= words.length) {
+      clearInterval(timer)
+      busy.value = false
+    }
+  }, 60)
+}
+function reset() {
+  turns.value = [...seed]
+}
 </script>
 
 <template>
@@ -74,6 +103,32 @@ const open = ref(false)
           <TraceCollapsibleContent>Checking the status counts first, then the city filter.</TraceCollapsibleContent>
         </TraceCollapsible>
       </Trace>
+    </div>
+  </section>
+
+  <section class="flex flex-col gap-4">
+    <h2 class="text-h3 font-bold text-ink-heading">Message Scroller</h2>
+    <div class="flex gap-2">
+      <Button variant="outline" size="sm" data-testid="send" @click="send">Send</Button>
+      <Button variant="outline" size="sm" data-testid="reset" @click="reset">Reset</Button>
+    </div>
+    <div class="relative h-80 max-w-xl overflow-hidden rounded-lg border-(length:--pl-border-width) border-border" data-specimen="scroller">
+      <MessageScrollerProvider auto-scroll default-scroll-position="last-anchor">
+        <MessageScroller>
+          <MessageScrollerViewport>
+            <MessageScrollerContent class="py-6">
+              <MessageScrollerItem v-for="t in turns" :key="t.id" :message-id="String(t.id)" :scroll-anchor="t.who === 'me'">
+                <Message :align="t.who === 'me' ? 'end' : 'start'">
+                  <MessageContent>
+                    <Bubble :variant="t.who === 'me' ? 'secondary' : 'ghost'"><BubbleContent>{{ t.text }}</BubbleContent></Bubble>
+                  </MessageContent>
+                </Message>
+              </MessageScrollerItem>
+            </MessageScrollerContent>
+          </MessageScrollerViewport>
+          <MessageScrollerButton />
+        </MessageScroller>
+      </MessageScrollerProvider>
     </div>
   </section>
 
