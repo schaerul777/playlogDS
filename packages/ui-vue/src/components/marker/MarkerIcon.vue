@@ -1,0 +1,12 @@
+<script setup lang="ts">
+import type { HTMLAttributes } from "vue"
+import { cn } from "@workspace/ui-vue/lib/utils" // Playlog: brand-aware merger
+
+const props = defineProps<{ class?: HTMLAttributes["class"] }>()
+</script>
+
+<template>
+  <span data-slot="marker-icon" aria-hidden="true" :class="cn('size-4 shrink-0 [&_svg:not([class*=size-])]:size-4', props.class)">
+    <slot />
+  </span>
+</template>

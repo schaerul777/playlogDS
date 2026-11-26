@@ -1,5 +1,5 @@
-// Fails when a type token in docs/brand/tokens.json has no complete, matching --text-* definition in the
-// stylesheets that carry the theme (packages/ui/src/styles/globals.css and docs/brand/tokens.css).
+// Fails when a type token in packages/tokens/tokens.json has no complete, matching --text-* definition in the
+// stylesheets that carry the theme (packages/tokens/theme.css and packages/tokens/tokens.css).
 // "Complete" means size, line height and weight, plus letter spacing when tokens.json sets one.
 // Also fails on a --text-* token the stylesheet defines that tokens.json does not know about.
 // Run by `pnpm lint`; run alone with `pnpm check:type-tokens`.
@@ -8,8 +8,8 @@ import { fileURLToPath } from "node:url"
 import { dirname, join, relative } from "node:path"
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..")
-const tokens = JSON.parse(readFileSync(join(root, "docs/brand/tokens.json"), "utf8")).type.styles
-const files = ["packages/ui/src/styles/globals.css", "docs/brand/tokens.css"]
+const tokens = JSON.parse(readFileSync(join(root, "packages/tokens/tokens.json"), "utf8")).type.styles
+const files = ["packages/tokens/theme.css", "packages/tokens/tokens.css"]
 
 const PROPS = {
   fontSize: { suffix: "", label: "font-size" },

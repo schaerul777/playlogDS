@@ -1,0 +1,9 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "@workspace/tokens/theme.css";
+
+/* Playlog: tokens, @theme inline and base rules are shared with the React library (packages/tokens).
+ * Font files are served from the app's public/fonts folder. */
+@custom-variant dark (&:is(.dark *));
+@source "../../../../apps/web-vue/src/**/*.{vue,ts}";
+@source "../**/*.{vue,ts}";

@@ -1,0 +1,7 @@
+{
+  "codeConnect": {
+    "include": ["code-connect-vue/**/*.figma.ts"],
+    "label": "Vue",
+    "language": "html"
+  }
+}

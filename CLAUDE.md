@@ -15,8 +15,8 @@ A shared UI library for our front-end team, built on shadcn/ui and customized to
 All brand values live in `docs/brand/`. Read them before changing any styling.
 
 - `docs/brand/BRAND.md`: brand rules, shadcn token mapping, component scope. Read this first.
-- `docs/brand/tokens.css`: the tokens as CSS variables (light and dark), mapped to shadcn variable names. Merge into the library's global stylesheet.
-- `docs/brand/tokens.json`: the same values as data. Use it when creating Figma variables.
+- `packages/tokens/tokens.css` and `packages/tokens/theme.css`: the tokens as CSS variables (light and dark), mapped to shadcn variable names. `theme.css` is the shared theme (tokens, `@theme inline`, base rules) that both `packages/ui` and `packages/ui-vue` import.
+- `packages/tokens/tokens.json`: the same values as data. Use it when creating Figma variables.
 - `docs/brand/COMPONENT-SPECS.md`: sizes, colors and states for each in-scope component. Check it before asking a brand question. For parts it doesn’t cover (extra sizes, popups), extrapolate on the 4px grid with tokens and note the choice.
 
 Do not invent brand values. If a value is missing, ask.
@@ -44,7 +44,7 @@ Do not invent brand values. If a value is missing, ask.
 - The shadcn variable names stay as they are. Playlog values are assigned to them using the mapping table in `docs/brand/BRAND.md`. Important: shadcn's `--accent` is the hover fill (Playlog `surface-hover`), not Playlog Green. Playlog Green is `--pl-brand-accent`.
 - Playlog tokens with no shadcn equivalent are prefixed `--pl-` and exposed to Tailwind without the prefix (`bg-surface-brand`, `text-ink-heading`, `bg-success-surface`, `text-danger-text`).
 - Components use semantic tokens only, never the raw palette (`--pl-dark-blue` and similar).
-- Adding a token: add it to `tokens.css` and `tokens.json`, expose it in `@theme inline`, and note it in `docs/brand/BRAND.md`.
+- Adding a token: add it to `tokens.css`, `theme.css` and `tokens.json`, expose it in `@theme inline` (in `theme.css`), and note it in `docs/brand/BRAND.md`.
 - Dark mode uses the `.dark` class.
 
 ## Component rules
@@ -64,7 +64,7 @@ Current phase: **bootstrap, code to Figma.** After the team signs off, switch to
 
 When writing to Figma through the MCP:
 
-- Create variables from `docs/brand/tokens.json`: a palette collection and a semantic collection, with Light and Dark modes. Variable names mirror the CSS variable names.
+- Create variables from `packages/tokens/tokens.json`: a palette collection and a semantic collection, with Light and Dark modes. Variable names mirror the CSS variable names.
 - Build real components, not look-alike frames:
   - Use auto layout. No fixed-size layouts.
   - Use component properties and variants. No duplicated frames per state.
@@ -76,7 +76,7 @@ When writing to Figma through the MCP:
 ## Workflow
 
 1. Put the font files in the app's `apps/web/public/fonts/` folder (names are listed at the end of `docs/brand/BRAND.md`).
-2. Merge `docs/brand/tokens.css` into the library's global stylesheet. Check the app in light and dark.
+2. Import `@workspace/tokens/theme.css` in the library's global stylesheet. Check the app in light and dark.
 3. Customize core components: Button, Input, Card, Badge.
 4. Review in the playground: every variant and state, light and dark.
 5. Mirror tokens and the approved components into Figma.
@@ -92,6 +92,18 @@ When writing to Figma through the MCP:
 - Add a component: `pnpm dlx shadcn@latest add <name> -c apps/web` (run from the repo root; components are written into `packages/ui/src/components`)
 - Global stylesheet: `packages/ui/src/styles/globals.css`
 - Fonts: `apps/web/public/fonts/`
+
+## Vue library
+
+A Vue 3 port of the design lives in `packages/ui-vue` (shadcn-vue on Reka UI), with the playground `apps/web-vue` (port 5180). `packages/ui` and `apps/web` (React) stay the reference. Plan and open decisions: `docs/VUE-PORT-PLAN.md`.
+
+- Shared source: `packages/tokens` (`tokens.json`, `tokens.css`, `theme.css`, `icons/`). Both libraries import `@workspace/tokens/theme.css`. Do not copy tokens into a library.
+- Same rules as React: tokens only, `Icon` only (`packages/ui-vue/src/icons`), radii 2/4/8, control height 40 (32, 48), 2px focus ring with 2px offset, disabled 40%, `--pl-duration-fast`. Variant and size names match the React components exactly.
+- Add components one at a time with the shadcn-vue CLI, run from `packages/ui-vue` (`yes n | pnpm dlx shadcn-vue@latest add <name> -y`). Never use `--overwrite`; answer no to overwrite questions. After each install check `git status` and `git diff`, then restyle, replace icon imports with `Icon`, use `cn` from `@workspace/ui-vue/lib/utils` (not the CLI's `cn` import), and remove `@lucide/vue` and `@vueuse/core` from `packages/ui-vue/package.json` if the CLI added them (ask before keeping any new dependency).
+- Reka UI differs from Base UI: state attributes are `data-state="open|closed"`, composition is `as-child`, and exit animations use CSS keyframes (`data-[state=closed]:animate-out`), not `data-ending-style`. Report any behavior difference and ask before accepting it.
+- Check both libraries: `pnpm lint`, `pnpm typecheck`, `pnpm build` from the root.
+- Visual check against React: `docs/vue-compare/README.md`.
+- Code Connect for Vue: templates in `code-connect-vue/`, config `figma.vue.config.json` (label `Vue`). Publish only from your own terminal: `pnpm exec figma connect publish --config figma.vue.config.json --dry-run`. Never store a Figma token.
 
 ## Do not
 

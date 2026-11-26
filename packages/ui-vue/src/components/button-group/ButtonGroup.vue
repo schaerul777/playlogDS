@@ -1,0 +1,22 @@
+<script setup lang="ts">
+import type { HTMLAttributes } from "vue"
+import type { ButtonGroupVariants } from "."
+import { cn } from "@workspace/ui-vue/lib/utils" // Playlog: brand-aware merger
+import { buttonGroupVariants } from "."
+
+const props = defineProps<{
+  class?: HTMLAttributes["class"]
+  orientation?: ButtonGroupVariants["orientation"]
+}>()
+</script>
+
+<template>
+  <div
+    role="group"
+    data-slot="button-group"
+    :data-orientation="orientation"
+    :class="cn(buttonGroupVariants({ orientation }), props.class)"
+  >
+    <slot />
+  </div>
+</template>

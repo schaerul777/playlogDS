@@ -1,0 +1,102 @@
+import { createCssVariablesTheme, createHighlighterCore, type GrammarState, type HighlighterCore } from "shiki/core"
+import { createJavaScriptRegexEngine } from "shiki/engine/javascript"
+
+// Port of packages/ui/src/lib/highlighter.tsx. Same languages, same theme; the difference is the output: plain token
+// data (`{ content, color }`), which CodeBlockLine renders, instead of React nodes.
+
+// Add the languages you need. Each one loads the first time it is used.
+const languages = {
+  bash: () => import("shiki/langs/shellscript.mjs"),
+  css: () => import("shiki/langs/css.mjs"),
+  diff: () => import("shiki/langs/diff.mjs"),
+  html: () => import("shiki/langs/html.mjs"),
+  javascript: () => import("shiki/langs/javascript.mjs"),
+  json: () => import("shiki/langs/json.mjs"),
+  jsx: () => import("shiki/langs/jsx.mjs"),
+  markdown: () => import("shiki/langs/markdown.mjs"),
+  python: () => import("shiki/langs/python.mjs"),
+  sql: () => import("shiki/langs/sql.mjs"),
+  tsx: () => import("shiki/langs/tsx.mjs"),
+  typescript: () => import("shiki/langs/typescript.mjs"),
+  yaml: () => import("shiki/langs/yaml.mjs"),
+}
+
+const aliases: Record<string, keyof typeof languages> = {
+  js: "javascript",
+  md: "markdown",
+  py: "python",
+  sh: "bash",
+  shell: "bash",
+  shellscript: "bash",
+  ts: "typescript",
+  yml: "yaml",
+  zsh: "bash",
+}
+
+export interface HighlightToken {
+  content: string
+  color?: string
+}
+export type HighlightedLine = HighlightToken[]
+export type { GrammarState }
+
+// Playlog: colours come from our tokens, not from a fixed hex theme. This theme writes `var(--shiki-token-*)` into each
+// token; CodeBlock maps those variables to the --pl-syntax-* tokens, so light and dark switch with the mode.
+const playlogTheme = createCssVariablesTheme({
+  name: "playlog",
+  variablePrefix: "--shiki-",
+  variableDefaults: {},
+  fontStyle: false,
+})
+
+let highlighter: Promise<HighlighterCore> | undefined
+
+function getHighlighter() {
+  highlighter ??= createHighlighterCore({
+    themes: [playlogTheme],
+    langs: [],
+    engine: createJavaScriptRegexEngine({ forgiving: true }),
+  })
+  return highlighter
+}
+
+function getLanguage(language: string) {
+  const name = language.toLowerCase()
+  if (name === "ansi") return name
+  if (name in languages) return name as keyof typeof languages
+  return aliases[name] ?? null
+}
+
+export interface LoadedHighlighter {
+  /** Returns one token array per line, and the grammar state after the last line. Pass that state back to continue. */
+  highlight(code: string, state?: GrammarState): { lines: HighlightedLine[]; state: GrammarState | undefined }
+}
+
+// Loads a language and returns a highlighter for it, or null for a language that is not listed.
+export async function loadHighlighter(language: string): Promise<LoadedHighlighter | null> {
+  const lang = getLanguage(language)
+  if (!lang) return null
+
+  const shiki = await getHighlighter()
+  if (lang !== "ansi" && !shiki.getLoadedLanguages().includes(lang)) {
+    await shiki.loadLanguage(languages[lang])
+  }
+
+  return {
+    highlight(code, state) {
+      const tokenize = (text: string) => shiki.codeToTokens(text, { lang, theme: "playlog", grammarState: state }).tokens
+      // ANSI has no grammar state, so each line is tokenized on its own.
+      const tokens = lang === "ansi" ? code.split("\n").flatMap((line) => tokenize(line)) : tokenize(code)
+      return {
+        lines: tokens.map((line) => line.map((token) => ({ content: token.content, color: token.color }))),
+        state: shiki.getLastGrammarState(tokens),
+      }
+    },
+  }
+}
+
+// Returns one token array per line, or null for a language that is not listed.
+export async function highlightCode(code: string, language: string) {
+  const loaded = await loadHighlighter(language)
+  return loaded ? loaded.highlight(code).lines : null
+}
