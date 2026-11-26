@@ -26,7 +26,7 @@ provideDrawerContext({
 </script>
 
 <template>
-  <DrawerRoot v-slot="slotProps" data-slot="drawer" swipe-direction="down" v-bind="forwarded">
+  <DrawerRoot v-slot="slotProps" swipe-direction="down" v-bind="forwarded">
     <slot v-bind="slotProps" />
   </DrawerRoot>
 </template>

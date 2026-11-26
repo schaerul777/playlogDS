@@ -903,4 +903,7 @@ Every element (position, size, 23 computed styles, role, label), transitions off
 ### Not verified
 
 - The copy button with the real clipboard permission (stubbed), touch (`pointer-coarse` shows the actions), a screen reader on the live region, the `ansi` language, and streaming drawn in the browser (the hidden pane stalls timers; checked in Node).
-- Console: Vue warns "Extraneous non-props attributes (data-slot)" for `DrawerRoot` and `DrawerPortal` (from batch 14, not this batch).
+
+### Also fixed
+
+The console warning "Extraneous non-props attributes (data-slot)" for `DrawerRoot` and `DrawerPortal` (batch 14). Both render no DOM root (a fragment and a teleport), so the attribute never reached the page; it is removed and nothing read it. The page now loads with no Vue warnings.

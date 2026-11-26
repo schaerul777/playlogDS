@@ -6,7 +6,7 @@ const props = defineProps<DrawerPortalProps>()
 </script>
 
 <template>
-  <DrawerPortal data-slot="drawer-portal" :to="props.to" :disabled="props.disabled" :defer="props.defer" :force-mount="props.forceMount">
+  <DrawerPortal :to="props.to" :disabled="props.disabled" :defer="props.defer" :force-mount="props.forceMount">
     <slot />
   </DrawerPortal>
 </template>
