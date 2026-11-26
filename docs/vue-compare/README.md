@@ -717,3 +717,37 @@ No new dependency. Line and Area use the same Unovis entry points (`.../componen
 ## Not verified
 
 - Dark mode for Line, Area and Pie (colours are the same tokens as Bar), touch, screen readers, a single data point, negative values, very long category names, and a pie with every slice hidden but one at narrow widths.
+
+# Batch 17 (step 1 of 2): Chat pieces: Bubble, Message, Marker, Trace, Attachment
+
+Step 2 is the Message Scroller (needs a decision, see the end). No new dependency: these five are plain markup plus Reka's `Primitive` and `Collapsible`, with the React classes copied as they are.
+
+## Built
+
+- `Bubble` (variants `default | secondary | muted | tinted | outline | ghost | destructive`, `align`), `BubbleContent` (`as="a"` / `as="button"` / `as-child` for an interactive bubble; React `render`), `BubbleGroup`, `BubbleReactions` (`side`, `align`).
+- `Message` (`align`), `MessageGroup`, `MessageAvatar`, `MessageContent`, `MessageHeader`, `MessageFooter`.
+- `Marker` (`default | separator | border`, `as`), `MarkerIcon`, `MarkerContent`.
+- `Trace`, `TraceLine` (`status`: `running | error | pending`), `TraceIcon`, `TraceStatusIcon` (`status`, `icon`), `TraceTitle`, `TraceDescription`, `TraceCollapsible` (`default-open`, `v-model:open`), `TraceCollapsibleTrigger`, `TraceCollapsibleContent`.
+- `Attachment` (`state`, `size`, `orientation`), `AttachmentMedia` (`variant`), `AttachmentContent`, `AttachmentTitle`, `AttachmentDescription`, `AttachmentActions`, `AttachmentAction` (Button `ghost` `icon-xs`), `AttachmentTrigger` (`as`), `AttachmentGroup`.
+- Specimens: `ChatSection.vue` and the harness `ChatSection` (all seven bubble variants, an interactive bubble, reactions, a two-turn exchange with header and footer actions, three markers, five trace lines including a collapsible, six attachment chips and a vertical group).
+
+## Pixel check
+
+Collected for every element of each specimen (position, size and 29 computed styles), transitions off, light and dark, for the open and closed Trace:
+
+- **Bubbles, Messages and Markers, Attachments: identical to React**, light and dark.
+- **Trace: identical**, closed and open, light and dark, except one extra hidden node (below).
+
+## Differences found
+
+1. **API.** React `render={...}` becomes `as` / `as-child` (Bubble content, Marker, Attachment trigger). `TraceCollapsible` takes `v-model:open` where React takes `open` + `onOpenChange`.
+2. **Closed Trace content.** Reka keeps the content node in the DOM with `hidden` (zero size); Base UI removes it. It is invisible, and the height animation uses Reka's keyframes (`animate-collapsible-down` / `-up`) instead of `data-starting-style`.
+3. **Icon names** in `TraceStatusIcon` are plain strings (checked at runtime by `Icon`).
+
+## Not verified
+
+- Keyboard focus ring on `BubbleContent` as a button, `AttachmentTrigger` and the Trace trigger (same classes as React), hover colours, reduced motion, long titles that truncate, and a screen reader on the Trace status words.
+
+## Open decision: Message Scroller
+
+The React one is `@shadcn/react/message-scroller` (MIT, 19 KB minified, React only): a scroll state machine with a hidden spacer, `scrollAnchor` items, auto-scroll while following the end, prepend restore, visibility tracking and an observable end/start state for the button. There is no Vue build. Options: (a) port it by hand to Vue (no dependency, about 400 lines, full behavior), (b) a smaller hand-built version of the spec only (anchor the person's message at the top, follow the end until the person scrolls up, a button when not at the end), or (c) a package. See the batch report.

@@ -21,6 +21,7 @@ import DrawerSection from "./sections/DrawerSection.vue"
 import DateSection from "./sections/DateSection.vue"
 import InputSection from "./sections/InputSection.vue"
 import ChartsSection from "./sections/ChartsSection.vue"
+import ChatSection from "./sections/ChatSection.vue"
 
 // Dark mode is the .dark class on <html> (same as the React playground). `?theme=dark` starts dark.
 const dark = ref(false)
@@ -59,5 +60,6 @@ onMounted(() => apply(new URLSearchParams(location.search).get("theme") === "dar
     <DrawerSection />
     <DateSection />
     <ChartsSection />
+    <ChatSection />
   </main>
 </template>
