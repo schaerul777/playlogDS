@@ -233,6 +233,8 @@ import { Marker, MarkerContent, MarkerIcon } from "@workspace/ui/components/mark
 import { Message, MessageContent, MessageFooter, MessageHeader } from "@workspace/ui/components/message"
 import { Trace, TraceCollapsible, TraceCollapsibleContent, TraceCollapsibleTrigger, TraceDescription, TraceLine, TraceStatusIcon, TraceTitle } from "@workspace/ui/components/trace"
 import { MessageScroller, MessageScrollerButton, MessageScrollerContent, MessageScrollerItem, MessageScrollerProvider, MessageScrollerViewport } from "@workspace/ui/components/message-scroller"
+import { AssistantMessage, AssistantMessageActions, UserMessage, UserMessageActions } from "@workspace/ui/components/ai-elements/message"
+import { Chat, ChatEmpty, ChatFooter, ChatHeader, ChatThread, ChatTurn } from "@workspace/ui/components/ai-elements/chat"
 import { Confirmation } from "@workspace/ui/components/ai-elements/confirmation"
 import { InlineCitation } from "@workspace/ui/components/ai-elements/inline-citation"
 import { PromptInput } from "@workspace/ui/components/ai-elements/prompt-input"
@@ -609,6 +611,71 @@ const AI_SOURCES = [
 ]
 const AI_CITATION = { url: "https://docs.playlog.example/reach-methodology", title: "Reach methodology", description: "How reach is counted per screen and per period." }
 const AI_FILE = new File(["x"], "city-report.csv")
+const AI_CANNED = "Reach counts each person once per screen and period, so adding two periods together can count the same person twice. Compare periods side by side instead."
+function AiLiveChat() {
+  const [turns, setTurns] = React.useState<{ id: string; text: string; reply: string; done: boolean }[]>([])
+  const [streaming, setStreaming] = React.useState(false)
+  const timer = React.useRef<ReturnType<typeof setInterval> | null>(null)
+  const idRef = React.useRef(0)
+  function stop() {
+    if (timer.current) clearInterval(timer.current)
+    timer.current = null
+    setStreaming(false)
+    setTurns((c) => c.map((t) => ({ ...t, done: true })))
+  }
+  function send(text: string) {
+    const id = `live-${++idRef.current}`
+    const words = AI_CANNED.split(" ")
+    let count = 0
+    setTurns((c) => [...c, { id, text, reply: "", done: false }])
+    setStreaming(true)
+    timer.current = setInterval(() => {
+      count += 1
+      setTurns((c) => c.map((t) => (t.id === id ? { ...t, reply: words.slice(0, count).join(" "), done: count >= words.length } : t)))
+      if (count >= words.length) {
+        if (timer.current) clearInterval(timer.current)
+        timer.current = null
+        setStreaming(false)
+      }
+    }, 45)
+  }
+  return (
+    <Chat>
+      <ChatHeader title="New thread" description="Ask about reach, impressions and screens." action={<Button variant="outline" size="icon" aria-label="Reset conversation" disabled={streaming} onClick={() => setTurns([])}><Icon name="refresh" /></Button>} />
+      {turns.length === 0 ? (
+        <div className="min-h-0 flex-1">
+          <ChatEmpty>
+            <Suggestions className="justify-center">
+              <Suggestion suggestion="Top cities by reach in Q3 2025" onSuggestionClick={send} />
+              <Suggestion suggestion="Impressions by product line" onSuggestionClick={send} />
+              <Suggestion suggestion="Which screens were offline?" onSuggestionClick={send} />
+            </Suggestions>
+          </ChatEmpty>
+        </div>
+      ) : (
+        <ChatThread busy={streaming}>
+          {turns.map((turn) => (
+            <React.Fragment key={turn.id}>
+              <ChatTurn id={`${turn.id}-u`} anchor><UserMessage>{turn.text}</UserMessage></ChatTurn>
+              <ChatTurn id={`${turn.id}-a`}>
+                <AssistantMessage actions={turn.done ? <AssistantMessageActions text={turn.reply} onRetry={() => send(turn.text)} /> : undefined}>
+                  {turn.reply === "" ? (
+                    <Marker role="status"><MarkerIcon><Spinner className="size-4" /></MarkerIcon><MarkerContent>Thinking…</MarkerContent></Marker>
+                  ) : (
+                    <p>{turn.reply}</p>
+                  )}
+                </AssistantMessage>
+              </ChatTurn>
+            </React.Fragment>
+          ))}
+        </ChatThread>
+      )}
+      <ChatFooter>
+        <PromptInput status={streaming ? "streaming" : "ready"} onSubmit={({ text }) => send(text)} onStop={stop} placeholder="Ask about reach, impressions or screens" />
+      </ChatFooter>
+    </Chat>
+  )
+}
 function AiSection() {
   const [picked, setPicked] = React.useState("")
   const [sent, setSent] = React.useState("")
@@ -650,6 +717,56 @@ function AiSection() {
           <Confirmation title="Run pnpm build?" description="Builds every package in the repo." onApprove={() => setAnswer("Approved")} onDeny={() => setAnswer("Denied")} />
           <Confirmation title="Delete the cache?" description="Frees 1.2 GB." disabled />
           <p className="text-caption text-muted-foreground" data-testid="answer">{answer || "No answer yet"}</p>
+        </div>
+      </section>
+      <section className="flex flex-col gap-4">
+        <h2 className="text-h3 font-bold text-ink-heading">Chat</h2>
+        <p className="text-caption text-muted-foreground">Static thread (no Tool or Code Block yet): turns, reasoning, citations, sources, a pending approval and a status marker.</p>
+        <div className="h-160 overflow-hidden rounded-lg border-(length:--pl-border-width) border-border bg-background" data-specimen="chat-static">
+          <Chat>
+            <ChatHeader title="Q3 reach review" description="Static mock conversation, no model." />
+            <ChatThread>
+              <ChatTurn id="u1" anchor>
+                <UserMessage actions={<UserMessageActions text="Which three cities had the highest reach in Q3 2025?" onEdit={() => {}} />}>
+                  Which three cities had the highest reach in Q3 2025?
+                </UserMessage>
+              </ChatTurn>
+              <ChatTurn id="a1">
+                <AssistantMessage actions={<AssistantMessageActions text="Jakarta Selatan, Surabaya and Bandung led reach in Q3 2025." onRetry={() => {}} />}>
+                  <Trace>
+                    <Reasoning duration={4}>The city report is keyed by period, so I can group Q3 2025 by city and sort by reach.</Reasoning>
+                  </Trace>
+                  <p>Jakarta Selatan, Surabaya and Bandung led reach in Q3 2025 (July to September, 25 cities). <InlineCitation source={AI_CITATION} /></p>
+                  <ul className="flex list-disc flex-col gap-1 pl-5">
+                    <li>Jakarta Selatan: 1,28 M reach from 4,2 M impressions.</li>
+                    <li>Surabaya: 902 K reach from 3,1 M impressions.</li>
+                  </ul>
+                  <Sources sources={AI_SOURCES} />
+                </AssistantMessage>
+              </ChatTurn>
+              <ChatTurn id="u2" anchor>
+                <UserMessage>Check the screen audit against this and clean up the old export.</UserMessage>
+              </ChatTurn>
+              <ChatTurn id="a2">
+                <AssistantMessage>
+                  <Trace><Reasoning running>Comparing the audit with the city report. Deleting the old export cannot be undone, so I should ask first.</Reasoning></Trace>
+                  <Confirmation title="Run rm -rf exports/q3-old?" description="The command deletes the old export in this project." />
+                  <Marker role="status"><MarkerIcon><Spinner className="size-4" /></MarkerIcon><MarkerContent>Waiting for your answer…</MarkerContent></Marker>
+                </AssistantMessage>
+              </ChatTurn>
+            </ChatThread>
+            <ChatFooter>
+              <Suggestions>
+                <Suggestion suggestion="Compare with Q2 2025" />
+                <Suggestion suggestion="Export as CSV" />
+              </Suggestions>
+              <PromptInput status="disabled" placeholder="Answer the question above to continue" />
+            </ChatFooter>
+          </Chat>
+        </div>
+        <p className="text-caption text-muted-foreground">Live thread (canned reply): type and press Enter, Escape stops the reply.</p>
+        <div className="h-128 overflow-hidden rounded-lg border-(length:--pl-border-width) border-border bg-background" data-specimen="chat-live">
+          <AiLiveChat />
         </div>
       </section>
     </>

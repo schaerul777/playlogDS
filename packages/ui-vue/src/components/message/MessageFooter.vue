@@ -8,7 +8,7 @@ const props = defineProps<{ class?: HTMLAttributes["class"] }>()
 
 <template>
   <div data-slot="message-footer" :class="cn(
-    'flex max-w-full min-w-0 items-center gap-1 px-3 text-caption text-muted-foreground group-has-data-[variant=ghost]/message:px-0 group-data-[align=end]/message:justify-end',
+    'flex max-w-full min-w-0 items-center gap-1 px-3 text-caption text-muted-foreground group-has-[[data-slot=bubble][data-variant=ghost]]/message:px-0 group-data-[align=end]/message:justify-end',
     props.class,
   )">
     <slot />

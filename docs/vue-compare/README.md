@@ -807,3 +807,28 @@ Suggestion click sends its label; Enter in the field submits `hello there` and c
 ## Not verified
 
 - Shift+Enter, Escape while streaming, IME composition, attaching a real file with the picker, the Reasoning open state after toggling and then finishing, hover card keyboard focus, and a screen reader on Confirmation.
+
+## Batch 18, step 2: Message and Chat
+
+No new dependency. In `ai-elements`: `UserMessage`, `AssistantMessage` (slot `actions` for the footer), `MessageAction` (Button `ghost` `icon-sm`, `aria-label`, Tooltip; emits `click`), `AssistantMessageActions` (copy, good and bad response with `aria-pressed`, retry when `@retry` is passed), `UserMessageActions` (copy, edit when `@edit` is passed), `useCopy` (copied for 2s), and `Chat`, `ChatHeader` (`title`, `description`, slot `action`), `ChatThread` (`busy`; wraps the Message Scroller with `auto-scroll`), `ChatTurn` (`id`, `anchor`), `ChatEmpty` (`title`, `description`, `icon`; the slot sits below) and `ChatFooter`. Specimens: a static thread (turns, reasoning closed and running, citations, a list, sources, a pending approval, a status marker, disabled input) and a live thread with a canned reply streamed from memory.
+
+### Pixel check
+
+Every element of both specimens (position, size, 25 computed styles, role, label, `aria-busy`, `aria-expanded`, disabled, scroll position), transitions off:
+
+- **Live thread (empty state with suggestions): identical.**
+- **Static thread: all 104 elements identical** after three fixes found by this check: `aria-busy` was `false` where React omits it (a Boolean prop cast, `busy` now defaults to undefined); the message footer lost its 12px side padding when it held a ghost Button (Vue's Button writes `data-variant="ghost"`, React's does not, so the "ghost bubble" rule now looks for a ghost Bubble only); `aria-pressed="false"` appeared on the copy and edit buttons (same cast).
+
+### Behavior check (Vue)
+
+Suggestion starts a turn; while streaming the Marker says "Thinking…", Stop replaces Send and the log has `aria-busy="true"`; when the reply ends the actions appear (Copy, Good response, Bad response, Retry), `aria-busy` returns to `false` and Send comes back. Good and Bad toggle `aria-pressed` and switch each other off.
+
+### Differences found
+
+1. `MessageAction` has no single root (Tooltip wraps the Button), so it declares and re-emits `click`; clicks on it are not passed through as plain attributes.
+2. Vue Buttons write `data-variant` and `data-size` (React's do not); selectors that read them from outside the Button were rewritten as above.
+3. **Test artifact:** a timer-driven stream slows to about one tick a second while the browser pane is in the background, so the live thread was checked by waiting.
+
+### Not verified
+
+- Copy to the clipboard (the browser pane may deny it), Escape to stop the stream, Edit and Retry actions, scrolling up while a reply streams, and dark mode for the two threads.
