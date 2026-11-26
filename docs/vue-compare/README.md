@@ -832,3 +832,38 @@ Suggestion starts a turn; while streaming the Marker says "Thinking…", Stop re
 ### Not verified
 
 - Copy to the clipboard (the browser pane may deny it), Escape to stop the stream, Edit and Retry actions, scrolling up while a reply streams, and dark mode for the two threads.
+
+## Batch 18, step 3: Phase 2 (Chain of Thought, Plan, Task, Queue, Context, Checkpoint, Subagent, Model Selector)
+
+No new dependency: Trace, Marker, Hover Card, Progress, Alert Dialog, Dropdown Menu, Input Group and Badge, all ported earlier. In `ai-elements`; playground and harness section "Agent".
+
+### Built
+
+- `ChainOfThought` (`running`, `steps`, `failed`, `default-open`; the slot holds `ChainOfThoughtStep` (`title`, `status`, `icon`, `default-open`) and `ChainOfThoughtBadges` (`items`)); the step count comes from the slot.
+- `Plan` (`title`, `steps: { title, state }[]`, `description`, `default-open`), `Task` (`title`, `status`, `default-open`) with `TaskStep` (`title`, `icon`, `status`, `href`), `Queue` (`todos`).
+- `Context` (`used`, `limit`, `usage`; `getContextLevel`, `formatTokens`), `Checkpoint` (`label`, `restore-label`; event `restore`; Alert Dialog confirm).
+- `Subagent` (`name`, `state`, `default-open`; the slot is the nested lines and slot `result` is the result text).
+- `ModelSelector` (`providers`, `efforts`, `disabled`; `v-model:model`, `v-model:effort`), for the Prompt Input toolbar slot.
+
+### Pixel check
+
+Every element of each specimen (position, size, 26 computed styles, role, label, `aria-expanded`, disabled), transitions off, light mode, hidden closed content left out:
+
+- **Chain of Thought (68 nodes), Queue (55), Context buttons (5), Checkpoint (14), Subagent (48) and Model Selector (19): identical to React.**
+- **Plan and Task (97 nodes): identical except four nodes that differ by 0.1px** (a trigger 252.7 against 252.8 wide, from font rounding of the same text).
+- **Context popup, medium level:** same width (256), fill `pl-warning` (179px), "Getting full" in `pl-warning-text`, value "102.4k / 128k". Low and near-full were read from Vue only (Green fill at 18px with the three usage rows; `pl-danger` at 213px with its sentence).
+
+### Behavior check (Vue)
+
+Checkpoint: Restore opens the confirm (focus on Cancel), Cancel closes it and returns focus to Restore, Restore removes the later message. Model Selector: Enter opens the menu (192 wide, two provider labels, four radio items, "Beta 1 (unavailable)" disabled), arrows and Enter choose Beta 2, the menu closes and focus returns to the trigger.
+
+### Differences found
+
+1. **API.** React callbacks become `v-model` (Model Selector) or an emit (`restore`); `result` on Subagent is a slot.
+2. **`keepMounted`.** Reka keeps closed Trace content in the DOM (hidden), so React's `keepMounted` needs no prop here.
+3. **Subagent `error` and Tool.** Not built: the destructive Code Block and the Tool line wait for the Code Block batch. The specimens use plain Trace lines in place of Tool.
+4. **Context focus.** A script `focus()` opens the Vue hover card; Base UI opens only for keyboard focus or hover, so the React popup was checked with a real hover.
+
+### Not verified
+
+- Context with every level in React, the dark popups, Plan and Task open and closed after toggling, Queue descriptions opening, Model Selector with the mouse and typeahead, the effort menu, Escape returning focus, and a screen reader on Checkpoint.

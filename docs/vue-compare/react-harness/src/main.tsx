@@ -235,6 +235,14 @@ import { Trace, TraceCollapsible, TraceCollapsibleContent, TraceCollapsibleTrigg
 import { MessageScroller, MessageScrollerButton, MessageScrollerContent, MessageScrollerItem, MessageScrollerProvider, MessageScrollerViewport } from "@workspace/ui/components/message-scroller"
 import { AssistantMessage, AssistantMessageActions, UserMessage, UserMessageActions } from "@workspace/ui/components/ai-elements/message"
 import { Chat, ChatEmpty, ChatFooter, ChatHeader, ChatThread, ChatTurn } from "@workspace/ui/components/ai-elements/chat"
+import { ChainOfThought, ChainOfThoughtBadges, ChainOfThoughtStep } from "@workspace/ui/components/ai-elements/chain-of-thought"
+import { Checkpoint } from "@workspace/ui/components/ai-elements/checkpoint"
+import { Context } from "@workspace/ui/components/ai-elements/context"
+import { ModelSelector, type ModelProvider } from "@workspace/ui/components/ai-elements/model-selector"
+import { Plan, type PlanStep } from "@workspace/ui/components/ai-elements/plan"
+import { Queue, type QueueTodo } from "@workspace/ui/components/ai-elements/queue"
+import { Subagent } from "@workspace/ui/components/ai-elements/subagent"
+import { Task, TaskStep } from "@workspace/ui/components/ai-elements/task"
 import { Confirmation } from "@workspace/ui/components/ai-elements/confirmation"
 import { InlineCitation } from "@workspace/ui/components/ai-elements/inline-citation"
 import { PromptInput } from "@workspace/ui/components/ai-elements/prompt-input"
@@ -767,6 +775,150 @@ function AiSection() {
         <p className="text-caption text-muted-foreground">Live thread (canned reply): type and press Enter, Escape stops the reply.</p>
         <div className="h-128 overflow-hidden rounded-lg border-(length:--pl-border-width) border-border bg-background" data-specimen="chat-live">
           <AiLiveChat />
+        </div>
+      </section>
+    </>
+  )
+}
+
+const AG_PLAN: PlanStep[] = [
+  { title: "Install @base-ui/react", state: "done" },
+  { title: "Replace the Radix imports", state: "done" },
+  { title: "Rename asChild to render", state: "running" },
+  { title: "Update the snapshots", state: "pending" },
+  { title: "Migrate the toast", state: "skipped" },
+  { title: "Run the type checker", state: "error" },
+]
+const AG_TODOS: QueueTodo[] = [
+  { id: "1", title: "Add a changeset", status: "completed" },
+  { id: "2", title: "Write the migration guide", description: "Cover the renamed props and the new data attributes.", status: "completed" },
+  { id: "3", title: "Fix the focus ring on the select trigger", description: "It is clipped by overflow-hidden on the field.", status: "in-progress" },
+  { id: "4", title: "Update the registry snapshots", status: "pending" },
+  { id: "5", title: "Add tests for the combobox", status: "pending" },
+]
+const AG_PROVIDERS: ModelProvider[] = [
+  { name: "Provider A", models: [{ value: "alpha-large", label: "Alpha Large", badge: "New" }, { value: "alpha-small", label: "Alpha Small" }] },
+  { name: "Provider B", models: [{ value: "beta-2", label: "Beta 2" }, { value: "beta-1", label: "Beta 1", disabled: true }] },
+]
+const AG_USAGE = [{ label: "Input", value: 8420 }, { label: "Output", value: 260 }, { label: "Reasoning", value: 980 }]
+function AgPanel({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="flex w-full max-w-sm flex-col gap-2">
+      <p className="text-caption text-muted-foreground">{label}</p>
+      <div className="rounded-lg border-(length:--pl-border-width) border-border bg-card p-4 text-body-sm">{children}</div>
+    </div>
+  )
+}
+function AgentSection() {
+  const [model, setModel] = React.useState("alpha-large")
+  const [effort, setEffort] = React.useState("medium")
+  const [restored, setRestored] = React.useState(false)
+  return (
+    <>
+      <p className="text-caption font-medium tracking-wide text-muted-foreground uppercase">Agent</p>
+      <section className="flex flex-col gap-4">
+        <h2 className="text-h3 font-bold text-ink-heading">Chain of Thought</h2>
+        <div className="flex flex-wrap items-start gap-6" data-specimen="cot">
+          <AgPanel label="Running (open)"><Trace><ChainOfThought running>
+            <ChainOfThoughtStep title="Read the build log for dpl_8Kx2" icon="terminal" />
+            <ChainOfThoughtStep title="Searching the web for image cache key" status="running" />
+          </ChainOfThought></Trace></AgPanel>
+          <AgPanel label="Done (closed)"><Trace><ChainOfThought>
+            <ChainOfThoughtStep title="Read the build log for dpl_8Kx2" icon="terminal" />
+            <ChainOfThoughtStep title="Searched the web for image cache key"><ChainOfThoughtBadges items={["nextjs.org", "vercel.com"]} /></ChainOfThoughtStep>
+          </ChainOfThought></Trace></AgPanel>
+          <AgPanel label="Done (open), one failed"><Trace><ChainOfThought defaultOpen failed={1}>
+            <ChainOfThoughtStep title="Searched the code for cacheKey"><ChainOfThoughtBadges items={["next.config.ts", "scripts/optimize-images.ts"]} /></ChainOfThoughtStep>
+            <ChainOfThoughtStep title="Failed to read the deploy settings" status="error">{"Error: 403 Forbidden"}</ChainOfThoughtStep>
+          </ChainOfThought></Trace></AgPanel>
+        </div>
+      </section>
+      <section className="flex flex-col gap-4">
+        <h2 className="text-h3 font-bold text-ink-heading">Plan and Task</h2>
+        <div className="flex flex-wrap items-start gap-6" data-specimen="plan">
+          <AgPanel label="Plan: every step state"><Trace><Plan title="Plan: migrate to Base UI" steps={AG_PLAN} /></Trace></AgPanel>
+          <AgPanel label="Plan with a description, closed"><Trace>
+            <Plan title="Plan: add dark mode" defaultOpen={false} description="Store the theme in a cookie so the server renders the right one." steps={[{ title: "Add a dark variant to the tokens", state: "done" }, { title: "Add a toggle to the settings page", state: "pending" }]} />
+          </Trace></AgPanel>
+          <AgPanel label="Task: running, failed and done"><Trace>
+            <Task title="Updating the page metadata" status="running">
+              <TaskStep title="Searched for app/page.tsx" />
+              <TaskStep title="Reading app/layout.tsx" icon="sticky-note" status="running" />
+            </Task>
+            <Task title="Failed to update the sitemap" status="error" defaultOpen>
+              <TaskStep title="Failed to read sitemap.ts" icon="sticky-note" status="error" />
+            </Task>
+            <Task title="Found the project files">
+              <TaskStep title="Searched for app/page.tsx" />
+              <TaskStep title="Read app/page.tsx" icon="sticky-note" href="#files" />
+            </Task>
+          </Trace></AgPanel>
+        </div>
+      </section>
+      <section className="flex flex-col gap-4">
+        <h2 className="text-h3 font-bold text-ink-heading">Queue</h2>
+        <div className="flex flex-wrap items-start gap-6" data-specimen="queue">
+          <AgPanel label="Mixed"><Trace><Queue todos={AG_TODOS} /></Trace></AgPanel>
+          <AgPanel label="Only completed"><Trace><Queue todos={AG_TODOS.filter((t) => t.status === "completed")} /></Trace></AgPanel>
+          <AgPanel label="Empty (renders nothing)"><Queue todos={[]} /><p className="text-caption text-muted-foreground">No output.</p></AgPanel>
+        </div>
+      </section>
+      <section className="flex flex-col gap-4">
+        <h2 className="text-h3 font-bold text-ink-heading">Context</h2>
+        <div className="flex flex-wrap items-center gap-4" data-specimen="context">
+          <Context used={9660} limit={128000} usage={AG_USAGE} />
+          <Context used={102400} limit={128000} />
+          <Context used={121600} limit={128000} />
+        </div>
+      </section>
+      <section className="flex flex-col gap-4">
+        <h2 className="text-h3 font-bold text-ink-heading">Checkpoint</h2>
+        <div className="flex w-full max-w-md flex-col gap-4 text-body-sm" data-specimen="checkpoint">
+          <Message align="end"><MessageContent><Bubble align="end" variant="secondary"><BubbleContent>Rename the button component to action.</BubbleContent></Bubble></MessageContent></Message>
+          <Message><MessageContent><p>Renamed Button to Action in components/ui/button.tsx.</p></MessageContent></Message>
+          <Checkpoint label="Button renamed" onRestore={() => setRestored(true)} />
+          {!restored ? (
+            <Message align="end"><MessageContent><Bubble align="end" variant="secondary"><BubbleContent>Update the docs to match.</BubbleContent></Bubble></MessageContent></Message>
+          ) : (
+            <p className="text-caption text-muted-foreground" data-testid="restored">Restored: the later message was removed.</p>
+          )}
+        </div>
+      </section>
+      <section className="flex flex-col gap-4">
+        <h2 className="text-h3 font-bold text-ink-heading">Subagent</h2>
+        <p className="text-caption text-muted-foreground">Without Tool lines and the error part (they come with Code Block).</p>
+        <div className="flex flex-wrap items-start gap-6" data-specimen="subagent">
+          <AgPanel label="Running"><Message><MessageContent className="gap-3"><Trace>
+            <Subagent name="research agent" state="running">
+              <TraceLine><TraceStatusIcon icon="terminal" /><TraceTitle>Ran grep -rn cacheKey scripts</TraceTitle></TraceLine>
+              <TraceLine status="running"><TraceStatusIcon status="running" /><TraceTitle>Running cat next.config.ts</TraceTitle></TraceLine>
+            </Subagent>
+          </Trace></MessageContent></Message></AgPanel>
+          <AgPanel label="Done (open) with its result"><Message><MessageContent className="gap-3"><Trace>
+            <Subagent name="research agent" state="done" defaultOpen result={<p>The cache is keyed on the commit SHA. Key it on the image directory instead.</p>}>
+              <TraceLine><TraceStatusIcon icon="terminal" /><TraceTitle>Ran grep -rn cacheKey scripts</TraceTitle></TraceLine>
+            </Subagent>
+          </Trace></MessageContent></Message></AgPanel>
+        </div>
+      </section>
+      <section className="flex flex-col gap-4">
+        <h2 className="text-h3 font-bold text-ink-heading">Model Selector</h2>
+        <div className="flex max-w-xl flex-col gap-4" data-specimen="model">
+          <InputGroup>
+            <InputGroupTextarea placeholder="Ask the agent to change your code…" rows={2} />
+            <InputGroupAddon align="block-end">
+              <ModelSelector providers={AG_PROVIDERS} model={model} onModelChange={setModel} effort={effort} onEffortChange={setEffort} />
+              <InputGroupButton size="icon-sm" variant="default" className="ml-auto" aria-label="Send"><Icon name="send" /></InputGroupButton>
+            </InputGroupAddon>
+          </InputGroup>
+          <InputGroup className="opacity-(--pl-opacity-disabled)">
+            <InputGroupTextarea placeholder="Ask the agent to change your code…" disabled rows={2} />
+            <InputGroupAddon align="block-end">
+              <ModelSelector providers={AG_PROVIDERS} model={model} onModelChange={setModel} effort={effort} onEffortChange={setEffort} disabled />
+              <InputGroupButton size="icon-sm" variant="default" className="ml-auto" aria-label="Send" disabled><Icon name="send" /></InputGroupButton>
+            </InputGroupAddon>
+          </InputGroup>
+          <p className="text-caption text-muted-foreground" data-testid="model-value">{model} / {effort}</p>
         </div>
       </section>
     </>
@@ -2290,6 +2442,7 @@ function App() {
       <ChartsSection />
       <ChatSection />
       <AiSection />
+      <AgentSection />
     </main>
   )
 }

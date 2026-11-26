@@ -23,6 +23,7 @@ import InputSection from "./sections/InputSection.vue"
 import ChartsSection from "./sections/ChartsSection.vue"
 import ChatSection from "./sections/ChatSection.vue"
 import AiSection from "./sections/AiSection.vue"
+import AgentSection from "./sections/AgentSection.vue"
 
 // Dark mode is the .dark class on <html> (same as the React playground). `?theme=dark` starts dark.
 const dark = ref(false)
@@ -63,5 +64,6 @@ onMounted(() => apply(new URLSearchParams(location.search).get("theme") === "dar
     <ChartsSection />
     <ChatSection />
     <AiSection />
+    <AgentSection />
   </main>
 </template>
