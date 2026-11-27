@@ -1,7 +1,7 @@
 # Vue 3 port of playlogDS: plan (Phase 1)
 
-Status: **draft, waiting for answers**. No code has been written. Branch: `vue-port-plan`.
-Facts below were checked on 2026-11-22 (npm registry and the vendors' docs). Items marked **(verify)** are not confirmed by a source I could read and must be checked before Phase 2 relies on them.
+Status: **done (updated 2026-11-27).** Every batch in section 6 is built in `packages/ui-vue`, with playground `apps/web-vue`, and merged to `main` (branch `vue-port-plan`). Vue Code Connect templates exist for every Vue component (132, parsed, not yet published). The only open item is question 5 in section 8 (Figma plan limit, one Code Connect framework at a time). The sections below are the original plan, kept as written on 2026-11-22; the results of the checks and the choices made along the way are in `docs/vue-compare/README.md`.
+Facts below were checked on 2026-11-22 (npm registry and the vendors' docs). Items marked **(verify)** were not confirmed at that time; they were checked in the batches that used them (see the README).
 
 ## 0. Where the facts differ from the prompt
 
@@ -153,7 +153,7 @@ Each batch follows the React steps: specs against Reka, code, Figma check, Code 
 
 ## 8. Open questions
 
-See the message that accompanies this plan. Answers will be recorded here:
+Answers recorded here:
 
 | # | Topic | Answer |
 |---|---|---|
@@ -161,5 +161,5 @@ See the message that accompanies this plan. Answers will be recorded here:
 | 2 | `apps/web-vue` role, npm or monorepo | (a) Playground only now; workspace package later; no npm publishing now. |
 | 3 | Nuxt | (a) Plain Vue 3 + Vite. |
 | 4 | Libraries beyond Reka UI (Chart, Drawer, Input OTP, Sonner) | (a) Ask per batch, with name, version and size. |
-| 5 | Figma plan (one active Code Connect framework on Professional) | Open: user to check before publishing. |
+| 5 | Figma plan (one active Code Connect framework on Professional) | Open. Confirmed on the Professional plan: one framework at a time. React mappings were unpublished (132 removed) on 2026-11-27, but Figma still refused to publish Vue ("the active framework is React"). To do: switch the active framework to Vue in Figma, then publish from your own terminal (`--dry-run` first). |
 | 6 | Class merging | Default: reuse the `cn` package with the same type-scale list, unless told otherwise. |
